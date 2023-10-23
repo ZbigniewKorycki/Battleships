@@ -50,7 +50,8 @@ class CommunicationUtils:
         return template
 
     def game_invitation_request(self):
-        client_request = self.protocol_template(self.message_type[0], self.status_code[0], self.null_value, self.null_value)
+        client_request = self.protocol_template(self.message_type[0], self.status_code[0], self.null_value,
+                                                self.null_value)
         return client_request
 
     def game_invitation_response(self):
@@ -58,7 +59,8 @@ class CommunicationUtils:
             server_response = self.protocol_template(self.message_type[0], self.status_code[1],
                                                      "Server is playing the other game", self.null_value)
         else:
-            server_response = self.protocol_template(self.message_type[0], self.status_code[0], self.null_value, self.null_value)
+            server_response = self.protocol_template(self.message_type[0], self.status_code[0], self.null_value,
+                                                     self.null_value)
         return server_response
 
     def client_shot_request(self):
@@ -76,13 +78,22 @@ class CommunicationUtils:
         row = co_ordinates["row"]
         row_index = self.row_index[row]
         column_index = co_ordinates["column"]
-        shot_success = self.protocol_template(self.message_type[1], self.status_code[0], self.null_value, self.shot_possibilities[1])
-        shot_missed = self.protocol_template(self.message_type[1], self.status_code[0], self.null_value, self.shot_possibilities[0])
-        ship_destroy = self.protocol_template(self.message_type[1], self.status_code[0], self.null_value, self.shot_possibilities[2])
-        if row_index < 1 or row_index > 10 or column_index < 1 or column_index > 10:
+        shot_success = self.protocol_template(self.message_type[1], self.status_code[0], self.null_value,
+                                              self.shot_possibilities[1])
+        shot_missed = self.protocol_template(self.message_type[1], self.status_code[0], self.null_value,
+                                             self.shot_possibilities[0])
+        ship_destroy = self.protocol_template(self.message_type[1], self.status_code[0], self.null_value,
+                                              self.shot_possibilities[2])
+        if row_index < 0 or row_index > 9 or column_index < 1 or column_index > 10:
             error_message = self.protocol_template(self.message_type[1], self.status_code[2],
-                                                   "The shot is not within the boundaries of the board", self.null_value)
+                                                   "The shot is not within the boundaries of the board",
+                                                   self.null_value)
             return error_message
+        else:
+            result_message = self.protocol_template(self.message_type[1], self.status_code[0],
+                                                    "The shot within the boundaries of the board",
+                                                    body="HIT/MISS/SINKING")
+            return result_message
 
     def server_shot_request(self):
         shot_request = self.protocol_template(self.message_type[2], self.null_value, self.null_value, self.null_value)
@@ -96,7 +107,8 @@ class CommunicationUtils:
             "row": row_letter,
             "column": column
         }
-        server_shot_message = self.protocol_template(self.message_type[2], self.status_code[0], self.null_value, body_template)
+        server_shot_message = self.protocol_template(self.message_type[2], self.status_code[0], self.null_value,
+                                                     body_template)
         return server_shot_message
 
     def server_shot_result(self, server_shot_request):
@@ -104,21 +116,36 @@ class CommunicationUtils:
         row = co_ordinates["row"]
         row_index = self.row_index[row]
         column_index = co_ordinates["column"]
-        shot_success = self.protocol_template(self.message_type[3], self.null_value, self.null_value, self.shot_possibilities[1])
-        shot_missed = self.protocol_template(self.message_type[3], self.null_value, self.null_value, self.shot_possibilities[0])
-        ship_destroy = self.protocol_template(self.message_type[3], self.null_value, self.null_value, self.shot_possibilities[2])
+        shot_success = self.protocol_template(self.message_type[3], self.null_value, self.null_value,
+                                              self.shot_possibilities[1])
+        shot_missed = self.protocol_template(self.message_type[3], self.null_value, self.null_value,
+                                             self.shot_possibilities[0])
+        ship_destroy = self.protocol_template(self.message_type[3], self.null_value, self.null_value,
+                                              self.shot_possibilities[2])
+        return {"type": "RESULT", "body": "HIT/MISS/SINKING"}
 
     def server_shot_response(self):
-        server_response = self.protocol_template(self.message_type[3], self.status_code[0], self.null_value, self.null_value)
+        server_response = self.protocol_template(self.message_type[3], self.status_code[0], self.null_value,
+                                                 self.null_value)
         return server_response
 
     def unknown_command(self):
-        unknown_command_message = self.protocol_template(self.message_type[5], self.status_code[4], self.null_value, self.null_value)
+        unknown_command_message = self.protocol_template(self.message_type[5], self.status_code[4], self.null_value,
+                                                         self.null_value)
         return unknown_command_message
 
     def ships_positions(self):
-        pass
+        ships_position_message = {"type": "BOARD",
+                                  "body": {
+                                      "four": "B3-B6",
+                                      "three": ["E10-G10", "F3-H3"],
+                                      "two": ["A9-B9", "D7-D8", "I6-I7"],
+                                      "one": ["D2", "D5", "F7", "I9"]
+                                  }
+                                  }
+        return ships_position_message
 
     def ships_positions_server_confirmation(self):
-        confirmation = self.protocol_template(self.message_type[4], self.status_code[0], self.null_value, self.null_value)
+        confirmation = self.protocol_template(self.message_type[4], self.status_code[0], self.null_value,
+                                              self.null_value)
         return confirmation
