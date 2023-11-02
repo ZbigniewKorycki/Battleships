@@ -53,8 +53,45 @@ class Board:
                 for key, value in self.row_index.items():
                     if value == letter_index:
                         self.board[key][ship.column] = "O"
+        self.block_ship_near_fields(ship)
         self.ships.ships_list.append(ship)
         return self.draw_board()
+
+    def block_ship_near_fields(self, ship):
+        if ship.orientation == "horizontal":
+            self.board[ship.row][ship.column - 1] = ";"
+            self.board[ship.row][ship.column + ship.size] = ";"
+            upper_row_index = self.row_index[ship.row]
+            upper_row_index -= 1
+            down_row_index = self.row_index[ship.row]
+            down_row_index += 1
+            for key, value in self.row_index.items():
+                if value == upper_row_index:
+                    for i in range(ship.size):
+                        self.board[key][ship.column + i] = ";"
+                        self.board[key][ship.column - 1] = ";"
+                        self.board[key][ship.column + ship.size] = ";"
+            for key, value in self.row_index.items():
+                if value == down_row_index:
+                    for i in range(ship.size):
+                        self.board[key][ship.column + i] = ";"
+                        self.board[key][ship.column - 1] = ";"
+                        self.board[key][ship.column + ship.size] = ";"
+        elif ship.orientation == "vertical":
+            upper_row_index = self.row_index[ship.row]
+            upper_row_index -= 1
+            down_row_index = self.row_index[ship.row]
+            down_row_index += ship.size
+            for key, value in self.row_index.items():
+                if value == upper_row_index:
+                    self.board[key][ship.column] = ";"
+                    self.board[key][ship.column - 1] = ";"
+                    self.board[key][ship.column + 1] = ";"
+            for key, value in self.row_index.items():
+                if value == down_row_index:
+                    self.board[key][ship.column] = ";"
+                    self.board[key][ship.column - 1] = ";"
+                    self.board[key][ship.column + 1] = ";"
 
     def check_if_ship_under_coordinate(self, row, column):
         return self.board[row][column] == "O"
