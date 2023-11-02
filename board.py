@@ -1,5 +1,5 @@
 import string
-from ship import Ships
+from ships_logic import Ships
 
 
 class Board:

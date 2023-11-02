@@ -1,5 +1,5 @@
 from board import Board
-from ship import Ship
+from ships_logic import Ship
 
 board = Board()
 ship = Ship("B", 5, 3, "vertical")
