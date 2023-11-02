@@ -43,28 +43,33 @@ class Board:
             pass
 
     def add_ship(self, ship):
-        if ship.orientation == "horizontal":
-            for i in range(ship.size):
-                self.board[ship.row][ship.column + i] = "O"
-        elif ship.orientation == "vertical":
-            rows_indexes = self.row_index[ship.row]
-            for i in range(ship.size):
-                letter_index = rows_indexes + i
-                for key, value in self.row_index.items():
-                    if value == letter_index:
-                        self.board[key][ship.column] = "O"
-        self.block_ship_near_fields(ship)
-        self.ships.ships_list.append(ship)
-        return self.draw_board()
+        check_another_ship_in_area = self.check_if_ship_under_coordinate(ship.row, ship.column)
+        print(check_another_ship_in_area)
+        if check_another_ship_in_area == True:
+            if ship.orientation == "horizontal":
+                for i in range(ship.size):
+                    self.board[ship.row][ship.column + i] = "O"
+            elif ship.orientation == "vertical":
+                rows_indexes = self.row_index[ship.row]
+                for i in range(ship.size):
+                    letter_index = rows_indexes + i
+                    for key, value in self.row_index.items():
+                        if value == letter_index:
+                            self.board[key][ship.column] = "O"
+            self.block_ship_near_fields(ship)
+            self.ships.ships_list.append(ship)
+            return self.draw_board()
+        elif check_another_ship_in_area == False:
+            print("There`s another ship in area, try again")
 
     def block_ship_near_fields(self, ship):
+        ship_row_index = self.row_index[ship.row]
+        upper_row_index = ship_row_index - 1
+        down_row_index_horizontal = ship_row_index + 1
+        down_row_index_vertical = ship_row_index + ship.size
         if ship.orientation == "horizontal":
             self.board[ship.row][ship.column - 1] = ";"
             self.board[ship.row][ship.column + ship.size] = ";"
-            upper_row_index = self.row_index[ship.row]
-            upper_row_index -= 1
-            down_row_index = self.row_index[ship.row]
-            down_row_index += 1
             for key, value in self.row_index.items():
                 if value == upper_row_index:
                     for i in range(ship.size):
@@ -72,29 +77,38 @@ class Board:
                         self.board[key][ship.column - 1] = ";"
                         self.board[key][ship.column + ship.size] = ";"
             for key, value in self.row_index.items():
-                if value == down_row_index:
+                if value == down_row_index_horizontal:
                     for i in range(ship.size):
                         self.board[key][ship.column + i] = ";"
                         self.board[key][ship.column - 1] = ";"
                         self.board[key][ship.column + ship.size] = ";"
         elif ship.orientation == "vertical":
-            upper_row_index = self.row_index[ship.row]
-            upper_row_index -= 1
-            down_row_index = self.row_index[ship.row]
-            down_row_index += ship.size
             for key, value in self.row_index.items():
                 if value == upper_row_index:
                     self.board[key][ship.column] = ";"
                     self.board[key][ship.column - 1] = ";"
                     self.board[key][ship.column + 1] = ";"
             for key, value in self.row_index.items():
-                if value == down_row_index:
+                if value == down_row_index_vertical:
                     self.board[key][ship.column] = ";"
                     self.board[key][ship.column - 1] = ";"
                     self.board[key][ship.column + 1] = ";"
+            for i in range(ship.size):
+                letter_index = ship_row_index + i
+                for key, value in self.row_index.items():
+                    if value == letter_index:
+                        self.board[key][ship.column - 1] = ";"
+            for i in range(ship.size):
+                letter_index = ship_row_index + i
+                for key, value in self.row_index.items():
+                    if value == letter_index:
+                        self.board[key][ship.column + 1] = ";"
 
     def check_if_ship_under_coordinate(self, row, column):
-        return self.board[row][column] == "O"
+        if row == "O" or column == "O" or row == ";" or column == ";":
+            return False
+        else:
+            return True
 
 
 
