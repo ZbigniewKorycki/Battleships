@@ -11,20 +11,35 @@ def wydrukuj_plansze(plansza):
         wiersz_str = '\t'.join(wiersz)
         print(f"{litera_wiersza}\t{wiersz_str}")
 
-def umiesc_statek(plansza, wiersz, kolumna, dlugosc_statku):
-    try:
-        for i in range(dlugosc_statku):
-            plansza[wiersz][kolumna + i] = "S"
-            # plansza[wiersz][kolumna - 1] = ";"
-            # plansza[wiersz][kolumna + dlugosc_statku] = ";"
-            # plansza[wiersz - 1][kolumna + i] = ";"
-            # plansza[wiersz - 1][kolumna - 1] = ";"
-            # plansza[wiersz - 1][kolumna + dlugosc_statku] = ";"
-            # plansza[wiersz + 1][kolumna + i] = ";"
-            # plansza[wiersz + 1][kolumna - 1] = ";"
-            # plansza[wiersz + 1][kolumna + dlugosc_statku] = ";"
-    except IndexError:
-        print("statek poza plansza")
+def umiesc_statek(plansza, wiersz, kolumna, dlugosc_statku, orientacja):
+    if orientacja == "poziomo":
+        try:
+            for i in range(dlugosc_statku):
+                plansza[wiersz][kolumna + i] = "S"
+                # plansza[wiersz][kolumna - 1] = ";"
+                # plansza[wiersz][kolumna + dlugosc_statku] = ";"
+                # plansza[wiersz - 1][kolumna + i] = ";"
+                # plansza[wiersz - 1][kolumna - 1] = ";"
+                # plansza[wiersz - 1][kolumna + dlugosc_statku] = ";"
+                # plansza[wiersz + 1][kolumna + i] = ";"
+                # plansza[wiersz + 1][kolumna - 1] = ";"
+                # plansza[wiersz + 1][kolumna + dlugosc_statku] = ";"
+        except IndexError:
+            print("statek poza plansza")
+    elif orientacja == "pionowo":
+        try:
+            for i in range(dlugosc_statku):
+                plansza[wiersz + i][kolumna] = "S"
+                # plansza[wiersz][kolumna - 1] = ";"
+                # plansza[wiersz][kolumna + dlugosc_statku] = ";"
+                # plansza[wiersz - 1][kolumna + i] = ";"
+                # plansza[wiersz - 1][kolumna - 1] = ";"
+                # plansza[wiersz - 1][kolumna + dlugosc_statku] = ";"
+                # plansza[wiersz + 1][kolumna + i] = ";"
+                # plansza[wiersz + 1][kolumna - 1] = ";"
+                # plansza[wiersz + 1][kolumna + dlugosc_statku] = ";"
+        except IndexError:
+            print("statek poza plansza")
 
 def strzal(plansza, wiersz, kolumna):
     if plansza[wiersz][kolumna] == "S":
@@ -40,11 +55,8 @@ def sprawdzenie_polozenia_statku(plansza, wiersz, kolumna):
     else:
         print("ok")
 
-
-plansza = stworz_pusta_plansze(10, 10)
-umiesc_statek(plansza, 6, 5, 3)
+plansza = stworz_pusta_plansze(10 , 10)
+umiesc_statek(plansza, 1, 5, 2, "poziomo")
+umiesc_statek(plansza, 3, 4, 3, "pionowo")
 wydrukuj_plansze(plansza)
-sprawdzenie_polozenia_statku(plansza, 1, 2)
-
-
-
+print(len(plansza))
