@@ -12,8 +12,8 @@ board.add_ship(ship_2)
 board.add_ship(ship_3)
 board.add_ship(ship_4)
 #
-# print(ship.ship_coordinate())
-# print(ship_2.ship_coordinate())
-# print(ship_3.ship_coordinate())
-# print(ship_4.ship_coordinate())
+# print(ship.ship_coordinates())
+# print(ship_2.ship_coordinates())
+# print(ship_3.ship_coordinates())
+# print(ship_4.ship_coordinates())
 
