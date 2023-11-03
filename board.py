@@ -43,8 +43,7 @@ class Board:
             pass
 
     def add_ship(self, ship):
-        check_another_ship_in_area = self.check_if_ship_under_coordinate(ship.row, ship.column)
-        print(check_another_ship_in_area)
+        check_another_ship_in_area = self.check_if_ship_under_coordinate(ship)
         if check_another_ship_in_area == True:
             if ship.orientation == "horizontal":
                 for i in range(ship.size):
@@ -58,9 +57,9 @@ class Board:
                             self.board[key][ship.column] = "O"
             self.block_ship_near_fields(ship)
             self.ships.ships_list.append(ship)
-            return self.draw_board()
         elif check_another_ship_in_area == False:
             print("There`s another ship in area, try again")
+        return self.draw_board()
 
     def block_ship_near_fields(self, ship):
         ship_row_index = self.row_index[ship.row]
@@ -104,11 +103,33 @@ class Board:
                     if value == letter_index:
                         self.board[key][ship.column + 1] = ";"
 
-    def check_if_ship_under_coordinate(self, row, column):
-        if row == "O" or column == "O" or row == ";" or column == ";":
-            return False
-        else:
-            return True
+    def check_if_ship_under_coordinates(self, ship):
+        if ship.orientation == "horizontal":
+            for i in range(ship.size):
+                if self.board[ship.row][ship.column + i] == "O" or self.board[ship.row][ship.column + i] == ";":
+                    return False
+                else:
+                    return True
+        elif ship.orientation == "vertical":
+            row_letters = string.ascii_uppercase
+            ship_row_index = row_letters.index(ship.row)
+            for i in range(ship.size):
+                if self.board[row_letters[ship_row_index + i]][ship.column] == "O" or self.board[row_letters[ship_row_index + i]][ship.column] == ";":
+                    return False
+                else:
+                    return True
+
+
+
+            # for i in range(ship.size):
+            #     letter_index = ship_row_index + i
+            #     for key, value in self.row_index.items():
+            #         if value == letter_index:
+            #             if self.board[key][value] == "O" or self.board[key][value] == ";":
+            #                 return False
+            #             else:
+            #                 return True
+
 
 
 
