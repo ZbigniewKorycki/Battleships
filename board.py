@@ -43,7 +43,7 @@ class Board:
             pass
 
     def add_ship(self, ship):
-        check_another_ship_in_area = self.check_if_ship_under_coordinate(ship)
+        check_another_ship_in_area = self.check_if_ship_under_coordinates(ship)
         if check_another_ship_in_area == True:
             if ship.orientation == "horizontal":
                 for i in range(ship.size):
@@ -119,16 +119,6 @@ class Board:
                 else:
                     return True
 
-
-
-            # for i in range(ship.size):
-            #     letter_index = ship_row_index + i
-            #     for key, value in self.row_index.items():
-            #         if value == letter_index:
-            #             if self.board[key][value] == "O" or self.board[key][value] == ";":
-            #                 return False
-            #             else:
-            #                 return True
 
 
 
