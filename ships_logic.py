@@ -1,7 +1,7 @@
 class Ship:
-    def __init__(self, row, column, size, orientation):
-        self.row = row
-        self.column = column
+    def __init__(self, rows, columns, size, orientation):
+        self.rows = rows
+        self.columns = columns
         self.size = size
         self.orientation = orientation
         self.ship_durability = self.size
