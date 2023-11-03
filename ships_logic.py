@@ -14,7 +14,7 @@ class Ship:
         if self.ship_durability == 0:
             print("ship destroyed")            #add communication protocol latter
 
-    def ship_coordinate(self):
+    def ship_coordinates(self):
         if self.orientation == "horizontal":
             print(f"{self.row}{self.column} - {self.row}{self.column + self.size - 1}")
         elif self.orientation == "vertical":
