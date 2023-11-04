@@ -1,5 +1,5 @@
 import string
-from ships_logic import Ships
+from ships_logic import Ships, Ship
 
 
 class Board:
@@ -36,14 +36,8 @@ class Board:
             for letter, row in self.board.items()
         ]
 
-    def verify_adding_ship(self, coordinates):
-        for coordinate in coordinates:
-            #ships cant touch each - one row/column of space
-            #coordinates have to be inside board
-            pass
-
     def add_ship(self, ship):
-        check_another_ship_in_area = self.check_if_ship_under_coordinates(ship)
+        check_another_ship_in_area = self.check_if_coordinates_accessible_to_add_ship(ship.rows, ship.columns)
         if check_another_ship_in_area == True:
             if ship.orientation == "horizontal":
                 for i in range(ship.size):
@@ -62,67 +56,62 @@ class Board:
         return self.draw_board()
 
     def block_ship_near_fields(self, ship):
-        ship_row_index = self.row_index[ship.row]
-        upper_row_index = ship_row_index - 1
-        down_row_index_horizontal = ship_row_index + 1
-        down_row_index_vertical = ship_row_index + ship.size
         if ship.orientation == "horizontal":
-            self.board[ship.row][ship.column - 1] = ";"
-            self.board[ship.row][ship.column + ship.size] = ";"
-            for key, value in self.row_index.items():
-                if value == upper_row_index:
-                    for i in range(ship.size):
-                        self.board[key][ship.column + i] = ";"
-                        self.board[key][ship.column - 1] = ";"
-                        self.board[key][ship.column + ship.size] = ";"
-            for key, value in self.row_index.items():
-                if value == down_row_index_horizontal:
-                    for i in range(ship.size):
-                        self.board[key][ship.column + i] = ";"
-                        self.board[key][ship.column - 1] = ";"
-                        self.board[key][ship.column + ship.size] = ";"
+            ship_row_index = self.row_index[ship.rows[0]]
+            self.verify_adding_block_to_board(ship.rows[0], min(ship.columns)-1)
+            self.verify_adding_block_to_board(ship.rows[0], max(ship.columns)+1)
+            self.verify_adding_block_to_board(self.get_row_from_index(ship_row_index-1), min(ship.columns)-1)
+            self.verify_adding_block_to_board(self.get_row_from_index(ship_row_index-1), max(ship.columns)+1)
+            self.verify_adding_block_to_board(self.get_row_from_index(ship_row_index+1), min(ship.columns)-1)
+            self.verify_adding_block_to_board(self.get_row_from_index(ship_row_index+1), max(ship.columns)+1)
+            for column in ship.columns:
+                self.verify_adding_block_to_board(self.get_row_from_index(ship_row_index+1), column)
+                self.verify_adding_block_to_board(self.get_row_from_index(ship_row_index-1), column)
         elif ship.orientation == "vertical":
-            for key, value in self.row_index.items():
-                if value == upper_row_index:
-                    self.board[key][ship.column] = ";"
-                    self.board[key][ship.column - 1] = ";"
-                    self.board[key][ship.column + 1] = ";"
-            for key, value in self.row_index.items():
-                if value == down_row_index_vertical:
-                    self.board[key][ship.column] = ";"
-                    self.board[key][ship.column - 1] = ";"
-                    self.board[key][ship.column + 1] = ";"
-            for i in range(ship.size):
-                letter_index = ship_row_index + i
-                for key, value in self.row_index.items():
-                    if value == letter_index:
-                        self.board[key][ship.column - 1] = ";"
-            for i in range(ship.size):
-                letter_index = ship_row_index + i
-                for key, value in self.row_index.items():
-                    if value == letter_index:
-                        self.board[key][ship.column + 1] = ";"
+            ship_row_indexes = [self.row_index[row] for row in ship.rows]
+            self.verify_adding_block_to_board(self.get_row_from_index(min(ship_row_indexes) - 1), ship.columns[0])
+            self.verify_adding_block_to_board(self.get_row_from_index(max(ship_row_indexes) + 1), ship.columns[0])
+            self.verify_adding_block_to_board(self.get_row_from_index(min(ship_row_indexes) - 1), ship.columns[0] - 1)
+            self.verify_adding_block_to_board(self.get_row_from_index(min(ship_row_indexes) - 1), ship.columns[0] + 1)
+            self.verify_adding_block_to_board(self.get_row_from_index(max(ship_row_indexes) + 1), ship.columns[0] + 1)
+            self.verify_adding_block_to_board(self.get_row_from_index(max(ship_row_indexes) + 1), ship.columns[0] - 1)
+            for row in ship.rows:
+                self.verify_adding_block_to_board(row, ship.columns[0]+1)
+                self.verify_adding_block_to_board(row, ship.columns[0]-1)
 
-    def check_if_ship_under_coordinates(self, ship):
-        if ship.orientation == "horizontal":
-            for i in range(ship.size):
-                if self.board[ship.row][ship.column + i] == "O" or self.board[ship.row][ship.column + i] == ";":
+    def check_if_ship_under_coordinate(self, row, column):
+        if self.board[row][column] == "O":
+            return False
+        else:
+            return True
+
+    def check_if_coordinates_accessible_to_add_ship(self, ship_rows, ship_columns):
+        for row in ship_rows:
+            for i in range(ship_columns):
+                if self.board[row][ship_columns] == ";":
                     return False
-                else:
-                    return True
-        elif ship.orientation == "vertical":
-            row_letters = string.ascii_uppercase
-            ship_row_index = row_letters.index(ship.row)
-            for i in range(ship.size):
-                if self.board[row_letters[ship_row_index + i]][ship.column] == "O" or self.board[row_letters[ship_row_index + i]][ship.column] == ";":
+                if not self.check_if_coordinate_within_board_border(row, ship_columns):
                     return False
-                else:
-                    return True
+        else:
+            return True
 
+    def check_if_coordinate_within_board_border(self, row, column):
+        if row in self.row_index and column in range(1, self.size_columns+1):
+            return True
+        else:
+            return False
 
+    def get_row_from_index(self, index):
+        for key, value in self.row_index.items():
+            if index == value:
+                return key
+        return False
 
-
-
+    def verify_adding_block_to_board(self, row, column):
+        if self.check_if_coordinate_within_board_border(row, column):
+            self.board[row][column] = ";"
+        else:
+            print("Block will be outside board border, skip it.")
 
 
 if __name__ == "__main__":

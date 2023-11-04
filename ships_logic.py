@@ -2,9 +2,9 @@ import string
 
 
 class Ship:
-    def __init__(self, row, column, size, orientation):
-        self.row = row
-        self.column = column
+    def __init__(self, rows, columns, size, orientation):
+        self.rows = rows
+        self.columns = columns
         self.size = size
         self.orientation = orientation
         self.ship_durability = self.size
@@ -16,13 +16,13 @@ class Ship:
 
     def ship_coordinates(self):
         if self.orientation == "horizontal":
-            print(f"{self.row}{self.column} - {self.row}{self.column + self.size - 1}")
+            print(f"{self.rows}{self.columns} - {self.rows}{self.columns + self.size - 1}")
         elif self.orientation == "vertical":
             row_letters = string.ascii_uppercase
-            ship_row_index = row_letters.index(self.row)
+            ship_row_index = row_letters.index(self.rows)
             ship_row_index += self.size
             ship_row_index_end = row_letters[ship_row_index - 1]
-            print(f"{self.row}{self.column} - {ship_row_index_end}{self.column}")
+            print(f"{self.rows}{self.columns} - {ship_row_index_end}{self.columns}")
 
 
 class Ships:
