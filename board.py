@@ -37,23 +37,19 @@ class Board:
         ]
 
     def add_ship(self, ship):
-        check_another_ship_in_area = self.check_if_coordinates_accessible_to_add_ship(ship.rows, ship.columns)
-        if check_another_ship_in_area == True:
+        if self.check_if_coordinates_accessible_to_add_ship(ship.rows, ship.columns):
             if ship.orientation == "horizontal":
-                for i in range(ship.size):
-                    self.board[ship.row][ship.column + i] = "O"
+                for column in ship.columns:
+                    self.board[ship.rows[0]][column] = "O"
             elif ship.orientation == "vertical":
-                rows_indexes = self.row_index[ship.row]
-                for i in range(ship.size):
-                    letter_index = rows_indexes + i
-                    for key, value in self.row_index.items():
-                        if value == letter_index:
-                            self.board[key][ship.column] = "O"
+                for row in ship.rows:
+                    self.board[row][ship.columns[0]] = "O"
             self.block_ship_near_fields(ship)
             self.ships.ships_list.append(ship)
-        elif check_another_ship_in_area == False:
-            print("There`s another ship in area, try again")
-        return self.draw_board()
+
+            return self.draw_board()
+        else:
+            print("There`s another ship in area, or ship is not within board border try again")
 
     def block_ship_near_fields(self, ship):
         if ship.orientation == "horizontal":
@@ -87,10 +83,10 @@ class Board:
 
     def check_if_coordinates_accessible_to_add_ship(self, ship_rows, ship_columns):
         for row in ship_rows:
-            for i in range(ship_columns):
-                if self.board[row][ship_columns] == ";":
+            for column in ship_columns:
+                if self.board[row][column] == ";":
                     return False
-                if not self.check_if_coordinate_within_board_border(row, ship_columns):
+                if not self.check_if_coordinate_within_board_border(row, column):
                     return False
         else:
             return True
