@@ -46,6 +46,7 @@ class Board:
                     self.board[row][ship.columns[0]] = "O"
             self.block_ship_near_fields(ship)
             self.ships.ships_list.append(ship)
+
             return self.draw_board()
         else:
             print("There`s another ship in area, or ship is not within board border try again")
