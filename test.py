@@ -1,62 +1,20 @@
+from board import Board
+from ships_logic import Ship
 import string
 
-def stworz_pusta_plansze(wiersze, kolumny):
-    return [['~' for _ in range(kolumny)] for _ in range(wiersze)]
+board = Board()
+ship = Ship("A", 1, 4, "horizontal")
+ship_2 = Ship("C", 8, 3, "horizontal")
+ship_3 = Ship("H", 4, 2, "vertical")
+ship_4 = Ship("G", 5, 3, "vertical")
+# # board.add_ship(ship)
+# # board.add_ship(ship_2)
+# # board.add_ship(ship_3)
+# # board.add_ship(ship_4)
+#
 
-def wydrukuj_plansze(plansza):
-    naglowki_kolumn = [' '] + [str(i) for i in range(1, len(plansza[0]) + 1)]
-    print('\t'.join(naglowki_kolumn))
-    for i, wiersz in enumerate(plansza):
-        litera_wiersza = string.ascii_uppercase[i]
-        wiersz_str = '\t'.join(wiersz)
-        print(f"{litera_wiersza}\t{wiersz_str}")
-
-def umiesc_statek(plansza, wiersz, kolumna, dlugosc_statku, orientacja):
-    if orientacja == "poziomo":
-        try:
-            for i in range(dlugosc_statku):
-                plansza[wiersz][kolumna + i] = "S"
-                # plansza[wiersz][kolumna - 1] = ";"
-                # plansza[wiersz][kolumna + dlugosc_statku] = ";"
-                # plansza[wiersz - 1][kolumna + i] = ";"
-                # plansza[wiersz - 1][kolumna - 1] = ";"
-                # plansza[wiersz - 1][kolumna + dlugosc_statku] = ";"
-                # plansza[wiersz + 1][kolumna + i] = ";"
-                # plansza[wiersz + 1][kolumna - 1] = ";"
-                # plansza[wiersz + 1][kolumna + dlugosc_statku] = ";"
-        except IndexError:
-            print("statek poza plansza")
-    elif orientacja == "pionowo":
-        try:
-            for i in range(dlugosc_statku):
-                plansza[wiersz + i][kolumna] = "S"
-                # plansza[wiersz][kolumna - 1] = ";"
-                # plansza[wiersz][kolumna + dlugosc_statku] = ";"
-                # plansza[wiersz - 1][kolumna + i] = ";"
-                # plansza[wiersz - 1][kolumna - 1] = ";"
-                # plansza[wiersz - 1][kolumna + dlugosc_statku] = ";"
-                # plansza[wiersz + 1][kolumna + i] = ";"
-                # plansza[wiersz + 1][kolumna - 1] = ";"
-                # plansza[wiersz + 1][kolumna + dlugosc_statku] = ";"
-        except IndexError:
-            print("statek poza plansza")
-
-def strzal(plansza, wiersz, kolumna):
-    if plansza[wiersz][kolumna] == "S":
-        print("trafiony !")
-        plansza[wiersz][kolumna] = "~"
-        wydrukuj_plansze(plansza)
-    else:
-        print("chybiony !")
-
-def sprawdzenie_polozenia_statku(plansza, wiersz, kolumna):
-    if plansza[wiersz][kolumna] == "S" or plansza[wiersz][kolumna] == ";":
-        print("inny statek znajduje sie za blisko")
-    else:
-        print("ok")
-
-plansza = stworz_pusta_plansze(10 , 10)
-umiesc_statek(plansza, 1, 5, 2, "poziomo")
-umiesc_statek(plansza, 3, 4, 3, "pionowo")
-wydrukuj_plansze(plansza)
-print(len(plansza))
+# print(ship_2)
+print(ship_3)
+print(ship_4)
+print(ship_3.rows_list, ship_3.columns_list)
+print(ship_4.rows_list, ship_4.columns_list)
