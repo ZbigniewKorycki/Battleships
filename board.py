@@ -8,7 +8,7 @@ class Board:
         self.size_columns = size_columns
         self.player_board = self.create_starting_board()
         self.opponent_board = self.create_starting_board()
-        self.draw_board()
+        self.draw_player_board()
         self.row_index = {
             "A": 1,
             "B": 2,
@@ -30,7 +30,7 @@ class Board:
         }
         return starting_board
 
-    def draw_board(self):
+    def draw_player_board(self):
         print("Player board:".center(self.size_columns * 2 + 1))
         columns = print(end="  "), [print(num, end=" ") for num in range(1, self.size_columns + 1)], print()
         rows_with_value = [
@@ -57,7 +57,7 @@ class Board:
             self.block_ship_near_fields(ship)
             self.ships.ships_list.append(ship)
 
-            return self.draw_board()
+            return self.draw_player_board()
         else:
             print("There`s another ship in area, or ship is not within board border try again")
 
@@ -88,12 +88,6 @@ class Board:
             for row in ship.rows_list:
                 self.verify_adding_block_to_board(row, ship.columns_list[0] + 1)
                 self.verify_adding_block_to_board(row, ship.columns_list[0] - 1)
-
-    def check_if_ship_under_coordinate(self, row, column):
-        if self.player_board[row][column] == "O":
-            return False
-        else:
-            return True
 
     def check_if_coordinates_accessible_to_add_ship(self, ship_rows_list, ship_columns_list):
         for row in ship_rows_list:
@@ -129,8 +123,8 @@ class Board:
                 if self.player_board[row][column] == ";":
                     self.player_board[row][column] = "~"
 
-    def add_result_of_player_shot_to_opponent_board(self, row, column, result, sunk_ship_columns_list=None,
-                                                    sunk_ship_rows_list=None):
+    def add_result_of_player_shot_to_opponent_board(self, row, column, result, sunk_ship_rows_list=None,
+                                                    sunk_ship_columns_list=None):
         if self.check_if_coordinate_within_board_border(row, column):
             if result == "HIT":
                 self.opponent_board[row][column] = "X"
@@ -142,6 +136,44 @@ class Board:
                         self.opponent_board[row][column] = "S"
         else:
             print("Shot outside board.")
+
+    def result_of_opponent_shot(self, row, column):
+        if self.check_if_coordinate_within_board_border(row, column):
+            if self.player_board[row][column] == "O":
+                hit_ship = self.get_ship_by_coordinate(row, column)
+                if hit_ship.ship_hit() == 0:
+                    self.mark_opponent_shot_result_to_player_board(row, column, "SINKING")
+                    return "SINKING", hit_ship.rows_list, hit_ship.columns_list
+                else:
+                    self.mark_opponent_shot_result_to_player_board(row, column, "HIT")
+                    return "HIT"
+
+            elif self.player_board[row][column] == "~" or self.player_board[row][column] == "X":
+                self.mark_opponent_shot_result_to_player_board(row, column, "MISS")
+                return "MISS"
+        else:
+            return "MISS"
+
+    def get_ship_by_coordinate(self, row, column):
+        for ship in self.ships.ships_list:
+            if row in ship.rows_list and column in ship.columns_list:
+                return ship
+
+    def mark_opponent_shot_result_to_player_board(self, row, column, result):
+        if result == "MISS":
+            self.player_board[row][column] = "M"
+        elif result == "HIT":
+            self.player_board[row][column] = "X"
+        elif result == "SINKING":
+            sunk_ship = self.get_ship_by_coordinate(row, column)
+            for column in sunk_ship.columns_list:
+                for row in sunk_ship.rows_list:
+                    self.player_board[row][column] = "S"
+
+    def start_game(self):
+        self.remove_blocks_from_board()
+        self.draw_player_board()
+        self.draw_opponent_board()
 
 
 if __name__ == "__main__":
