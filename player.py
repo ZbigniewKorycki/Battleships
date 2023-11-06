@@ -34,36 +34,36 @@ class Player:
             self.player_board.add_ship(ship)
             self.ships.ships_to_deploy_list.remove(ship_type)
 
-    def row_input(self, ship):
-        row = input(f"Set row for '{ship}' from 'A' to 'J': ").capitalize()
+    def row_input(self, ship_type):
+        row = input(f"Set row for '{ship_type}' from 'A' to 'J': ").capitalize()
         if row in range(string.ascii_uppercase.index("A"), string.ascii_uppercase.index("J")):
             return (True, row)
         else:
             error_message = "Row outside index"
             return (False, error_message)
 
-    def column_input(self, ship):
-        column = int(input(f"Set column for '{ship}' from '1' to '10': "))
+    def column_input(self, ship_type):
+        column = int(input(f"Set column for '{ship_type}' from '1' to '10': "))
         if column in range(1, 11):
             return (True, column)
         else:
             error_message = "Column outside index"
             return (False, error_message)
 
-    def ship_size_establish(self, ship):
-        if ship == "Four-masted ship":
+    def ship_size_establish(self, ship_type):
+        if ship_type == "Four-masted ship":
             size = 4
-        elif ship == "Three-masted ship":
+        elif ship_type == "Three-masted ship":
             size = 3
-        elif ship == "Two-masted ship":
+        elif ship_type == "Two-masted ship":
             size = 2
-        elif ship == "One-masted ship":
+        elif ship_type == "One-masted ship":
             size = 1
         return size
 
-    def orientation_input(self, ship):
-        if ship != "One-masted ship":
-            orientation_input = input(f"In which direction would you set '{ship}' ? Put 'H' for horizontal, 'V' for vertical: ").capitalize()
+    def orientation_input(self, ship_type):
+        if ship_type != "One-masted ship":
+            orientation_input = input(f"In which direction would you set '{ship_type}' ? Put 'H' for horizontal, 'V' for vertical: ").capitalize()
             if orientation_input in ["H", "V"]:
                 if orientation_input == "H":
                     orientation = "horizontal"
@@ -73,6 +73,6 @@ class Player:
             else:
                 error_message = "Orientation have to be 'H' or 'V'"
                 return (False, error_message)
-        elif ship == "One-masted ship":
+        elif ship_type == "One-masted ship":
             orientation = "horizontal"
             return (True, orientation)
