@@ -109,6 +109,12 @@ class Board:
         else:
             print("Block outside board border.")
 
+    def remove_blocks_from_board(self):
+        for row in self.row_index:
+            for column in range(1, self.size_columns+1):
+                if self.board[row][column] == ";":
+                    self.board[row][column] = "~"
+
 
 if __name__ == "__main__":
     board = Board()
