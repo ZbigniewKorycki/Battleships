@@ -65,16 +65,16 @@ class Ships:
         self.ships_type_quantity_list_order = self.move_ships_from_ships_type_quantity_list_to_ships_deploy_list()
 
     def move_ships_from_ships_type_quantity_list_to_ships_deploy_list(self):
-        new_list = []
-        items_to_remove = []
+        new_ships_list = []
+        ships_to_remove = []
         for item in self.ships_type_quantity_list:
             if isinstance(item, list):
                 for subitem in item:
-                    new_list.append(subitem)
-                items_to_remove.append(item)
+                    new_ships_list.append(subitem)
+                ships_to_remove.append(item)
             else:
-                new_list.append(item)
-                items_to_remove.append(item)
-        for item in items_to_remove:
+                new_ships_list.append(item)
+                ships_to_remove.append(item)
+        for item in ships_to_remove:
             self.ships_type_quantity_list.remove(item)
-        self.ships_to_deploy_list = new_list
+        self.ships_to_deploy_list = new_ships_list
