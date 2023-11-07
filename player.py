@@ -32,22 +32,25 @@ class Player:
                 break
             ship = Ship(row, column, size, orientation)
             self.player_board.add_ship(ship)
-            self.ships.ships_to_deploy_list.remove(ship_type)
 
     def row_input(self, ship_type):
         row = input(f"Set row for '{ship_type}' from 'A' to 'J': ").capitalize()
-        if row in range(string.ascii_uppercase.index("A"), string.ascii_uppercase.index("J")):
+        if row in string.ascii_uppercase[:10]:
             return (True, row)
         else:
             error_message = "Row outside index"
             return (False, error_message)
 
     def column_input(self, ship_type):
-        column = int(input(f"Set column for '{ship_type}' from '1' to '10': "))
-        if column in range(1, 11):
-            return (True, column)
-        else:
-            error_message = "Column outside index"
+        try:
+            column = int(input(f"Set column for '{ship_type}' from '1' to '10': "))
+            if column in range(1, 11):
+                return (True, column)
+            else:
+                error_message = "Column outside index"
+                return (False, error_message)
+        except ValueError:
+            error_message = "Column have to be an integer"
             return (False, error_message)
 
     def ship_size_establish(self, ship_type):
