@@ -18,13 +18,13 @@ class Client:
 
     def create_request_to_server(self, client_input):
         if client_input == "GAME INVITATION":
-            return self.communication_utils.game_invitation_request()
+            return self.communication_utils.client_game_invitation_request()
         elif client_input == "SHOT":
             return self.communication_utils.client_shot_request()
         elif client_input == "SHOT REQUEST":
-            return self.communication_utils.server_shot_request()
+            return self.communication_utils.client_requesting_server_to_shot()
         elif client_input == "BOARD":
-            return self.communication_utils.ships_positions()
+            return self.communication_utils.client_send_final_ships_positions()
         else:
             return self.communication_utils.unknown_command()
 
@@ -32,7 +32,7 @@ class Client:
         server_response = self.data_utils.deserialize_json(server_response_json)
         print(server_response)
         if server_response['type'] == "SHOT_REQUEST":
-            client_response = self.communication_utils.server_shot_result(server_response)
+            client_response = self.communication_utils.client_response_for_server_shot(server_response)
             client_response_json = self.data_utils.serialize_to_json(client_response)
             client_socket.sendall(client_response_json)
             server_response_json = client_socket.recv(self.buffer)

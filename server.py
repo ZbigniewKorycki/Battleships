@@ -20,15 +20,15 @@ class Server:
 
     def create_response_to_client(self, client_request):
         if client_request['type'] == 'GAME_INVITATION':
-            return self.communication_utils.game_invitation_response()
+            return self.communication_utils.server_game_invitation_response()
         elif client_request['type'] == 'SHOT':
-            return self.communication_utils.client_shot_result(client_request)
+            return self.communication_utils.server_response_for_client_shot(client_request)
         elif client_request['type'] == 'SHOT_REQUEST':
             return self.communication_utils.server_shot()
         elif client_request['type'] == 'BOARD':
-            return self.communication_utils.ships_positions_server_confirmation()
+            return self.communication_utils.server_confirmation_to_final_ships_positions()
         elif client_request['type'] == 'RESULT':
-            return self.communication_utils.server_shot_response()
+            return self.communication_utils.server_acknowledgment_to_client_response_for_server_shot()
         else:
             return self.communication_utils.unknown_command()
 
