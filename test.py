@@ -1,9 +1,11 @@
-from player import Player
+from player import Player, AIPlayer
 import string
-
-player = Player()
-
-player.coordinates_for_ship_add_to_board()
+import random
 
 
+# player = Player()
+player_2 = AIPlayer()
+# player.coordinates_for_ship_add_to_board()
 
+
+player_2.coordinates_for_ship_add_to_board()
