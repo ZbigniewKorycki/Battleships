@@ -114,8 +114,8 @@ class Board:
     def verify_adding_block_to_board(self, row, column):
         if self.check_if_coordinate_within_board_border(row, column):
             self.player_board[row][column] = ";"
-        else:
-            print("Block outside board border.")
+        # else:
+        #     print("Block outside board border.")
 
     def remove_blocks_from_board(self):
         for row in self.row_index:
@@ -123,8 +123,8 @@ class Board:
                 if self.player_board[row][column] == ";":
                     self.player_board[row][column] = "~"
 
-    def add_result_of_player_shot_to_opponent_board(self, row, column, result, sunk_ship_rows_list=None,
-                                                    sunk_ship_columns_list=None):
+    def add_result_of_player_own_shot_into_opponent_board(self, row, column, result, sunk_ship_rows_list=None,
+                                                          sunk_ship_columns_list=None):
         if self.check_if_coordinate_within_board_border(row, column):
             if result == "HIT":
                 self.opponent_board[row][column] = "X"
@@ -142,24 +142,24 @@ class Board:
             if self.player_board[row][column] == "O":
                 hit_ship = self.get_ship_by_coordinate(row, column)
                 if hit_ship.ship_hit() == 0:
-                    self.mark_opponent_shot_result_to_player_board(row, column, "SINKING")
+                    self.mark_opponent_shot_result_into_player_board(row, column, "SINKING")
                     return "SINKING", hit_ship.rows_list, hit_ship.columns_list
                 else:
-                    self.mark_opponent_shot_result_to_player_board(row, column, "HIT")
+                    self.mark_opponent_shot_result_into_player_board(row, column, "HIT")
                     return "HIT"
 
             elif self.player_board[row][column] == "~" or self.player_board[row][column] == "X":
-                self.mark_opponent_shot_result_to_player_board(row, column, "MISS")
+                self.mark_opponent_shot_result_into_player_board(row, column, "MISS")
                 return "MISS"
         else:
-            return "MISS"
+            return "The shot is not within the boundaries of the board."
 
     def get_ship_by_coordinate(self, row, column):
         for ship in self.ships.ships_list:
             if row in ship.rows_list and column in ship.columns_list:
                 return ship
 
-    def mark_opponent_shot_result_to_player_board(self, row, column, result):
+    def mark_opponent_shot_result_into_player_board(self, row, column, result):
         if result == "MISS":
             self.player_board[row][column] = "M"
         elif result == "HIT":
@@ -170,7 +170,7 @@ class Board:
                 for row in sunk_ship.rows_list:
                     self.player_board[row][column] = "S"
 
-    def start_game(self):
+    def prepare_board_for_game_start(self):
         self.remove_blocks_from_board()
         self.draw_player_board()
         self.draw_opponent_board()
