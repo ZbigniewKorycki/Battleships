@@ -1,12 +1,11 @@
 import random
-import string
-
 
 class CommunicationUtils:
 
-    def __init__(self):
-        self.server_busy = False
-        self.null_value = "null"
+    def __init__(self, player_client, player_server):
+        self.player_client = player_client
+        self.player_server = player_server
+        self.server_is_busy = False
         self.message_type = {
             0: "GAME_INVITATION",
             1: "SHOT",
@@ -22,25 +21,13 @@ class CommunicationUtils:
             3: "INTERNAL_ERROR",
             4: "BAD_REQUEST"
         }
-        self.row_index = {
-            "A": 0,
-            "B": 1,
-            "C": 2,
-            "D": 3,
-            "E": 4,
-            "F": 5,
-            "G": 6,
-            "H": 7,
-            "I": 8,
-            "J": 9
-        }
-        self.shot_possibilities = {
+        self.shot_result = {
             0: "MISS",
             1: "HIT",
             2: "SINKING"
         }
 
-    def protocol_template(self, message_type, status, message, body):
+    def protocol_template(self, message_type="null", status="null", message="null", body='null'):
         template = {
             "type": message_type,
             "status": status,
@@ -49,18 +36,16 @@ class CommunicationUtils:
         }
         return template
 
-    def game_invitation_request(self):
-        client_request = self.protocol_template(self.message_type[0], self.status_code[0], self.null_value,
-                                                self.null_value)
+    def client_game_invitation_request(self):
+        client_request = self.protocol_template(self.message_type[0], self.status_code[0])
         return client_request
 
-    def game_invitation_response(self):
-        if self.server_busy == False:
+    def server_game_invitation_response(self):
+        if self.server_is_busy:
             server_response = self.protocol_template(self.message_type[0], self.status_code[1],
-                                                     "Server is playing the other game", self.null_value)
+                                                     "Server is playing the other game")
         else:
-            server_response = self.protocol_template(self.message_type[0], self.status_code[0], self.null_value,
-                                                     self.null_value)
+            server_response = self.protocol_template(self.message_type[0], self.status_code[0])
         return server_response
 
     def client_shot_request(self):
@@ -70,71 +55,54 @@ class CommunicationUtils:
             "row": row_input,
             "column": int(column_input)
         }
-        client_shot = self.protocol_template(self.message_type[1], self.status_code[0], self.null_value, body_template)
+        client_shot = self.protocol_template(self.message_type[1], self.status_code[0], body=str(body_template))
         return client_shot
 
-    def client_shot_result(self, client_shot_request):
-        co_ordinates = client_shot_request["body"]
-        row = co_ordinates["row"]
-        row_index = self.row_index[row]
-        column_index = co_ordinates["column"]
-        shot_success = self.protocol_template(self.message_type[1], self.status_code[0], self.null_value,
-                                              self.shot_possibilities[1])
-        shot_missed = self.protocol_template(self.message_type[1], self.status_code[0], self.null_value,
-                                             self.shot_possibilities[0])
-        ship_destroy = self.protocol_template(self.message_type[1], self.status_code[0], self.null_value,
-                                              self.shot_possibilities[2])
-        if row_index < 0 or row_index > 9 or column_index < 1 or column_index > 10:
-            error_message = self.protocol_template(self.message_type[1], self.status_code[2],
-                                                   "The shot is not within the boundaries of the board",
-                                                   self.null_value)
-            return error_message
+    def server_response_for_client_shot(self, client_shot_request):
+        coordinates = client_shot_request["body"]
+        row = coordinates["row"]
+        column = coordinates["column"]
+        shot_result = self.player_server.player_board.result_of_opponent_shot(row, column)
+        if shot_result == "MISS" or shot_result == "HIT" or shot_result == "SINKING":
+            return self.protocol_template(self.message_type[1], self.status_code[0],
+                                          body=shot_result)
         else:
-            result_message = self.protocol_template(self.message_type[1], self.status_code[0],
-                                                    "The shot within the boundaries of the board",
-                                                    body="HIT/MISS/SINKING")
-            return result_message
+            return self.protocol_template(self.message_type[1], self.status_code[2],
+                                          "The shot within the boundaries of the board")
 
-    def server_shot_request(self):
-        shot_request = self.protocol_template(self.message_type[2], self.null_value, self.null_value, self.null_value)
+    def client_requesting_server_to_shot(self):
+        shot_request = self.protocol_template(self.message_type[2])
         return shot_request
 
     def server_shot(self):
-        row = random.randint(1, 10)
+        row = self.player_server.player_board.get_row_from_index(random.randint(1, 10))
         column = random.randint(1, 10)
-        row_letter = string.ascii_uppercase[row]
         body_template = {
-            "row": row_letter,
+            "row": row,
             "column": column
         }
-        server_shot_message = self.protocol_template(self.message_type[2], self.status_code[0], self.null_value,
-                                                     body_template)
+        server_shot_message = self.protocol_template(self.message_type[2], self.status_code[0], body=str(body_template))
         return server_shot_message
 
-    def server_shot_result(self, server_shot_request):
-        co_ordinates = server_shot_request["body"]
-        row = co_ordinates["row"]
-        row_index = self.row_index[row]
-        column_index = co_ordinates["column"]
-        shot_success = self.protocol_template(self.message_type[3], self.null_value, self.null_value,
-                                              self.shot_possibilities[1])
-        shot_missed = self.protocol_template(self.message_type[3], self.null_value, self.null_value,
-                                             self.shot_possibilities[0])
-        ship_destroy = self.protocol_template(self.message_type[3], self.null_value, self.null_value,
-                                              self.shot_possibilities[2])
-        return {"type": "RESULT", "body": "HIT/MISS/SINKING"}
+    def client_response_for_server_shot(self, server_shot_request):
+        coordinates = server_shot_request["body"]
+        row = coordinates["row"]
+        column = coordinates["column"]
+        shot_result = self.player_client.player_board.result_of_opponent_shot(row, column)
+        if shot_result == "MISS" or shot_result == "HIT" or shot_result == "SINKING":
+            return self.protocol_template(self.message_type[3], body=shot_result)
+        else:
+            return self.protocol_template(self.message_type[3], body='MISS')
 
-    def server_shot_response(self):
-        server_response = self.protocol_template(self.message_type[3], self.status_code[0], self.null_value,
-                                                 self.null_value)
+    def server_acknowledgment_to_client_response_for_server_shot(self):
+        server_response = self.protocol_template(self.message_type[3], self.status_code[0])
         return server_response
 
     def unknown_command(self):
-        unknown_command_message = self.protocol_template(self.message_type[5], self.status_code[4], self.null_value,
-                                                         self.null_value)
+        unknown_command_message = self.protocol_template(self.message_type[5], self.status_code[4])
         return unknown_command_message
 
-    def ships_positions(self):
+    def client_send_final_ships_positions(self):
         ships_position_message = {"type": "BOARD",
                                   "body": {
                                       "four": "B3-B6",
@@ -145,7 +113,6 @@ class CommunicationUtils:
                                   }
         return ships_position_message
 
-    def ships_positions_server_confirmation(self):
-        confirmation = self.protocol_template(self.message_type[4], self.status_code[0], self.null_value,
-                                              self.null_value)
+    def server_confirmation_to_final_ships_positions(self):
+        confirmation = self.protocol_template(self.message_type[4], self.status_code[0])
         return confirmation
