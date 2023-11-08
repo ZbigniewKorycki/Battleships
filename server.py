@@ -1,7 +1,8 @@
 import socket
 from data_utils import DataUtils
-from communication_utils import CommunicationUtils
+from communication_utils import CommunicationUtilsServer
 from config_variables import HOST, PORT, BUFFER, INTERNET_ADDRESS_FAMILY, SOCKET_TYPE
+from player import AIPlayer
 
 
 class Server:
@@ -12,7 +13,8 @@ class Server:
         self.internet_address_family = INTERNET_ADDRESS_FAMILY
         self.socket_type = SOCKET_TYPE
         self.data_utils = DataUtils()
-        self.communication_utils = CommunicationUtils()
+        self.player = AIPlayer()
+        self.communication_utils = CommunicationUtilsServer(self.player)
         self.is_running = True
 
     def read_client_request(self, client_request_json):
@@ -30,7 +32,7 @@ class Server:
         elif client_request['type'] == 'RESULT':
             return self.communication_utils.server_acknowledgment_to_client_response_for_server_shot()
         else:
-            return self.communication_utils.unknown_command()
+            return self.communication_utils.server_response_to_unknown_command()
 
     def start(self):
         with socket.socket(self.internet_address_family, self.socket_type) as server_socket:

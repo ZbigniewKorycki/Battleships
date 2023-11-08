@@ -1,7 +1,8 @@
 import socket
 from data_utils import DataUtils
-from communication_utils import CommunicationUtils
+from communication_utils import CommunicationUtilsClient
 from config_variables import HOST, PORT, BUFFER, INTERNET_ADDRESS_FAMILY, SOCKET_TYPE
+from player import Player
 
 
 class Client:
@@ -12,7 +13,8 @@ class Client:
         self.internet_address_family = INTERNET_ADDRESS_FAMILY
         self.socket_type = SOCKET_TYPE
         self.data_utils = DataUtils()
-        self.communication_utils = CommunicationUtils()
+        self.player = Player()
+        self.communication_utils = CommunicationUtilsClient(self.player)
         self.is_running = True
 
 
