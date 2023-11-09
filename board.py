@@ -123,17 +123,17 @@ class Board:
                 if self.player_board[row][column] == ";":
                     self.player_board[row][column] = "~"
 
-    def add_result_of_player_own_shot_into_opponent_board(self, row, column, result, sunk_ship_rows_list=None,
-                                                          sunk_ship_columns_list=None):
+    def add_result_of_player_shot_into_opponent_board(self, row, column, result):
         if self.check_if_coordinate_within_board_border(row, column):
             if result == "HIT":
                 self.opponent_board[row][column] = "X"
             elif result == "MISS":
                 self.opponent_board[row][column] = "M"
             elif result == "SINKING":
-                for column in sunk_ship_columns_list:
-                    for row in sunk_ship_rows_list:
-                        self.opponent_board[row][column] = "S"
+                coordinates_of_sunk_ship = self.get_coordinates_of_sunk_ship_from_last_hit_coordinate(row, column)
+                print(coordinates_of_sunk_ship)
+                for coordinate in coordinates_of_sunk_ship:
+                    self.opponent_board[coordinate["row"]][coordinate["column"]] = "S"
         else:
             print("Shot outside board.")
 
@@ -143,7 +143,7 @@ class Board:
                 hit_ship = self.get_ship_by_coordinate(row, column)
                 if hit_ship.ship_hit() == 0:
                     self.mark_opponent_shot_result_into_player_board(row, column, "SINKING")
-                    return "SINKING", hit_ship.rows_list, hit_ship.columns_list
+                    return "SINKING"
                 else:
                     self.mark_opponent_shot_result_into_player_board(row, column, "HIT")
                     return "HIT"
@@ -174,6 +174,26 @@ class Board:
         self.remove_blocks_from_board()
         self.draw_player_board()
         self.draw_opponent_board()
+
+    def get_coordinates_of_sunk_ship_from_last_hit_coordinate(self, row, column):
+        ship_row_index = self.row_index[row]
+        coordinates_of_sunk_ship = [{"row": row, "column": column}]
+        direct_neighboring_coordinates = [
+            [[ship_row_index, column - 1], [ship_row_index, column - 2], [ship_row_index, column - 3]], #left
+            [[ship_row_index, column + 1], [ship_row_index, column + 2], [ship_row_index, column + 3]], #right
+            [[ship_row_index - 1, column], [ship_row_index - 2, column], [ship_row_index - 3, column]], #up
+            [[ship_row_index + 1, column], [ship_row_index + 2, column], [ship_row_index + 3, column]]] #down
+        for direction in direct_neighboring_coordinates:
+            for distance_apart_ship in direction:
+                neighboring_row_index, neighboring_column = distance_apart_ship
+                neighboring_row = self.get_row_from_index(neighboring_row_index)
+                if self.check_if_coordinate_within_board_border(neighboring_row, neighboring_column):
+                    if self.opponent_board[neighboring_row][neighboring_column] == "X":
+                        coordinates_of_sunk_ship.append({"row": neighboring_row,
+                                                         "column": neighboring_column})
+                    else:
+                        break
+        return coordinates_of_sunk_ship
 
 
 if __name__ == "__main__":
