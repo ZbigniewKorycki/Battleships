@@ -63,6 +63,7 @@ class Ships:
         ]
         self.ships_to_deploy_list = []
         self.ships_type_quantity_list_order = self.move_ships_from_ships_type_quantity_list_to_ships_deploy_list()
+        self.ships_coordinates_on_board = {}
 
     def move_ships_from_ships_type_quantity_list_to_ships_deploy_list(self):
         new_ships_list = []
@@ -78,3 +79,9 @@ class Ships:
         for item in ships_to_remove:
             self.ships_type_quantity_list.remove(item)
         self.ships_to_deploy_list = new_ships_list
+
+    def save_ships_coordinates(self, ship_type, ship):
+        if ship_type in ["Four-masted ship", "Three-masted ship", "Two-masted ship", "One-masted ship"]:
+            if ship_type not in self.ships_coordinates_on_board:
+                self.ships_coordinates_on_board[ship_type] = []
+            self.ships_coordinates_on_board[ship_type].append(ship)
