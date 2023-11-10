@@ -195,6 +195,9 @@ class Board:
                         break
         return coordinates_of_sunk_ship
 
+    def get_positions_of_all_ships(self):
+        return self.ships.ships_coordinates_on_board
+
 
 if __name__ == "__main__":
     board = Board()

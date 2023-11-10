@@ -77,15 +77,9 @@ class CommunicationUtilsClient(CommunicationUtils):
             return self.protocol_template(self.message_type[3], body='MISS')
 
     def client_send_final_ships_positions(self):
-        ships_position_message = {"type": "BOARD",
-                                  "body": {
-                                      "four": "B3-B6",
-                                      "three": ["E10-G10", "F3-H3"],
-                                      "two": ["A9-B9", "D7-D8", "I6-I7"],
-                                      "one": ["D2", "D5", "F7", "I9"]
-                                  }
-                                  }
-        return ships_position_message
+        final_ships_positions = self.player_client.player_board.get_positions_of_all_ships()
+        message_with_final_ships_positions = self.protocol_template(self.message_type[4], final_ships_positions)
+        return message_with_final_ships_positions
 
 
 class CommunicationUtilsServer(CommunicationUtils):
