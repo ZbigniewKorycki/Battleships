@@ -53,14 +53,41 @@ class CommunicationUtilsClient(CommunicationUtils):
         return client_request
 
     def client_shot_request(self):
-        row_input = input("CHOOSE ROW FROM 'A' TO 'J': ").capitalize()
-        column_input = input("CHOOSE COLUMN FROM '1' TO '10': ")
-        message_shot_request = {
-            "row": row_input,
-            "column": int(column_input)
+        counter_max_tries = 2
+        while counter_max_tries > 0:
+            row_input = input("CHOOSE ROW FROM 'A' TO 'J': ").capitalize()
+            column_input = input("CHOOSE COLUMN FROM '1' TO '10': ")
+            if not self.verify_client_shot_request(row_input, column_input):
+                counter_max_tries -= 1
+                if counter_max_tries == 1:
+                    print(f"Incorrect coordinates, you have last chance to give correct, row: (A-J) column: (1-10).")
+            else:
+                message_shot_request = {
+                    "row": row_input,
+                    "column": int(column_input)
+                }
+                client_shot = self.protocol_template(self.message_type[1], message_shot_request)
+                return client_shot
+        message_invalid_shot_request = {
+            "row": 'INVALID',
+            "column": 1
         }
-        client_shot = self.protocol_template(self.message_type[1], message_shot_request)
-        return client_shot
+        client_invalid_shot = self.protocol_template(self.message_type[1], message_invalid_shot_request)
+        return client_invalid_shot
+
+    def verify_client_shot_request(self, row, column):
+        # row should be string, column integer
+        try:
+            int(row)
+        except ValueError:
+            try:
+                int(column)
+            except ValueError:
+                return False
+            else:
+                return True
+        else:
+            return False
 
     def client_requesting_server_to_shot(self):
         shot_request = self.protocol_template(self.message_type[2])
