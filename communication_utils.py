@@ -55,11 +55,11 @@ class CommunicationUtilsClient(CommunicationUtils):
     def client_shot_request(self):
         row_input = input("CHOOSE ROW FROM 'A' TO 'J': ").capitalize()
         column_input = input("CHOOSE COLUMN FROM '1' TO '10': ")
-        body_template = {
+        message_shot_request = {
             "row": row_input,
             "column": int(column_input)
         }
-        client_shot = self.protocol_template(self.message_type[1], body=str(body_template))
+        client_shot = self.protocol_template(self.message_type[1], message_shot_request)
         return client_shot
 
     def client_requesting_server_to_shot(self):
@@ -110,11 +110,11 @@ class CommunicationUtilsServer(CommunicationUtils):
     def server_shot(self):
         row = self.player_server.player_board.get_row_from_index(random.randint(1, 10))
         column = random.randint(1, 10)
-        body_template = {
+        message_shot = {
             "row": row,
             "column": column
         }
-        server_shot_message = self.protocol_template(self.message_type[2], self.status_code[0], body=str(body_template))
+        server_shot_message = self.protocol_template(self.message_type[2], self.status_code[0], body=message_shot)
         return server_shot_message
 
     def server_acknowledgment_to_client_response_for_server_shot(self):
