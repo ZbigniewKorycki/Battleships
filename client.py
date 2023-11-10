@@ -19,11 +19,11 @@ class Client:
 
 
     def create_request_to_server(self, client_input):
-        if client_input == "GAME INVITATION":
+        if client_input == "GAME_INVITATION":
             return self.communication_utils.client_game_invitation_request()
         elif client_input == "SHOT":
             return self.communication_utils.client_shot_request()
-        elif client_input == "SHOT REQUEST":
+        elif client_input == "SHOT_REQUEST":
             return self.communication_utils.client_requesting_server_to_shot()
         elif client_input == "BOARD":
             return self.communication_utils.client_send_final_ships_positions()
