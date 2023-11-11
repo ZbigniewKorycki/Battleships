@@ -108,6 +108,10 @@ class CommunicationUtilsClient(CommunicationUtils):
         message_with_final_ships_positions = self.protocol_template(self.message_type[4], final_ships_positions)
         return message_with_final_ships_positions
 
+    def client_send_unknown_command(self):
+        message_unknown_command = self.protocol_template(self.message_type[5])
+        return message_unknown_command
+
 
 class CommunicationUtilsServer(CommunicationUtils):
     def __init__(self, player_server):

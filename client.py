@@ -28,7 +28,7 @@ class Client:
         elif client_input == "BOARD":
             return self.communication_utils.client_send_final_ships_positions()
         else:
-            return "INCORRECT REQUEST FROM CLIENT"
+            return self.communication_utils.client_send_unknown_command()
 
     def read_server_response(self, server_response_json, client_socket):
         server_response = self.data_utils.deserialize_json(server_response_json)
