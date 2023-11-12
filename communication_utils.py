@@ -124,6 +124,7 @@ class CommunicationUtilsServer(CommunicationUtils):
                                                      "Server is playing the other game")
         else:
             server_response = self.protocol_template(self.message_type[0], self.status_code[0])
+            self.server_is_busy = True
         return server_response
 
     def server_response_for_client_shot(self, client_shot_request):

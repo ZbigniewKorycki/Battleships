@@ -22,7 +22,10 @@ class Server:
 
     def create_response_to_client(self, client_request):
         if client_request['type'] == 'GAME_INVITATION':
-            return self.communication_utils.server_game_invitation_response()
+            response_for_game_invitation = self.communication_utils.server_game_invitation_response()
+            if response_for_game_invitation["status"] == 'OK':
+                self.player.coordinates_for_ship_add_to_board()
+            return response_for_game_invitation
         elif client_request['type'] == 'SHOT':
             return self.communication_utils.server_response_for_client_shot(client_request)
         elif client_request['type'] == 'SHOT_REQUEST':

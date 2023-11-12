@@ -40,6 +40,8 @@ class Client:
             server_response_json = client_socket.recv(self.buffer)
             server_response = self.data_utils.deserialize_json(server_response_json)
             print(server_response)
+        if server_response['type'] == "GAME_INVITATION" and server_response['status'] == 'OK':
+            self.player.coordinates_for_ship_add_to_board()
 
     def start(self):
         with socket.socket(self.internet_address_family, self.socket_type) as client_socket:
