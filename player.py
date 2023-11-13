@@ -2,6 +2,7 @@ import string
 import random
 from ships_logic import Ship, Ships
 from board import Board
+from custom_exception import CustomException
 
 
 
@@ -14,6 +15,7 @@ class Player:
         while self.ships.ships_to_deploy_list:
             try:
                 for ship_type in self.ships.ships_to_deploy_list:
+                    print(self.ships.ships_to_deploy_list, 1)
                     row_input = self.row_input(ship_type)
                     if row_input[0] == True:
                         row = row_input[1]
@@ -37,8 +39,12 @@ class Player:
                     self.player_board.add_ship(ship)
                     self.ships.save_ships_coordinates(ship_type, ship)
                     self.ships.ships_to_deploy_list.remove(ship_type)
+                    print(self.ships.ships_to_deploy_list, 2)
             except KeyError:
                 print("Ship outside the board, try again")
+                continue
+            except CustomException as e:
+                print(e)
                 continue
 
     def row_input(self, ship_type):
@@ -82,47 +88,46 @@ class Player:
                     orientation = "vertical"
                 return (True, orientation)
             else:
-                error_message = "Orientation have to be 'H' or 'V'"
+                error_message = "Orientation has to be 'H' or 'V'"
                 return (False, error_message)
         elif ship_type == "One-masted ship":
             orientation = "horizontal"
             return (True, orientation)
 
-
-class AIPlayer(Player):
-    def coordinates_for_ship_add_to_board(self):
-            while self.ships.ships_to_deploy_list:
-                try:
-                    for ship_type in self.ships.ships_to_deploy_list:
-                        row = self.row_input()
-                        column = self.column_input()
-                        size = self.ship_size_establish(ship_type)
-                        orientation = self.orientation_input(ship_type)
-                        ship = Ship(row, column, size, orientation)
-                        self.player_board.add_ship(ship)
-                        self.ships.save_ships_coordinates(ship_type, ship)
-                        self.ships.ships_to_deploy_list.remove(ship_type)
-                except KeyError:
-                    continue
-
-    def row_input(self):
-        row_index = random.randint(0, 9)
-        row = string.ascii_uppercase[row_index]
-        return row
-
-    def column_input(self):
-        column = random.randint(1, 10)
-        return column
-
-    def orientation_input(self, ship_type):
-        if ship_type != "One-masted ship":
-            available_options = ["H", "V"]
-            orientation = random.choice(available_options)
-            if orientation == "H":
-                orientation = "horizontal"
-            elif orientation == "V":
-                orientation = "vertical"
-            return orientation
-        elif ship_type == "One-masted ship":
-            orientation = "horizontal"
-            return orientation
+# class AIPlayer(Player):
+#     def coordinates_for_ship_add_to_board(self):
+#             while self.ships.ships_to_deploy_list:
+#                 try:
+#                     for ship_type in self.ships.ships_to_deploy_list:
+#                         row = self.row_input()
+#                         column = self.column_input()
+#                         size = self.ship_size_establish(ship_type)
+#                         orientation = self.orientation_input(ship_type)
+#                         ship = Ship(row, column, size, orientation)
+#                         self.player_board.add_ship(ship)
+#                         self.ships.save_ships_coordinates(ship_type, ship)
+#                         self.ships.ships_to_deploy_list.remove(ship_type)
+#                 except KeyError:
+#                     continue
+#
+#     def row_input(self):
+#         row_index = random.randint(0, 9)
+#         row = string.ascii_uppercase[row_index]
+#         return row
+#
+#     def column_input(self):
+#         column = random.randint(1, 10)
+#         return column
+#
+#     def orientation_input(self, ship_type):
+#         if ship_type != "One-masted ship":
+#             available_options = ["H", "V"]
+#             orientation = random.choice(available_options)
+#             if orientation == "H":
+#                 orientation = "horizontal"
+#             elif orientation == "V":
+#                 orientation = "vertical"
+#             return orientation
+#         elif ship_type == "One-masted ship":
+#             orientation = "horizontal"
+#             return orientation
