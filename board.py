@@ -1,5 +1,6 @@
 import string
 from ships_logic import Ships
+from custom_exception import CustomException
 
 
 class Board:
@@ -59,7 +60,7 @@ class Board:
 
             return self.draw_player_board()
         else:
-            print("There`s another ship in area, or ship is not within board border try again")
+            raise CustomException("There`s another ship in area")
 
     def block_ship_near_fields(self, ship):
         if ship.orientation == "horizontal":
