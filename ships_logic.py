@@ -85,3 +85,8 @@ class Ships:
             if ship_type not in self.ships_coordinates_on_board:
                 self.ships_coordinates_on_board[ship_type] = []
             self.ships_coordinates_on_board[ship_type].append(ship)
+
+    def check_ship_durability(self, ship):
+        if ship.ship_durability == 0:
+            self.destroyed_ships_list.append(ship)
+            self.ships_list.remove(ship)
