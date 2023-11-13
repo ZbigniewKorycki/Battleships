@@ -73,10 +73,10 @@ class Database:
         self.execute_sql_query(query, (game_datetime, ))
 
     def add_board_to_db(self, game_number, board, board_number):
-        # plansza pierwsza to oryginalne ustawienie statków serwera, wraz z zaznaczonymi strzałami przeciwnika
-        # plansza druga to strzały serwera, wraz z zaznaczonymi trafieniami
-        # plansza trzecia to oryginalne ustawienie statków, przeciwnika wraz z zaznaczonymi strzałami serwera
-        # plansza czwarta to strzały klienta, wraz z zaznaczonymi trafieniami
+        # The first board represents the server's original ship placement along with marked opponent shots.
+        # The second board displays the server's shots, including marked hits.
+        # The third board shows the opponent's original ship placement with marked server shots.
+        # The fourth board illustrates the client's shots, including marked hits.
         board_json_serialize = json.dumps(board)
         game_id_query = "SELECT game_id FROM games " \
                         "WHERE game_id = ?"
