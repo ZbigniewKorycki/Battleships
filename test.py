@@ -7,6 +7,6 @@ import random
 # player = Player()
 # player.coordinates_for_ship_add_to_board()
 
-aiplayer = AIPlayer()
-aiplayer.coordinates_for_ship_add_to_board()
+# aiplayer = AIPlayer()
+# aiplayer.coordinates_for_ship_add_to_board()
 
