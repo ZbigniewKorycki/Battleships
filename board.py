@@ -93,7 +93,7 @@ class Board:
     def check_if_coordinates_accessible_to_add_ship(self, ship_rows_list, ship_columns_list):
         for row in ship_rows_list:
             for column in ship_columns_list:
-                if self.player_board[row][column] == ";":
+                if self.player_board[row][column] == ";" or self.player_board[row][column] == "O":
                     return False
                 if not self.check_if_coordinate_within_board_border(row, column):
                     return False
