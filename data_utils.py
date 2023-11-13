@@ -58,13 +58,13 @@ class Database:
         self.execute_sql_query(create_game_table_query)
 
     def create_board_table(self):
-        create_board_table_query = f""" CREATE TABLE IF NOT EXISTS boards(
-                                         board_id INTEGER PRIMARY KEY,
-                                         game_id INTEGER NOT NULL,
-                                         board_status TEXT NOT NULL,
-                                         board_number_in_order INTEGER NOT NULL,
-                                         FOREIGN KEY (game_id) REFERENCES games (game_id) ON DELETE CASCADE
-                                         ); """
+        create_board_table_query = """ CREATE TABLE IF NOT EXISTS boards(
+                                       board_id INTEGER PRIMARY KEY,
+                                       game_id INTEGER NOT NULL,
+                                       board_status TEXT NOT NULL,
+                                       board_number_in_order INTEGER NOT NULL,
+                                       FOREIGN KEY (game_id) REFERENCES games (game_id) ON DELETE CASCADE
+                                       ); """
         self.execute_sql_query(create_board_table_query)
 
     def add_game_to_db(self, game_datetime):
@@ -81,8 +81,8 @@ class Database:
         game_id_query = "SELECT game_id FROM games " \
                         "WHERE game_id = ?"
         game_id = self.execute_sql_query(game_id_query, (game_number, ), fetch_option = "fetchone")[0]
-        query = f"INSERT INTO boards (game_id, board_status, board_number)" \
-                f"VALUES (?, ?, ?)"
+        query = "INSERT INTO boards (game_id, board_status, board_number)" \
+                "VALUES (?, ?, ?)"
         self.execute_sql_query(query, (game_id, board_json_serialize, board_number))
 
     def show_all_games(self):
