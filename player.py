@@ -107,7 +107,7 @@ class Player:
         else:
             return (row, column)
 
-    def show_boards_status_for_archived_game(self, time_in_sec_between_boards):
+    def show_boards_status_for_archived_game(self):
         all_games = self.database_service.show_all_games()
         for game in all_games:
             print(game)
@@ -118,11 +118,13 @@ class Player:
             else:
                 game_id = int(game_number)
                 boards = self.database_service.show_board_status_for_game(game_id)
+                time_in_sec = input("How fast you want to watch this game ? (type seconds between next boards): ")
+                int_time_in_sec = int(time_in_sec)
                 for board in boards:
                     print(board)
-                    time.sleep(time_in_sec_between_boards)
+                    time.sleep(int_time_in_sec)
         except ValueError:
-            print(f"Game number has to be an integer in range: {len(all_games)}")
+            print(f"Game number has to be an integer in range: {len(all_games)} / Type time in seconds.")
 
 
 class AIPlayer(Player):
