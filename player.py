@@ -94,40 +94,58 @@ class Player:
             orientation = "horizontal"
             return (True, orientation)
 
-# class AIPlayer(Player):
-#     def coordinates_for_ship_add_to_board(self):
-#             while self.ships.ships_to_deploy_list:
-#                 try:
-#                     for ship_type in self.ships.ships_to_deploy_list:
-#                         row = self.row_input()
-#                         column = self.column_input()
-#                         size = self.ship_size_establish(ship_type)
-#                         orientation = self.orientation_input(ship_type)
-#                         ship = Ship(row, column, size, orientation)
-#                         self.player_board.add_ship(ship)
-#                         self.ships.save_ships_coordinates(ship_type, ship)
-#                         self.ships.ships_to_deploy_list.remove(ship_type)
-#                 except KeyError:
-#                     continue
-#
-#     def row_input(self):
-#         row_index = random.randint(0, 9)
-#         row = string.ascii_uppercase[row_index]
-#         return row
-#
-#     def column_input(self):
-#         column = random.randint(1, 10)
-#         return column
-#
-#     def orientation_input(self, ship_type):
-#         if ship_type != "One-masted ship":
-#             available_options = ["H", "V"]
-#             orientation = random.choice(available_options)
-#             if orientation == "H":
-#                 orientation = "horizontal"
-#             elif orientation == "V":
-#                 orientation = "vertical"
-#             return orientation
-#         elif ship_type == "One-masted ship":
-#             orientation = "horizontal"
-#             return orientation
+    def shot_input(self):
+        print("Set coordinates for shot:")
+        row = input("Row (from 'A' to 'J'): ").capitalize()
+        column = input("Column (from 1 to 10): ")
+        if row not in string.ascii_uppercase[:10] or column not in range(1, 11):
+            print("Row or column outside the index, try again")
+        else:
+            return (row, column)
+
+
+class AIPlayer(Player):
+    def coordinates_for_ship_add_to_board(self):
+            while self.ships.ships_to_deploy_list:
+                try:
+                    for ship_type in self.ships.ships_to_deploy_list:
+                        row = self.row_input()
+                        column = self.column_input()
+                        size = self.ship_size_establish(ship_type)
+                        orientation = self.orientation_input(ship_type)
+                        ship = Ship(row, column, size, orientation)
+                        self.player_board.add_ship(ship)
+                        self.ships.save_ships_coordinates(ship_type, ship)
+                        self.ships.ships_to_deploy_list.remove(ship_type)
+                except KeyError:
+                    continue
+                except CustomException:
+                    continue
+
+    def row_input(self):
+        row_index = random.randint(0, 9)
+        row = string.ascii_uppercase[row_index]
+        return row
+
+    def column_input(self):
+        column = random.randint(1, 10)
+        return column
+
+    def orientation_input(self, ship_type):
+        if ship_type != "One-masted ship":
+            available_options = ["H", "V"]
+            orientation = random.choice(available_options)
+            if orientation == "H":
+                orientation = "horizontal"
+            elif orientation == "V":
+                orientation = "vertical"
+            return orientation
+        elif ship_type == "One-masted ship":
+            orientation = "horizontal"
+            return orientation
+
+    def shot_input(self):
+        row_index = random.randint(0, 9)
+        row = string.ascii_uppercase[row_index]
+        column = random.randint(1, 10)
+        return (row, column)
