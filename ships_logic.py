@@ -84,7 +84,7 @@ class Ships:
         if ship_type in ["Four-masted ship", "Three-masted ship", "Two-masted ship", "One-masted ship"]:
             if ship_type not in self.ships_coordinates_on_board:
                 self.ships_coordinates_on_board[ship_type] = []
-            self.ships_coordinates_on_board[ship_type].append(ship)
+            self.ships_coordinates_on_board[ship_type].append(str(ship))
 
     def check_ship_durability(self, ship):
         if ship.ship_durability == 0:
