@@ -43,6 +43,9 @@ class Client:
         if server_response['type'] == "GAME_INVITATION" and server_response['status'] == 'OK':
             self.player.coordinates_for_ship_add_to_board()
 
+    def invite_server(self):
+        self.communication_utils.protocol_template(message_type = self.communication_utils.message_type[0])
+
     def start(self):
         with socket.socket(self.internet_address_family, self.socket_type) as client_socket:
             client_socket.connect((self.host, self.port))
