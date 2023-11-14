@@ -107,9 +107,9 @@ class Board:
             return False
 
     def get_row_from_index(self, index):
-        for key, value in self.row_index.items():
+        for row, value in self.row_index.items():
             if index == value:
-                return key
+                return row
         return False
 
     def verify_adding_block_to_board(self, row, column):
