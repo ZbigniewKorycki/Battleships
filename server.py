@@ -13,8 +13,8 @@ class Server:
         self.internet_address_family = INTERNET_ADDRESS_FAMILY
         self.socket_type = SOCKET_TYPE
         self.data_utils = DataUtils()
-        self.player = AIPlayer()
-        self.communication_utils = CommunicationUtilsServer(self.player)
+        self.ai_player = AIPlayer()
+        self.communication_utils = CommunicationUtilsServer(self.ai_player)
         self.is_running = True
 
     def read_client_request(self, client_request_json):
@@ -24,7 +24,7 @@ class Server:
         if client_request['type'] == 'GAME_INVITATION':
             response_for_game_invitation = self.communication_utils.server_game_invitation_response()
             if response_for_game_invitation["status"] == 'OK':
-                self.player.coordinates_for_ship_add_to_board()
+                self.ai_player.coordinates_for_ship_add_to_board()
             return response_for_game_invitation
         elif client_request['type'] == 'SHOT':
             return self.communication_utils.server_response_for_client_shot(client_request)
