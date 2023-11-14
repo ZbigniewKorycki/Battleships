@@ -9,7 +9,7 @@ class Board:
         self.size_columns = size_columns
         self.player_board = self.create_starting_board()
         self.opponent_board = self.create_starting_board()
-        self.draw_player_board()
+        # self.draw_player_board()
         self.row_index = {
             "A": 1,
             "B": 2,

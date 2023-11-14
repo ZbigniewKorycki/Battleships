@@ -19,7 +19,6 @@ class Player:
         while self.ships.ships_to_deploy_list:
             try:
                 for ship_type in self.ships.ships_to_deploy_list:
-                    print(self.ships.ships_to_deploy_list, 1)
                     row_input = self.row_input(ship_type)
                     if row_input[0] == True:
                         row = row_input[1]
