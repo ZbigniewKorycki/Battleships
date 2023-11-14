@@ -40,3 +40,17 @@ class TestBoard(unittest.TestCase):
         self.assertFalse(coordinate_9)
         self.assertFalse(coordinate_10)
         self.assertFalse(coordinate_11)
+
+    def test_get_row_from_index(self):
+        row_1 = self.board.get_row_from_index(1)
+        row_2 = self.board.get_row_from_index(10)
+        row_3 = self.board.get_row_from_index(0)
+        row_4 = self.board.get_row_from_index(11)
+        row_5 = self.board.get_row_from_index("A")
+        row_6 = self.board.get_row_from_index("J")
+        self.assertEqual("A", row_1)
+        self.assertEqual("J", row_2)
+        self.assertIs(row_3, None)
+        self.assertIs(row_4, None)
+        self.assertIs(row_5, None)
+        self.assertIs(row_6, None)
