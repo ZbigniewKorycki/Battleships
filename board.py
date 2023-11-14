@@ -110,7 +110,7 @@ class Board:
         for row, value in self.row_index.items():
             if index == value:
                 return row
-        return False
+        return None
 
     def verify_adding_block_to_board(self, row, column):
         if self.check_if_coordinate_within_board_border(row, column):
