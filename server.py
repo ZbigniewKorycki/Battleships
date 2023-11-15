@@ -46,14 +46,16 @@ class Server:
                 client_request_json = client_socket.recv(self.buffer)
                 client_request = self.read_client_request(client_request_json)
                 print(client_request)
-                response_to_client = self.create_response_to_client(client_request)
-                response_to_client_json = self.data_utils.serialize_to_json(response_to_client)
-                client_socket.sendall(response_to_client_json)
-
-                # put there condition on which server_socket will be stopped
-                # self.stop()
+                if client_request == "STOP":
+                    self.stop(server_socket)
+                else:
+                    response_to_client = self.create_response_to_client(client_request)
+                    response_to_client_json = self.data_utils.serialize_to_json(response_to_client)
+                    client_socket.sendall(response_to_client_json)
+                    self.ai_player.player_board.prepare_board_for_game_start()
 
     def stop(self, server_socket):
+        print("Server`s shutting down...")
         self.is_running = False
         server_socket.close()
 
