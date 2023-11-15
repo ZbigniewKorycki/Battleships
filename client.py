@@ -18,7 +18,6 @@ class Client:
         self.communication_utils = CommunicationUtilsClient(self.player)
         self.is_running = True
 
-
     def create_request_to_server(self, client_input):
         if client_input == "START":
             return self.communication_utils.client_game_invitation_request()
@@ -43,9 +42,16 @@ class Client:
             server_response_json = client_socket.recv(self.buffer)
             server_response = self.data_utils.deserialize_json(server_response_json)
             print(server_response)
+        if server_response['type'] == "SHOT" and server_response['status'] == "OK":
+            row_from_last_shot = self.communication_utils.last_shot["row"]
+            column_from_last_shot = self.communication_utils.last_shot["column"]
+            result = server_response["body"]
+            self.player.player_board.add_result_of_player_shot_into_opponent_board(row_from_last_shot,
+                                                                                   column_from_last_shot, result)
         if server_response['type'] == "GAME_INVITATION" and server_response['status'] == 'OK':
             # self.player.coordinates_for_ship_add_to_board()
-            self.ai_player.coordinates_for_ship_add_to_board()
+            self.player.automatic_coordinates_for_ship_add_to_board()
+            self.player.player_board.prepare_board_for_game_start()
 
     def start(self):
         with socket.socket(self.internet_address_family, self.socket_type) as client_socket:
@@ -61,8 +67,8 @@ class Client:
                     client_socket.sendall(client_request_json)
                     server_response_json = client_socket.recv(self.buffer)
                     self.read_server_response(server_response_json, client_socket)
-                    #self.player.player_board.draw_player_board()
-                    self.ai_player.player_board.prepare_board_for_game_start()
+                    # self.player.player_board.draw_player_board()
+                    self.player.player_board.reload_boards()
 
     def stop(self, client_socket, client_input):
         client_request = self.create_request_to_server(client_input)

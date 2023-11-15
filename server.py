@@ -25,6 +25,7 @@ class Server:
             response_for_game_invitation = self.communication_utils.server_game_invitation_response()
             if response_for_game_invitation["status"] == 'OK':
                 self.ai_player.coordinates_for_ship_add_to_board()
+                self.ai_player.player_board.prepare_board_for_game_start()
             return response_for_game_invitation
         elif client_request['type'] == 'SHOT':
             return self.communication_utils.server_response_for_client_shot(client_request)
@@ -57,7 +58,7 @@ class Server:
                     response_to_client = self.create_response_to_client(client_request)
                     response_to_client_json = self.data_utils.serialize_to_json(response_to_client)
                     client_socket.sendall(response_to_client_json)
-                    self.ai_player.player_board.prepare_board_for_game_start()
+                    self.ai_player.player_board.reload_boards()
 
     def stop(self, server_socket):
         print("Server`s shutting down...")

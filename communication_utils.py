@@ -5,6 +5,7 @@ class CommunicationUtils:
 
     def __init__(self):
         self.server_is_busy = False
+        self.last_shot = None
         self.message_type = {
             0: "GAME_INVITATION",
             1: "SHOT",
@@ -71,12 +72,14 @@ class CommunicationUtilsClient(CommunicationUtils):
                     "column": int(column_input)
                 }
                 client_shot = self.protocol_template(self.message_type[1], message_shot_request)
+                self.last_shot = message_shot_request
                 return client_shot
         message_invalid_shot_request = {
             "row": 'INVALID',
             "column": 1
         }
         client_invalid_shot = self.protocol_template(self.message_type[1], message_invalid_shot_request)
+        self.last_shot = message_invalid_shot_request
         return client_invalid_shot
 
     def verify_client_shot_request(self, row, column):
@@ -121,7 +124,6 @@ class CommunicationUtilsServer(CommunicationUtils):
     def __init__(self, player_server):
         super().__init__()
         self.player_server = player_server
-        self.last_shot = None
 
     def server_game_invitation_response(self):
         if self.server_is_busy:

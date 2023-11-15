@@ -178,6 +178,10 @@ class Board:
         self.draw_player_board()
         self.draw_opponent_board()
 
+    def reload_boards(self):
+        self.draw_player_board()
+        self.draw_opponent_board()
+
     def get_coordinates_of_sunk_ship_from_last_hit_coordinate(self, row, column):
         ship_row_index = self.row_index[row]
         coordinates_of_sunk_ship = [{"row": row, "column": column}]
