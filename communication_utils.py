@@ -52,6 +52,10 @@ class CommunicationUtilsClient(CommunicationUtils):
         client_request = self.protocol_template(self.message_type[0])
         return client_request
 
+    def stop_client_and_server(self):
+        stop_request = "STOP"
+        return stop_request
+
     def client_shot_request(self):
         counter_max_tries = 2
         while counter_max_tries > 0:
