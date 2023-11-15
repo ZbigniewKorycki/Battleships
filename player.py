@@ -42,7 +42,6 @@ class Player:
                     self.player_board.add_ship(ship)
                     self.ships.save_ships_coordinates(ship_type, ship)
                     self.ships.ships_to_deploy_list.remove(ship_type)
-                    print(self.ships.ships_to_deploy_list, 2)
             except KeyError:
                 print("Ship outside the board, try again")
                 continue
