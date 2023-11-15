@@ -121,6 +121,7 @@ class CommunicationUtilsServer(CommunicationUtils):
     def __init__(self, player_server):
         super().__init__()
         self.player_server = player_server
+        self.last_shot = None
 
     def server_game_invitation_response(self):
         if self.server_is_busy:
@@ -150,6 +151,7 @@ class CommunicationUtilsServer(CommunicationUtils):
             "row": row,
             "column": column
         }
+        self.last_shot = message_shot
         server_shot_message = self.protocol_template(self.message_type[2], self.status_code[0], body=message_shot)
         return server_shot_message
 

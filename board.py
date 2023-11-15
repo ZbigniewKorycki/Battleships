@@ -143,15 +143,17 @@ class Board:
             if self.player_board[row][column] == "O":
                 hit_ship = self.get_ship_by_coordinate(row, column)
                 if hit_ship.ship_hit() == 0:
-                    self.mark_opponent_shot_result_into_player_board(row, column, "SINKING")
-                    return "SINKING"
+                    result = "SINKING"
+                    self.mark_opponent_shot_result_into_player_board(row, column, result)
+                    return result
                 else:
-                    self.mark_opponent_shot_result_into_player_board(row, column, "HIT")
-                    return "HIT"
-
+                    result = "HIT"
+                    self.mark_opponent_shot_result_into_player_board(row, column, result)
+                    return result
             elif self.player_board[row][column] == "~" or self.player_board[row][column] == "X" or self.player_board[row][column] == ";":
-                self.mark_opponent_shot_result_into_player_board(row, column, "MISS")
-                return "MISS"
+                result = "MISS"
+                self.mark_opponent_shot_result_into_player_board(row, column, result)
+                return result
         else:
             return "The shot is not within the boundaries of the board."
 
@@ -174,7 +176,7 @@ class Board:
     def prepare_board_for_game_start(self):
         self.remove_blocks_from_board()
         self.draw_player_board()
-        # self.draw_opponent_board()
+        self.draw_opponent_board()
 
     def get_coordinates_of_sunk_ship_from_last_hit_coordinate(self, row, column):
         ship_row_index = self.row_index[row]
