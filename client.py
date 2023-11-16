@@ -1,4 +1,6 @@
 import socket
+
+import player
 from data_utils import DataUtils
 from communication_utils import CommunicationUtilsClient
 from config_variables import HOST, PORT, BUFFER, INTERNET_ADDRESS_FAMILY, SOCKET_TYPE
@@ -53,6 +55,25 @@ class Client:
             self.ai_player.coordinates_for_ship_add_to_board()
             self.ai_player.player_board.prepare_board_for_game_start()
 
+    def automation_game(self, client_socket):
+        sunk_signs_quantity = 0
+        while len(self.player.ships.destroyed_ships_list) < 10 or sunk_signs_quantity < 20:
+            count_sunk_signs = sum([1 for key_outer, inner_dict in self.ai_player.player_board.opponent_board.items()
+                                    for key_inner, value in inner_dict.items() if value == "S"])
+            self.ai_player.player_board.reload_boards()
+            client_request_shot = self.create_request_to_server("SHOT")
+            client_request_shot_json = self.data_utils.serialize_to_json(client_request_shot)
+            client_socket.sendall(client_request_shot_json)
+            server_response_shot_json = client_socket.recv(self.buffer)
+            self.read_server_response(server_response_shot_json, client_socket)
+            client_request_shot_request = self.create_request_to_server("SHOT_REQUEST")
+            client_request_shot_request_json = self.data_utils.serialize_to_json(client_request_shot_request)
+            client_socket.sendall(client_request_shot_request_json)
+            server_response_json = client_socket.recv(self.buffer)
+            self.read_server_response(server_response_json, client_socket)
+            sunk_signs_quantity = count_sunk_signs
+            print(sunk_signs_quantity)
+
     def start(self):
         with socket.socket(self.internet_address_family, self.socket_type) as client_socket:
             client_socket.connect((self.host, self.port))
@@ -68,7 +89,7 @@ class Client:
                     server_response_json = client_socket.recv(self.buffer)
                     self.read_server_response(server_response_json, client_socket)
                     # self.player.player_board.draw_player_board()
-                    self.ai_player.player_board.reload_boards()
+                    self.automation_game(client_socket)
 
     def stop(self, client_socket, client_input):
         client_request = self.create_request_to_server(client_input)
