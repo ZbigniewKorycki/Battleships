@@ -17,7 +17,7 @@ class Client:
         self.data_utils = DataUtils()
         self.player = Player()
         self.ai_player = AIPlayer()
-        self.communication_utils = CommunicationUtilsClient(self.ai_player)
+        self.communication_utils = CommunicationUtilsClient(self.player)
         self.is_running = True
 
     def create_request_to_server(self, client_input):
