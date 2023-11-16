@@ -8,7 +8,6 @@ from data_utils import Database
 from config_variables import db_file
 
 
-
 class Player:
     def __init__(self):
         self.ships = Ships()
@@ -82,7 +81,8 @@ class Player:
 
     def orientation_input(self, ship_type):
         if ship_type != "One-masted ship":
-            orientation_input = input(f"In which direction would you set '{ship_type}' ? Put 'H' for horizontal, 'V' for vertical: ").capitalize()
+            orientation_input = input(
+                f"In which direction would you set '{ship_type}' ? Put 'H' for horizontal, 'V' for vertical: ").capitalize()
             if orientation_input in ["H", "V"]:
                 if orientation_input == "H":
                     orientation = "horizontal"
@@ -124,23 +124,29 @@ class Player:
         except ValueError:
             print(f"Game number has to be an integer in range: {len(all_games)} / Type time in seconds.")
 
+
 class AIPlayer(Player):
+
+    def __init__(self):
+        super().__init__()
+        self.shots_to_take = self.get_starting_possible_shots()
+
     def coordinates_for_ship_add_to_board(self):
-            while self.ships.ships_to_deploy_list:
-                try:
-                    for ship_type in self.ships.ships_to_deploy_list:
-                        row = self.row_input()
-                        column = self.column_input()
-                        size = self.ship_size_establish(ship_type)
-                        orientation = self.orientation_input(ship_type)
-                        ship = Ship(row, column, size, orientation)
-                        self.player_board.add_ship(ship)
-                        self.ships.save_ships_coordinates(ship_type, ship)
-                        self.ships.ships_to_deploy_list.remove(ship_type)
-                except KeyError:
-                    continue
-                except CustomException:
-                    continue
+        while self.ships.ships_to_deploy_list:
+            try:
+                for ship_type in self.ships.ships_to_deploy_list:
+                    row = self.row_input()
+                    column = self.column_input()
+                    size = self.ship_size_establish(ship_type)
+                    orientation = self.orientation_input(ship_type)
+                    ship = Ship(row, column, size, orientation)
+                    self.player_board.add_ship(ship)
+                    self.ships.save_ships_coordinates(ship_type, ship)
+                    self.ships.ships_to_deploy_list.remove(ship_type)
+            except KeyError:
+                continue
+            except CustomException:
+                continue
 
     def row_input(self):
         row_index = random.randint(0, 9)
@@ -169,3 +175,9 @@ class AIPlayer(Player):
         row = string.ascii_uppercase[row_index]
         column = random.randint(1, 10)
         return (row, column)
+
+    def get_starting_possible_shots(self):
+        shots_to_take = {"priority": [],
+                         "normal": [{"row": row, "column": column}
+                                    for row in string.ascii_uppercase[:10] for column in range(1, 11)]}
+        return shots_to_take
