@@ -208,6 +208,24 @@ class Board:
                         break
         return coordinates_of_sunk_ship
 
+    def get_neighboring_coordinates(self, row, column):
+        neighboring_coordinates = []
+        ship_row_index = self.row_index[row]
+        neighboring_coordinates_as_indexes = [[ship_row_index, column - 1], [ship_row_index, column + 1], [ship_row_index - 1, column],[ship_row_index + 1, column]]
+        for coordinate_as_index in neighboring_coordinates_as_indexes:
+            neighboring_row_index, neighboring_column = coordinate_as_index
+            neighboring_row = self.get_row_from_index(neighboring_row_index)
+            if self.check_if_coordinate_within_board_border(neighboring_row, neighboring_column):
+                neighboring_coordinate = {
+                    "row": neighboring_row,
+                    "column": neighboring_column
+                }
+                neighboring_coordinates.append(neighboring_coordinate)
+        print(neighboring_coordinates)
+        return neighboring_coordinates
+
+
+
     def get_positions_of_all_ships(self):
         return self.ships.ships_coordinates_on_board
 
