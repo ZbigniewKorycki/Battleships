@@ -48,19 +48,15 @@ class Client:
             row_from_last_shot = self.communication_utils.last_shot["row"]
             column_from_last_shot = self.communication_utils.last_shot["column"]
             result = server_response["body"]
-            self.ai_player.player_board.add_result_of_player_shot_into_opponent_board(row_from_last_shot,
+            self.player.player_board.add_result_of_player_shot_into_opponent_board(row_from_last_shot,
                                                                                    column_from_last_shot, result)
         if server_response['type'] == "GAME_INVITATION" and server_response['status'] == 'OK':
-            # self.player.coordinates_for_ship_add_to_board()
-            self.ai_player.coordinates_for_ship_add_to_board()
-            self.ai_player.player_board.prepare_board_for_game_start()
+            self.player.coordinates_for_ship_add_to_board()
+            self.player.player_board.prepare_board_for_game_start()
 
     def automation_game(self, client_socket):
-        sunk_signs_quantity = 0
-        while len(self.player.ships.destroyed_ships_list) < 10 or sunk_signs_quantity < 20:
-            count_sunk_signs = sum([1 for key_outer, inner_dict in self.ai_player.player_board.opponent_board.items()
-                                    for key_inner, value in inner_dict.items() if value == "S"])
-            self.ai_player.player_board.reload_boards()
+        while True:
+            self.player.player_board.reload_boards()
             client_request_shot = self.create_request_to_server("SHOT")
             client_request_shot_json = self.data_utils.serialize_to_json(client_request_shot)
             client_socket.sendall(client_request_shot_json)
@@ -71,8 +67,10 @@ class Client:
             client_socket.sendall(client_request_shot_request_json)
             server_response_json = client_socket.recv(self.buffer)
             self.read_server_response(server_response_json, client_socket)
-            sunk_signs_quantity = count_sunk_signs
-            print(sunk_signs_quantity)
+            count_sunk_signs = sum([1 for key_outer, inner_dict in self.player.player_board.opponent_board.items()
+                        for key_inner, value in inner_dict.items() if value == "S"])
+            if count_sunk_signs == 20:
+                break
 
     def start(self):
         with socket.socket(self.internet_address_family, self.socket_type) as client_socket:
@@ -88,7 +86,6 @@ class Client:
                     client_socket.sendall(client_request_json)
                     server_response_json = client_socket.recv(self.buffer)
                     self.read_server_response(server_response_json, client_socket)
-                    # self.player.player_board.draw_player_board()
                     self.automation_game(client_socket)
 
     def stop(self, client_socket, client_input):
