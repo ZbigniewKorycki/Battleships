@@ -150,8 +150,12 @@ class Board:
                     result = "HIT"
                     self.mark_opponent_shot_result_into_player_board(row, column, result)
                     return result
-            elif self.player_board[row][column] == "~" or self.player_board[row][column] == "X" or self.player_board[row][column] == ";":
+            elif self.player_board[row][column] == "~" or self.player_board[row][column] == ";":
                 result = "MISS"
+                self.mark_opponent_shot_result_into_player_board(row, column, result)
+                return result
+            elif self.player_board[row][column] == "X":
+                result = "REPEATED SHOT"
                 self.mark_opponent_shot_result_into_player_board(row, column, result)
                 return result
         else:
@@ -167,6 +171,8 @@ class Board:
             self.player_board[row][column] = "M"
         elif result == "HIT":
             self.player_board[row][column] = "X"
+        elif result == "REPEATED SHOT":
+            pass
         elif result == "SINKING":
             sunk_ship = self.get_ship_by_coordinate(row, column)
             for column in sunk_ship.columns_list:
