@@ -23,6 +23,7 @@ class Board:
             "J": 10
         }
         self.ships = Ships()
+        self.possible_shots_for_ai = self.get_starting_possible_shots()
 
     def create_starting_board(self):
         starting_board = {
@@ -221,13 +222,18 @@ class Board:
                     "column": neighboring_column
                 }
                 neighboring_coordinates.append(neighboring_coordinate)
-        print(neighboring_coordinates)
         return neighboring_coordinates
 
 
 
     def get_positions_of_all_ships(self):
         return self.ships.ships_coordinates_on_board
+
+    def get_starting_possible_shots(self):
+        shots_to_take = {"priority": [],
+                         "normal": [{"row": row, "column": column}
+                                    for row in self.row_index for column in range(1, self.size_columns + 1)]}
+        return shots_to_take
 
 
 if __name__ == "__main__":

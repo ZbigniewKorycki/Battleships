@@ -127,10 +127,6 @@ class Player:
 
 class AIPlayer(Player):
 
-    def __init__(self):
-        super().__init__()
-        self.shots_to_take = self.get_starting_possible_shots()
-
     def coordinates_for_ship_add_to_board(self):
         while self.ships.ships_to_deploy_list:
             try:
@@ -175,9 +171,3 @@ class AIPlayer(Player):
         row = string.ascii_uppercase[row_index]
         column = random.randint(1, 10)
         return (row, column)
-
-    def get_starting_possible_shots(self):
-        shots_to_take = {"priority": [],
-                         "normal": [{"row": row, "column": column}
-                                    for row in string.ascii_uppercase[:10] for column in range(1, 11)]}
-        return shots_to_take
