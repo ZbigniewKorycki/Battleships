@@ -209,8 +209,8 @@ class Board:
                         break
         return coordinates_of_sunk_ship
 
-    def get_neighboring_coordinates(self, row, column):
-        neighboring_coordinates = []
+    def get_four_world_directions_neighboring_coordinates_of_coordinate(self, row, column):
+        four_directions_neighboring_coordinates = []
         ship_row_index = self.row_index[row]
         neighboring_coordinates_as_indexes = [[ship_row_index, column - 1], [ship_row_index, column + 1], [ship_row_index - 1, column],[ship_row_index + 1, column]]
         for coordinate_as_index in neighboring_coordinates_as_indexes:
@@ -221,9 +221,26 @@ class Board:
                     "row": neighboring_row,
                     "column": neighboring_column
                 }
-                neighboring_coordinates.append(neighboring_coordinate)
-        return neighboring_coordinates
+                four_directions_neighboring_coordinates.append(neighboring_coordinate)
+        return four_directions_neighboring_coordinates
 
+    def get_all_neighboring_coordinates_of_coordinate(self, row, column):
+        all_neighboring_coordinates = []
+        ship_row_index = self.row_index[row]
+        neighboring_coordinates_as_indexes = [[ship_row_index, column - 1], [ship_row_index, column + 1],
+                                              [ship_row_index - 1, column], [ship_row_index + 1, column],
+                                              [ship_row_index - 1, column - 1], [ship_row_index - 1, column + 1],
+                                              [ship_row_index + 1, column - 1], [ship_row_index + 1, column + 1]]
+        for coordinate_as_index in neighboring_coordinates_as_indexes:
+            neighboring_row_index, neighboring_column = coordinate_as_index
+            neighboring_row = self.get_row_from_index(neighboring_row_index)
+            if self.check_if_coordinate_within_board_border(neighboring_row, neighboring_column):
+                neighboring_coordinate = {
+                    "row": neighboring_row,
+                    "column": neighboring_column
+                }
+                all_neighboring_coordinates.append(neighboring_coordinate)
+        return all_neighboring_coordinates
 
 
     def get_positions_of_all_ships(self):
