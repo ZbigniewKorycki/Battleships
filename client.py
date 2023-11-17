@@ -42,11 +42,9 @@ class Client:
             server_response = self.data_utils.deserialize_json(server_response_json)
             return server_response
         if server_response['type'] == "SHOT" and server_response['status'] == "OK":
-            row_from_last_shot = self.communication_utils.last_shot["row"]
-            column_from_last_shot = self.communication_utils.last_shot["column"]
             result = server_response["body"]
-            self.player.player_board.add_result_of_player_shot_into_opponent_board(row_from_last_shot,
-                                                                                   column_from_last_shot, result)
+            self.player.player_board.add_result_of_player_shot_into_opponent_board(self.communication_utils.last_shot,
+                                                                                   result)
             return result
         if server_response['type'] == "GAME_INVITATION" and server_response['status'] == 'OK':
             self.player.aut_coordinates_for_ship_add_to_board()
@@ -114,7 +112,8 @@ class Client:
         with socket.socket(self.internet_address_family, self.socket_type) as client_socket:
             client_socket.connect((self.host, self.port))
             while self.is_running:
-                print("Type:\n'Start' for starting the game\n'Show' for showing archived games\n'Stop' for stopping the application")
+                print(
+                    "Type:\n'Start' for starting the game\n'Show' for showing archived games\n'Stop' for stopping the application")
                 client_input = input("Request: ").upper()
                 if client_input == "STOP":
                     self.stop(client_socket, client_input)

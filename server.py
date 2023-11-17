@@ -35,10 +35,7 @@ class Server:
             return self.communication_utils.server_confirmation_to_final_ships_positions()
         elif client_request['type'] == 'RESULT':
             result = client_request["body"]
-            row_from_last_shot = self.communication_utils.last_shot["row"]
-            column_from_last_shot = self.communication_utils.last_shot["column"]
-            self.ai_player.player_board.add_result_of_player_shot_into_opponent_board(row_from_last_shot,
-                                                                                      column_from_last_shot, result)
+            self.ai_player.player_board.add_result_of_player_shot_into_opponent_board(self.communication_utils.last_shot, result)
             return self.communication_utils.server_acknowledgment_to_client_response_for_server_shot(result)
         else:
             return self.communication_utils.server_response_to_unknown_command()

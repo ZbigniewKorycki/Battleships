@@ -127,7 +127,9 @@ class Board:
                 if self.player_board[row][column] == ";":
                     self.player_board[row][column] = "~"
 
-    def add_result_of_player_shot_into_opponent_board(self, row, column, result):
+    def add_result_of_player_shot_into_opponent_board(self, coordinate, result):
+        row = coordinate["row"]
+        column = coordinate["column"]
         if self.check_if_coordinate_within_board_border(row, column):
             if result == "HIT":
                 self.opponent_board[row][column] = "X"
