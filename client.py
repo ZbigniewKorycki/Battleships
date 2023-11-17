@@ -57,9 +57,13 @@ class Client:
         turn = 1
         while True:
             print(f">>>>>>>>>>TURN: {turn}<<<<<<<<<<")
-            number_of_sunk_signs_in_player_board = self.player.player_board.count_sunk_signs()
-            number_of_sunk_signs_in_ai_player_board = self.ai_player.player_board.count_sunk_signs()
-            if number_of_sunk_signs_in_player_board == 20 or number_of_sunk_signs_in_ai_player_board == 20:
+            number_of_sunk_signs_in_player_opponent_board = self.player.player_board.count_sunk_signs()
+            number_of_sunk_signs_in_ai_player_opponent_board = self.ai_player.player_board.count_sunk_signs()
+            if number_of_sunk_signs_in_player_opponent_board == 20:
+                print("YOU WIN !")
+                break
+            elif number_of_sunk_signs_in_ai_player_opponent_board == 20:
+                print("ENEMY WINS !")
                 break
             self.player.player_board.reload_boards()
             client_shot = self.helpful_feature_for_automation_game(client_socket, "SHOT")
