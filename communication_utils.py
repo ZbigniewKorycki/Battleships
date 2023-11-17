@@ -101,10 +101,8 @@ class CommunicationUtilsClient(CommunicationUtils):
         return shot_request
 
     def client_response_for_server_shot(self, server_shot_request):
-        coordinates = server_shot_request["body"]
-        row = coordinates["row"]
-        column = coordinates["column"]
-        shot_result = self.player_client.player_board.result_of_opponent_shot(row, column)
+        coordinate = server_shot_request["body"]
+        shot_result = self.player_client.player_board.result_of_opponent_shot(coordinate)
         if shot_result == "MISS" or shot_result == "HIT" or shot_result == "SINKING":
             return self.protocol_template(self.message_type[3], body=shot_result)
         else:
@@ -135,10 +133,8 @@ class CommunicationUtilsServer(CommunicationUtils):
         return server_response
 
     def server_response_for_client_shot(self, client_shot_request):
-        coordinates = client_shot_request["body"]
-        row = coordinates["row"]
-        column = coordinates["column"]
-        shot_result = self.player_server.player_board.result_of_opponent_shot(row, column)
+        coordinate = client_shot_request["body"]
+        shot_result = self.player_server.player_board.result_of_opponent_shot(coordinate)
         if shot_result == "MISS" or shot_result == "HIT" or shot_result == "SINKING":
             return self.protocol_template(self.message_type[1], self.status_code[0],
                                           body=shot_result)

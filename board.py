@@ -145,7 +145,9 @@ class Board:
         else:
             print("Shot outside board.")
 
-    def result_of_opponent_shot(self, row, column):
+    def result_of_opponent_shot(self, coordinate):
+        row = coordinate["row"]
+        column = coordinate["column"]
         if self.check_if_coordinate_within_board_border(row, column):
             if self.player_board[row][column] == "O":
                 hit_ship = self.get_ship_by_coordinate(row, column)
