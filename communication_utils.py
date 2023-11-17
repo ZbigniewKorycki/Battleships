@@ -147,14 +147,11 @@ class CommunicationUtilsServer(CommunicationUtils):
                                           "The shot within the boundaries of the board")
 
     def server_shot(self):
-        row = self.player_server.player_board.get_row_from_index(random.randint(1, 10))
-        column = random.randint(1, 10)
-        message_shot = {
-            "row": row,
-            "column": column
-        }
-        self.last_shot = message_shot
-        server_shot_message = self.protocol_template(self.message_type[2], self.status_code[0], body=message_shot)
+        row, column = self.player_server.ai_shot()
+        shot_message = {"row": row,
+                        "column": column}
+        self.last_shot = shot_message
+        server_shot_message = self.protocol_template(self.message_type[2], self.status_code[0], body=shot_message)
         return server_shot_message
 
     def server_acknowledgment_to_client_response_for_server_shot(self, result):
