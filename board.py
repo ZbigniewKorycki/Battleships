@@ -252,6 +252,24 @@ class Board:
                                     for row in self.row_index for column in range(1, self.size_columns + 1)]}
         return shots_to_take
 
+    def get_updated_possible_shots_for_ai_after_ship_hit(self, row, column):
+        neighboring_coordinates = self.get_neighboring_coordinates_from_four_world_directions(row, column)
+        for coordinate in neighboring_coordinates:
+            if coordinate in self.possible_shots_for_ai["normal"]:
+                self.possible_shots_for_ai["priority"].append(coordinate)
+                self.possible_shots_for_ai["normal"].remove(coordinate)
+        return self.possible_shots_for_ai
+
+
+
+    def get_updated_possible_shots_for_ai_after_ship_sunk(self, row, column):
+        coordinates_of_sunk_ship = self.get_all_neighboring_coordinates_of_coordinate(row, column)
+        for coordinate in neighboring_coordinates:
+            if coordinate in self.possible_shots_for_ai["priority"]:
+                self.possible_shots_for_ai["priority"].remove(coordinate)
+            if coordinate in self.possible_shots_for_ai["normal"]:
+                self.possible_shots_for_ai["normal"].remove(coordinate)
+        return self.possible_shots_for_ai
 
 if __name__ == "__main__":
     board = Board()
