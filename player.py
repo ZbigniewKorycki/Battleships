@@ -202,8 +202,11 @@ class AIPlayer(Player):
         possible_shots = self.player_board.possible_shots_for_ai
         if len(possible_shots["priority"]) > 0:
             shot = random.choice(possible_shots["priority"])
-        else:
+        elif len(possible_shots["normal"]) > 0:
             shot = random.choice(possible_shots["normal"])
+        else:
+            shot = {"row": "A",
+                    "column": 1}
         row = shot["row"]
         column = shot["column"]
         return row, column
