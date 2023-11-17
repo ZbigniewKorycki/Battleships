@@ -133,13 +133,15 @@ class Board:
         if self.check_if_coordinate_within_board_border(row, column):
             if result == "HIT":
                 self.opponent_board[row][column] = "X"
+                self.update_possible_shots_for_ai_after_ship_hit(row, column)
             elif result == "MISS":
                 self.opponent_board[row][column] = "M"
+                self.update_possible_shots_for_ai_after_miss_hit(row, column)
             elif result == "SINKING":
                 coordinates_of_sunk_ship = self.get_coordinates_of_sunk_ship_from_last_hit_coordinate(row, column)
-                print(coordinates_of_sunk_ship)
                 for coordinate in coordinates_of_sunk_ship:
                     self.opponent_board[coordinate["row"]][coordinate["column"]] = "S"
+                self.update_possible_shots_for_ai_after_ship_sunk(row, column)
         else:
             print("Shot outside board.")
 
@@ -256,14 +258,13 @@ class Board:
                                     for row in self.row_index for column in range(1, self.size_columns + 1)]}
         return shots_to_take
 
-    def get_updated_possible_shots_for_ai_after_ship_hit(self, row, column):
+    def update_possible_shots_for_ai_after_ship_hit(self, row, column):
         neighboring_coordinates = self.get_neighboring_coordinates_from_four_world_directions(row, column)
         for coordinate in neighboring_coordinates:
             self.upgrade_priority_of_coordinate_shot_for_possible_shots_for_ai(coordinate)
         self.remove_coordinate_from_possible_shots_for_ai(self.get_coordinate_from_row_and_column(row, column))
-        return self.possible_shots_for_ai
 
-    def get_updated_possible_shots_for_ai_after_ship_sunk(self, row, column):
+    def update_possible_shots_for_ai_after_ship_sunk(self, row, column):
         coordinates_of_sunk_ship = self.get_coordinates_of_sunk_ship_from_last_hit_coordinate(row, column)
         for coordinate_of_sunk_ship in coordinates_of_sunk_ship:
             self.remove_coordinate_from_possible_shots_for_ai(coordinate_of_sunk_ship)
@@ -273,12 +274,10 @@ class Board:
                 sunk_ship_coordinate_row, sunk_ship_coordinate_column)
             for coordinate in neighboring_coordinates_of_part_of_sunk_ship:
                 self.remove_coordinate_from_possible_shots_for_ai(coordinate)
-        return self.possible_shots_for_ai
 
-    def get_updated_possible_shots_for_ai_after_miss_hit(self, row, column):
+    def update_possible_shots_for_ai_after_miss_hit(self, row, column):
         coordinate = self.get_coordinate_from_row_and_column(row, column)
         self.remove_coordinate_from_possible_shots_for_ai(coordinate)
-        return self.possible_shots_for_ai
 
     def remove_coordinate_from_possible_shots_for_ai(self, coordinate):
         if coordinate in self.possible_shots_for_ai["priority"]:
