@@ -209,7 +209,7 @@ class Board:
                         break
         return coordinates_of_sunk_ship
 
-    def get_four_world_directions_neighboring_coordinates_of_coordinate(self, row, column):
+    def get_neighboring_coordinates_from_four_world_directions(self, row, column):
         four_directions_neighboring_coordinates = []
         ship_row_index = self.row_index[row]
         neighboring_coordinates_as_indexes = [[ship_row_index, column - 1], [ship_row_index, column + 1], [ship_row_index - 1, column],[ship_row_index + 1, column]]
