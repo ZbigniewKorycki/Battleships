@@ -96,15 +96,6 @@ class Player:
             orientation = "horizontal"
             return (True, orientation)
 
-    def shot_input(self):
-        print("Set coordinates for shot:")
-        row = input("Row (from 'A' to 'J'): ").capitalize()
-        column = input("Column (from 1 to 10): ")
-        if row not in string.ascii_uppercase[:10] or column not in range(1, 11):
-            print("Row or column outside the index, try again")
-        else:
-            return (row, column)
-
     def show_boards_status_for_archived_game(self):
         all_games = self.database_service.show_all_games()
         for game in all_games:
@@ -165,9 +156,3 @@ class AIPlayer(Player):
         elif ship_type == "One-masted ship":
             orientation = "horizontal"
             return orientation
-
-    def shot_input(self):
-        row_index = random.randint(0, 9)
-        row = string.ascii_uppercase[row_index]
-        column = random.randint(1, 10)
-        return (row, column)
