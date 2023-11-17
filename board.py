@@ -55,9 +55,7 @@ class Board:
     def add_ship(self, ship):
         if self.check_if_coordinates_accessible_to_add_ship(ship.coordinates):
             for coordinate in ship.coordinates:
-                row = coordinate["row"]
-                column = coordinate["column"]
-                self.player_board[row][column] = "O"
+                self.update_player_board(coordinate, "O")
             self.block_ship_near_fields(ship)
             self.ships.ships_list.append(ship)
             return self.draw_player_board()
@@ -132,10 +130,10 @@ class Board:
         column = coordinate["column"]
         if self.check_if_coordinate_within_board_border(row, column):
             if result == "HIT":
-                self.opponent_board[row][column] = "X"
+                self.update_opponent_board(coordinate, 'X')
                 self.update_possible_shots_for_ai_after_ship_hit(row, column)
             elif result == "MISS":
-                self.opponent_board[row][column] = "M"
+                self.update_opponent_board(coordinate, 'M')
                 self.update_possible_shots_for_ai_after_miss_hit(row, column)
             elif result == "SINKING":
                 coordinates_of_sunk_ship = self.get_coordinates_of_sunk_ship_from_last_hit_coordinate(row, column)
@@ -299,6 +297,16 @@ class Board:
         coordinate = {"row": row,
                       "column": column}
         return coordinate
+
+    def update_player_board(self, coordinate, symbol):
+        row = coordinate["row"]
+        column = coordinate["column"]
+        self.player_board[row][column] = symbol
+
+    def update_opponent_board(self, coordinate, symbol):
+        row = coordinate["row"]
+        column = coordinate["column"]
+        self.opponent_board[row][column] = symbol
 
 
 if __name__ == "__main__":
