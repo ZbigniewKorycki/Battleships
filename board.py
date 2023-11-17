@@ -48,6 +48,10 @@ class Board:
             for letter, row in self.opponent_board.items()
         ]
 
+    def count_sunk_signs(self):
+        numbers_of_sunk_signs = sum([1 for key_outer, inner_dict in self.opponent_board.items() for key_inner, value in inner_dict.items() if value == "S"])
+        return numbers_of_sunk_signs
+
     def add_ship(self, ship):
         if self.check_if_coordinates_accessible_to_add_ship(ship.rows_list, ship.columns_list):
             if ship.orientation == "horizontal":
