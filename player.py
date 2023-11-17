@@ -115,6 +115,47 @@ class Player:
         except ValueError:
             print(f"Game number has to be an integer in range: {len(all_games)} / Type time in seconds.")
 
+    # for testing
+
+    def aut_coordinates_for_ship_add_to_board(self):
+        while self.ships.ships_to_deploy_list:
+            try:
+                for ship_type in self.ships.ships_to_deploy_list:
+                    row = self.aut_row_input()
+                    column = self.aut_column_input()
+                    size = self.ship_size_establish(ship_type)
+                    orientation = self.aut_orientation_input(ship_type)
+                    ship = Ship(row, column, size, orientation)
+                    self.player_board.add_ship(ship)
+                    self.ships.save_ships_coordinates(ship_type, ship)
+                    self.ships.ships_to_deploy_list.remove(ship_type)
+            except KeyError:
+                continue
+            except CustomException:
+                continue
+
+    def aut_row_input(self):
+        row_index = random.randint(0, 9)
+        row = string.ascii_uppercase[row_index]
+        return row
+
+    def aut_column_input(self):
+        column = random.randint(1, 10)
+        return column
+
+    def aut_orientation_input(self, ship_type):
+        if ship_type != "One-masted ship":
+            available_options = ["H", "V"]
+            orientation = random.choice(available_options)
+            if orientation == "H":
+                orientation = "horizontal"
+            elif orientation == "V":
+                orientation = "vertical"
+            return orientation
+        elif ship_type == "One-masted ship":
+            orientation = "horizontal"
+            return orientation
+
 
 class AIPlayer(Player):
 

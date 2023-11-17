@@ -49,7 +49,7 @@ class Client:
                                                                                    column_from_last_shot, result)
             return result
         if server_response['type'] == "GAME_INVITATION" and server_response['status'] == 'OK':
-            self.player.coordinates_for_ship_add_to_board()
+            self.player.aut_coordinates_for_ship_add_to_board()
             self.player.player_board.prepare_board_for_game_start()
         return server_response
 
