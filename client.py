@@ -62,20 +62,12 @@ class Client:
             if number_of_sunk_signs_in_player_board == 20 or number_of_sunk_signs_in_ai_player_board == 20:
                 break
             self.player.player_board.reload_boards()
-            client_shot = self.create_request_to_server("SHOT")
-            client_shot_json = self.data_utils.serialize_to_json(client_shot)
-            client_socket.sendall(client_shot_json)
-            server_response_for_client_shot_json = client_socket.recv(self.buffer)
-            server_response_for_client_shot = self.read_server_response(server_response_for_client_shot_json, client_socket)
-            print(server_response_for_client_shot)
-            self.repeat_shot_check(server_response_for_client_shot, client_socket, "SHOT")
-            server_shot = self.create_request_to_server("SHOT_REQUEST")
-            server_shot_json = self.data_utils.serialize_to_json(server_shot)
-            client_socket.sendall(server_shot_json)
-            server_response_for_own_shot_json = client_socket.recv(self.buffer)
-            server_response_for_own_shot = self.read_server_response(server_response_for_own_shot_json, client_socket)
-            print(server_response_for_own_shot_json)
-            self.repeat_shot_check(server_response_for_own_shot, client_socket, "SHOT_REQUEST")
+            client_shot = self.helpful_feature_for_automation_game(client_socket, "SHOT")
+            print(client_shot)
+            self.repeat_shot_check(client_shot, client_socket, "SHOT")
+            server_shot = self.helpful_feature_for_automation_game(client_socket, "SHOT_REQUEST")
+            print(server_shot)
+            self.repeat_shot_check(server_shot, client_socket, "SHOT_REQUEST")
             turn += 1
 
     def check_server_response_instance(self, server_response):
@@ -84,42 +76,47 @@ class Client:
         elif isinstance(server_response, dict):
             return server_response["body"]
 
-    def repeat_shot_check(self, server_response_obj, client_socket, shot):
-        server_response = self.check_server_response_instance(server_response_obj)
-        if server_response in ["HIT", "SINKING"]:
+    def repeat_shot_check(self, server_response_object, client_socket, shot):
+        check_server_response = self.check_server_response_instance(server_response_object)
+        if check_server_response in ["HIT", "SINKING"]:
             shot_repeat = True
             while shot_repeat:
                 self.player.player_board.reload_boards()
-                shot = self.create_request_to_server(shot)
-                shot_json = self.data_utils.serialize_to_json(shot)
-                client_socket.sendall(shot_json)
-                shot_response_json = client_socket.recv(self.buffer)
-                shot_response = self.read_server_response(shot_response_json, client_socket)
+                shot_response = self.helpful_feature_for_automation_game(client_socket, shot)
                 if shot_response not in ["HIT", "SINKING"]:
                     shot_repeat = False
+
+    def helpful_feature_for_automation_game(self, client_socket, shot):
+        shot = self.create_request_to_server(shot)
+        shot_json = self.data_utils.serialize_to_json(shot)
+        client_socket.sendall(shot_json)
+        server_response_for_shot_json = client_socket.recv(self.buffer)
+        server_response_for_shot = self.read_server_response(server_response_for_shot_json, client_socket)
+        return server_response_for_shot
 
     def start(self):
         with socket.socket(self.internet_address_family, self.socket_type) as client_socket:
             client_socket.connect((self.host, self.port))
             while self.is_running:
-                print("Type: \n'Start' for start the game \n'Show' for show archived games \n'Stop for stop application")
+                print("Type:\n'Start' for starting the game\n'Show' for showing archived games\n'Stop' for stopping the application")
                 client_input = input("Request: ").upper()
                 if client_input == "STOP":
                     self.stop(client_socket, client_input)
-                client_request = self.create_request_to_server(client_input)
-                client_request_json = self.data_utils.serialize_to_json(client_request)
-                client_socket.sendall(client_request_json)
-                server_response_json = client_socket.recv(self.buffer)
-                self.read_server_response(server_response_json, client_socket)
-                self.automation_game(client_socket)
+                else:
+                    client_request = self.create_request_to_server(client_input)
+                    client_request_json = self.data_utils.serialize_to_json(client_request)
+                    client_socket.sendall(client_request_json)
+                    server_response_json = client_socket.recv(self.buffer)
+                    self.read_server_response(server_response_json, client_socket)
+                    if client_input == "START":
+                        self.automation_game(client_socket)
 
     def stop(self, client_socket, client_input):
         client_request = self.create_request_to_server(client_input)
         client_request_json = self.data_utils.serialize_to_json(client_request)
         client_socket.sendall(client_request_json)
-        print("Client`s shutting down...")
+        print("Client's shutting down...")
         self.is_running = False
-        client_socket.close()
 
 
 if __name__ == "__main__":
