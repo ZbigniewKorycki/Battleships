@@ -156,3 +156,13 @@ class AIPlayer(Player):
         elif ship_type == "One-masted ship":
             orientation = "horizontal"
             return orientation
+
+    def ai_shot(self):
+        possible_shots = self.player_board.possible_shots_for_ai
+        if len(possible_shots["priority"]) > 0:
+            shot = random.choice(possible_shots["priority"])
+        else:
+            shot = random.choice(possible_shots["normal"])
+        row = shot["row"]
+        column = shot["column"]
+        return row, column
