@@ -53,16 +53,13 @@ class Board:
         return numbers_of_sunk_signs
 
     def add_ship(self, ship):
-        if self.check_if_coordinates_accessible_to_add_ship(ship.rows_list, ship.columns_list):
-            if ship.orientation == "horizontal":
-                for column in ship.columns_list:
-                    self.player_board[ship.rows_list[0]][column] = "O"
-            elif ship.orientation == "vertical":
-                for row in ship.rows_list:
-                    self.player_board[row][ship.columns_list[0]] = "O"
+        if self.check_if_coordinates_accessible_to_add_ship(ship.coordinates):
+            for coordinate in ship.coordinates:
+                row = coordinate["row"]
+                column = coordinate["column"]
+                self.player_board[row][column] = "O"
             self.block_ship_near_fields(ship)
             self.ships.ships_list.append(ship)
-
             return self.draw_player_board()
         else:
             raise CustomException("There`s another ship in area")
@@ -95,13 +92,14 @@ class Board:
                 self.verify_adding_block_to_board(row, ship.columns_list[0] + 1)
                 self.verify_adding_block_to_board(row, ship.columns_list[0] - 1)
 
-    def check_if_coordinates_accessible_to_add_ship(self, ship_rows_list, ship_columns_list):
-        for row in ship_rows_list:
-            for column in ship_columns_list:
-                if self.player_board[row][column] == ";" or self.player_board[row][column] == "O":
-                    return False
-                if not self.check_if_coordinate_within_board_border(row, column):
-                    return False
+    def check_if_coordinates_accessible_to_add_ship(self, ship_coordinates):
+        for coordinate in ship_coordinates:
+            row = coordinate["row"]
+            column = coordinate["column"]
+            if self.player_board[row][column] == ";" or self.player_board[row][column] == "O":
+                return False
+            if not self.check_if_coordinate_within_board_border(row, column):
+                return False
         else:
             return True
 
