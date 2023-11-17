@@ -193,10 +193,10 @@ class Board:
         ship_row_index = self.row_index[row]
         coordinates_of_sunk_ship = [{"row": row, "column": column}]
         direct_neighboring_coordinates = [
-            [[ship_row_index, column - 1], [ship_row_index, column - 2], [ship_row_index, column - 3]], #left
-            [[ship_row_index, column + 1], [ship_row_index, column + 2], [ship_row_index, column + 3]], #right
-            [[ship_row_index - 1, column], [ship_row_index - 2, column], [ship_row_index - 3, column]], #up
-            [[ship_row_index + 1, column], [ship_row_index + 2, column], [ship_row_index + 3, column]]] #down
+            [[ship_row_index, column - 1], [ship_row_index, column - 2], [ship_row_index, column - 3]],  # left
+            [[ship_row_index, column + 1], [ship_row_index, column + 2], [ship_row_index, column + 3]],  # right
+            [[ship_row_index - 1, column], [ship_row_index - 2, column], [ship_row_index - 3, column]],  # up
+            [[ship_row_index + 1, column], [ship_row_index + 2, column], [ship_row_index + 3, column]]]  # down
         for direction in direct_neighboring_coordinates:
             for distance_apart_ship in direction:
                 neighboring_row_index, neighboring_column = distance_apart_ship
@@ -212,7 +212,8 @@ class Board:
     def get_neighboring_coordinates_from_four_world_directions(self, row, column):
         four_directions_neighboring_coordinates = []
         ship_row_index = self.row_index[row]
-        neighboring_coordinates_as_indexes = [[ship_row_index, column - 1], [ship_row_index, column + 1], [ship_row_index - 1, column],[ship_row_index + 1, column]]
+        neighboring_coordinates_as_indexes = [[ship_row_index, column - 1], [ship_row_index, column + 1],
+                                              [ship_row_index - 1, column], [ship_row_index + 1, column]]
         for coordinate_as_index in neighboring_coordinates_as_indexes:
             neighboring_row_index, neighboring_column = coordinate_as_index
             neighboring_row = self.get_row_from_index(neighboring_row_index)
@@ -242,7 +243,6 @@ class Board:
                 all_neighboring_coordinates.append(neighboring_coordinate)
         return all_neighboring_coordinates
 
-
     def get_positions_of_all_ships(self):
         return self.ships.ships_coordinates_on_board
 
@@ -255,21 +255,38 @@ class Board:
     def get_updated_possible_shots_for_ai_after_ship_hit(self, row, column):
         neighboring_coordinates = self.get_neighboring_coordinates_from_four_world_directions(row, column)
         for coordinate in neighboring_coordinates:
-            if coordinate in self.possible_shots_for_ai["normal"]:
-                self.possible_shots_for_ai["priority"].append(coordinate)
-                self.possible_shots_for_ai["normal"].remove(coordinate)
+            self.upgrade_priority_of_coordinate_shot_for_possible_shots_for_ai(coordinate)
+        self.remove_coordinate_from_possible_shots_for_ai(self.get_coordinate_from_row_and_column(row, column))
         return self.possible_shots_for_ai
-
-
 
     def get_updated_possible_shots_for_ai_after_ship_sunk(self, row, column):
-        coordinates_of_sunk_ship = self.get_all_neighboring_coordinates_of_coordinate(row, column)
-        for coordinate in neighboring_coordinates:
-            if coordinate in self.possible_shots_for_ai["priority"]:
-                self.possible_shots_for_ai["priority"].remove(coordinate)
-            if coordinate in self.possible_shots_for_ai["normal"]:
-                self.possible_shots_for_ai["normal"].remove(coordinate)
+        coordinates_of_sunk_ship = self.get_coordinates_of_sunk_ship_from_last_hit_coordinate(row, column)
+        for coordinate_of_sunk_ship in coordinates_of_sunk_ship:
+            self.remove_coordinate_from_possible_shots_for_ai(coordinate_of_sunk_ship)
+            sunk_ship_coordinate_row = coordinate_of_sunk_ship["row"]
+            sunk_ship_coordinate_column = coordinate_of_sunk_ship["column"]
+            neighboring_coordinates_of_part_of_sunk_ship = self.get_all_neighboring_coordinates_of_coordinate(
+                sunk_ship_coordinate_row, sunk_ship_coordinate_column)
+            for coordinate in neighboring_coordinates_of_part_of_sunk_ship:
+                self.remove_coordinate_from_possible_shots_for_ai(coordinate)
         return self.possible_shots_for_ai
+
+    def remove_coordinate_from_possible_shots_for_ai(self, coordinate):
+        if coordinate in self.possible_shots_for_ai["priority"]:
+            self.possible_shots_for_ai["priority"].remove(coordinate)
+        if coordinate in self.possible_shots_for_ai["normal"]:
+            self.possible_shots_for_ai["normal"].remove(coordinate)
+
+    def upgrade_priority_of_coordinate_shot_for_possible_shots_for_ai(self, coordinate):
+        if coordinate in self.possible_shots_for_ai["normal"]:
+            self.possible_shots_for_ai["priority"].append(coordinate)
+            self.possible_shots_for_ai["normal"].remove(coordinate)
+
+    def get_coordinate_from_row_and_column(self, row, column):
+        coordinate = {"row": row,
+                      "column": column}
+        return coordinate
+
 
 if __name__ == "__main__":
     board = Board()
