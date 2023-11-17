@@ -57,21 +57,29 @@ class Client:
         turn = 1
         while True:
             print(f">>>>>>>>>>TURN: {turn}<<<<<<<<<<")
-            number_of_sunk_signs_in_player_opponent_board = self.player.player_board.count_sunk_signs()
-            number_of_sunk_signs_in_ai_player_opponent_board = self.ai_player.player_board.count_sunk_signs()
-            if number_of_sunk_signs_in_player_opponent_board == 20:
-                print("YOU WIN !")
-                break
-            elif number_of_sunk_signs_in_ai_player_opponent_board == 20:
-                print("ENEMY WINS !")
-                break
             self.player.player_board.reload_boards()
             client_shot = self.helpful_feature_for_automation_game(client_socket, "SHOT")
             print(client_shot)
+            number_of_sunk_signs_in_player_opponent_board = self.player.player_board.count_sunk_signs()
+            if number_of_sunk_signs_in_player_opponent_board == 20:
+                print("YOU WIN !")
+                break
             self.repeat_shot_check(client_shot, client_socket, "SHOT")
+            number_of_sunk_signs_in_player_opponent_board_2 = self.player.player_board.count_sunk_signs()
+            if number_of_sunk_signs_in_player_opponent_board_2 == 20:
+                print("YOU WIN !")
+                break
             server_shot = self.helpful_feature_for_automation_game(client_socket, "SHOT_REQUEST")
             print(server_shot)
+            number_of_sunk_signs_in_ai_player_opponent_board = self.ai_player.player_board.count_sunk_signs()
+            if number_of_sunk_signs_in_ai_player_opponent_board == 20:
+                print("ENEMY WINS !")
+                break
             self.repeat_shot_check(server_shot, client_socket, "SHOT_REQUEST")
+            number_of_sunk_signs_in_ai_player_opponent_board_2 = self.ai_player.player_board.count_sunk_signs()
+            if number_of_sunk_signs_in_ai_player_opponent_board_2 == 20:
+                print("ENEMY WINS !")
+                break
             turn += 1
 
     def check_server_response_instance(self, server_response):
@@ -85,6 +93,10 @@ class Client:
         if check_server_response in ["HIT", "SINKING"]:
             shot_repeat = True
             while shot_repeat:
+                number_of_sunk_signs_in_player_opponent_board = self.player.player_board.count_sunk_signs()
+                number_of_sunk_signs_in_ai_player_opponent_board = self.ai_player.player_board.count_sunk_signs()
+                if number_of_sunk_signs_in_player_opponent_board == 20 or number_of_sunk_signs_in_ai_player_opponent_board == 20:
+                    break
                 self.player.player_board.reload_boards()
                 shot_response = self.helpful_feature_for_automation_game(client_socket, shot)
                 if shot_response not in ["HIT", "SINKING"]:
