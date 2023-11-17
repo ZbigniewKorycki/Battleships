@@ -157,8 +157,15 @@ class CommunicationUtilsServer(CommunicationUtils):
         server_shot_message = self.protocol_template(self.message_type[2], self.status_code[0], body=message_shot)
         return server_shot_message
 
-    def server_acknowledgment_to_client_response_for_server_shot(self):
-        server_response = self.protocol_template(self.message_type[3], self.status_code[0])
+    def server_acknowledgment_to_client_response_for_server_shot(self, result):
+        if result == "MISS":
+            server_response = self.protocol_template(self.message_type[3], self.status_code[0], body = self.shot_result[0])
+        elif result == "HIT":
+            server_response = self.protocol_template(self.message_type[3], self.status_code[0], body = self.shot_result[1])
+        elif result == "SINKING":
+            server_response = self.protocol_template(self.message_type[3], self.status_code[0], body = self.shot_result[2])
+        else:
+            server_response = self.protocol_template(self.message_type[3], self.status_code[0])
         return server_response
 
     def server_response_to_unknown_command(self):
