@@ -92,16 +92,16 @@ class Board:
 
     def check_if_coordinates_accessible_to_add_ship(self, ship_coordinates):
         for coordinate in ship_coordinates:
-            row = coordinate["row"]
-            column = coordinate["column"]
-            if self.player_board[row][column] == ";" or self.player_board[row][column] == "O":
+            if self.get_symbol_from_player_board(coordinate) in [";", "O"]:
                 return False
-            if not self.check_if_coordinate_within_board_border(row, column):
+            if not self.check_if_coordinate_within_board_border(coordinate):
                 return False
         else:
             return True
 
-    def check_if_coordinate_within_board_border(self, row, column):
+    def check_if_coordinate_within_board_border(self, coordinate):
+        row = coordinate["row"]
+        column = coordinate["column"]
         if row in self.row_index and column in range(1, self.size_columns + 1):
             return True
         else:
@@ -114,8 +114,9 @@ class Board:
         return None
 
     def verify_adding_block_to_board(self, row, column):
-        if self.check_if_coordinate_within_board_border(row, column):
-            self.player_board[row][column] = ";"
+        coordinate = {"row": row, "column": column}
+        if self.check_if_coordinate_within_board_border(coordinate):
+            self.update_player_board(coordinate, ";")
         # else:
         #     print("Block outside board border.")
 
@@ -128,7 +129,7 @@ class Board:
     def add_result_of_player_shot_into_opponent_board(self, coordinate, result):
         row = coordinate["row"]
         column = coordinate["column"]
-        if self.check_if_coordinate_within_board_border(row, column):
+        if self.check_if_coordinate_within_board_border(coordinate):
             if result == "HIT":
                 self.update_opponent_board(coordinate, 'X')
                 self.update_possible_shots_for_ai_after_ship_hit(row, column)
@@ -146,7 +147,7 @@ class Board:
     def result_of_opponent_shot(self, coordinate):
         row = coordinate["row"]
         column = coordinate["column"]
-        if self.check_if_coordinate_within_board_border(row, column):
+        if self.check_if_coordinate_within_board_border(coordinate):
             if self.player_board[row][column] == "O":
                 hit_ship = self.get_ship_by_coordinate(row, column)
                 if hit_ship.ship_hit() == 0:
@@ -157,11 +158,11 @@ class Board:
                     result = "HIT"
                     self.mark_opponent_shot_result_into_player_board(coordinate, result)
                     return result
-            elif self.player_board[row][column] == "~" or self.player_board[row][column] == ";":
+            elif self.get_symbol_from_player_board(coordinate) in ["~", ";"]:
                 result = "MISS"
                 self.mark_opponent_shot_result_into_player_board(coordinate, result)
                 return result
-            elif self.player_board[row][column] == "X":
+            elif self.get_symbol_from_player_board(coordinate) == "X":
                 result = "REPEATED SHOT"
                 self.mark_opponent_shot_result_into_player_board(coordinate, result)
                 return result
@@ -208,7 +209,8 @@ class Board:
             for distance_apart_ship in direction:
                 neighboring_row_index, neighboring_column = distance_apart_ship
                 neighboring_row = self.get_row_from_index(neighboring_row_index)
-                if self.check_if_coordinate_within_board_border(neighboring_row, neighboring_column):
+                coordinate = {"row":neighboring_row, "column":neighboring_column }
+                if self.check_if_coordinate_within_board_border(coordinate):
                     if self.opponent_board[neighboring_row][neighboring_column] == "X":
                         coordinates_of_sunk_ship.append({"row": neighboring_row,
                                                          "column": neighboring_column})
@@ -224,7 +226,11 @@ class Board:
         for coordinate_as_index in neighboring_coordinates_as_indexes:
             neighboring_row_index, neighboring_column = coordinate_as_index
             neighboring_row = self.get_row_from_index(neighboring_row_index)
-            if self.check_if_coordinate_within_board_border(neighboring_row, neighboring_column):
+            coordinate = {
+                    "row": neighboring_row,
+                    "column": neighboring_column
+                }
+            if self.check_if_coordinate_within_board_border(coordinate):
                 neighboring_coordinate = {
                     "row": neighboring_row,
                     "column": neighboring_column
@@ -242,7 +248,11 @@ class Board:
         for coordinate_as_index in neighboring_coordinates_as_indexes:
             neighboring_row_index, neighboring_column = coordinate_as_index
             neighboring_row = self.get_row_from_index(neighboring_row_index)
-            if self.check_if_coordinate_within_board_border(neighboring_row, neighboring_column):
+            coordinate = {
+                    "row": neighboring_row,
+                    "column": neighboring_column
+                }
+            if self.check_if_coordinate_within_board_border(coordinate):
                 neighboring_coordinate = {
                     "row": neighboring_row,
                     "column": neighboring_column
@@ -306,13 +316,13 @@ class Board:
         column = coordinate["column"]
         self.opponent_board[row][column] = symbol
 
-    def get_symbol_from_player_board_coordinate(self, coordinate):
+    def get_symbol_from_player_board(self, coordinate):
         row = coordinate["row"]
         column = coordinate["column"]
         symbol = self.player_board[row][column]
         return symbol
 
-    def get_symbol_from_opponent_board_coordinate(self, coordinate):
+    def get_symbol_from_opponent_board(self, coordinate):
         row = coordinate["row"]
         column = coordinate["column"]
         symbol = self.opponent_board[row][column]
