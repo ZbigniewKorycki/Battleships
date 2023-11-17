@@ -176,18 +176,16 @@ class Board:
     def mark_opponent_shot_result_into_player_board(self, coordinate, result):
         row = coordinate["row"]
         column = coordinate["column"]
-
         if result == "MISS":
-            self.player_board[row][column] = "M"
+           self.update_player_board(coordinate, "M")
         elif result == "HIT":
-            self.player_board[row][column] = "X"
+            self.update_player_board(coordinate, "X")
         elif result == "REPEATED SHOT":
             pass
         elif result == "SINKING":
             sunk_ship = self.get_ship_by_coordinate(row, column)
-            for column in sunk_ship.columns_list:
-                for row in sunk_ship.rows_list:
-                    self.player_board[row][column] = "S"
+            for coordinate_of_sunk_ship in sunk_ship.coordinates:
+                self.update_player_board(coordinate_of_sunk_ship, "S")
 
     def prepare_board_for_game_start(self):
         self.remove_blocks_from_board()
@@ -307,6 +305,18 @@ class Board:
         row = coordinate["row"]
         column = coordinate["column"]
         self.opponent_board[row][column] = symbol
+
+    def get_symbol_from_player_board_coordinate(self, coordinate):
+        row = coordinate["row"]
+        column = coordinate["column"]
+        symbol = self.player_board[row][column]
+        return symbol
+
+    def get_symbol_from_opponent_board_coordinate(self, coordinate):
+        row = coordinate["row"]
+        column = coordinate["column"]
+        symbol = self.opponent_board[row][column]
+        return symbol
 
 
 if __name__ == "__main__":
