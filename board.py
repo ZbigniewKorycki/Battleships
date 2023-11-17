@@ -153,19 +153,19 @@ class Board:
                 hit_ship = self.get_ship_by_coordinate(row, column)
                 if hit_ship.ship_hit() == 0:
                     result = "SINKING"
-                    self.mark_opponent_shot_result_into_player_board(row, column, result)
+                    self.mark_opponent_shot_result_into_player_board(coordinate, result)
                     return result
                 else:
                     result = "HIT"
-                    self.mark_opponent_shot_result_into_player_board(row, column, result)
+                    self.mark_opponent_shot_result_into_player_board(coordinate, result)
                     return result
             elif self.player_board[row][column] == "~" or self.player_board[row][column] == ";":
                 result = "MISS"
-                self.mark_opponent_shot_result_into_player_board(row, column, result)
+                self.mark_opponent_shot_result_into_player_board(coordinate, result)
                 return result
             elif self.player_board[row][column] == "X":
                 result = "REPEATED SHOT"
-                self.mark_opponent_shot_result_into_player_board(row, column, result)
+                self.mark_opponent_shot_result_into_player_board(coordinate, result)
                 return result
         else:
             return "The shot is not within the boundaries of the board."
@@ -175,7 +175,10 @@ class Board:
             if row in ship.rows_list and column in ship.columns_list:
                 return ship
 
-    def mark_opponent_shot_result_into_player_board(self, row, column, result):
+    def mark_opponent_shot_result_into_player_board(self, coordinate, result):
+        row = coordinate["row"]
+        column = coordinate["column"]
+
         if result == "MISS":
             self.player_board[row][column] = "M"
         elif result == "HIT":
