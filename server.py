@@ -39,7 +39,7 @@ class Server:
             column_from_last_shot = self.communication_utils.last_shot["column"]
             self.ai_player.player_board.add_result_of_player_shot_into_opponent_board(row_from_last_shot,
                                                                                       column_from_last_shot, result)
-            return self.communication_utils.server_acknowledgment_to_client_response_for_server_shot()
+            return self.communication_utils.server_acknowledgment_to_client_response_for_server_shot(result)
         else:
             return self.communication_utils.server_response_to_unknown_command()
 
