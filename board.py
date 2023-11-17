@@ -275,6 +275,11 @@ class Board:
                 self.remove_coordinate_from_possible_shots_for_ai(coordinate)
         return self.possible_shots_for_ai
 
+    def get_updated_possible_shots_for_ai_after_miss_hit(self, row, column):
+        coordinate = self.get_coordinate_from_row_and_column(row, column)
+        self.remove_coordinate_from_possible_shots_for_ai(coordinate)
+        return self.possible_shots_for_ai
+
     def remove_coordinate_from_possible_shots_for_ai(self, coordinate):
         if coordinate in self.possible_shots_for_ai["priority"]:
             self.possible_shots_for_ai["priority"].remove(coordinate)
