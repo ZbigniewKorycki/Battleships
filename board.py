@@ -58,39 +58,20 @@ class Board:
         if self.check_if_coordinates_accessible_to_add_ship(ship.coordinates):
             for coordinate in ship.coordinates:
                 self.update_player_board(coordinate, "O")
-            self.block_ship_near_fields(ship)
+            self.block_ship_near_fields(ship.coordinates)
             self.ships.ships_list.append(ship)
             return self.draw_player_board()
         else:
             raise CustomException("There`s another ship in area")
 
-    def block_ship_near_fields(self, ship):
-        if ship.orientation == "horizontal":
-            ship_row_index = self.row_index[ship.rows_list[0]]
-            self.verify_adding_block_to_board(ship.rows_list[0], min(ship.columns_list) - 1)
-            self.verify_adding_block_to_board(ship.rows_list[0], max(ship.columns_list) + 1)
-            self.verify_adding_block_to_board(self.get_row_from_index(ship_row_index - 1), min(ship.columns_list) - 1)
-            self.verify_adding_block_to_board(self.get_row_from_index(ship_row_index - 1), max(ship.columns_list) + 1)
-            self.verify_adding_block_to_board(self.get_row_from_index(ship_row_index + 1), min(ship.columns_list) - 1)
-            self.verify_adding_block_to_board(self.get_row_from_index(ship_row_index + 1), max(ship.columns_list) + 1)
-            for column in ship.columns_list:
-                self.verify_adding_block_to_board(self.get_row_from_index(ship_row_index + 1), column)
-                self.verify_adding_block_to_board(self.get_row_from_index(ship_row_index - 1), column)
-        elif ship.orientation == "vertical":
-            ship_row_indexes = [self.row_index[row] for row in ship.rows_list]
-            self.verify_adding_block_to_board(self.get_row_from_index(min(ship_row_indexes) - 1), ship.columns_list[0])
-            self.verify_adding_block_to_board(self.get_row_from_index(max(ship_row_indexes) + 1), ship.columns_list[0])
-            self.verify_adding_block_to_board(self.get_row_from_index(min(ship_row_indexes) - 1),
-                                              ship.columns_list[0] - 1)
-            self.verify_adding_block_to_board(self.get_row_from_index(min(ship_row_indexes) - 1),
-                                              ship.columns_list[0] + 1)
-            self.verify_adding_block_to_board(self.get_row_from_index(max(ship_row_indexes) + 1),
-                                              ship.columns_list[0] + 1)
-            self.verify_adding_block_to_board(self.get_row_from_index(max(ship_row_indexes) + 1),
-                                              ship.columns_list[0] - 1)
-            for row in ship.rows_list:
-                self.verify_adding_block_to_board(row, ship.columns_list[0] + 1)
-                self.verify_adding_block_to_board(row, ship.columns_list[0] - 1)
+    def block_ship_near_fields(self, coordinates):
+        for coordinate in coordinates:
+            row = coordinate["row"]
+            column = coordinate["column"]
+            neighboring_coordinates = self.get_all_neighboring_coordinates_of_coordinate(row, column)
+            for neighboring_coordinate in neighboring_coordinates:
+                if neighboring_coordinate not in coordinates and self.get_symbol_from_player_board(neighboring_coordinate) == "~":
+                    self.add_block_to_board(neighboring_coordinate)
 
     def check_if_coordinates_accessible_to_add_ship(self, ship_coordinates):
         for coordinate in ship_coordinates:
@@ -115,8 +96,7 @@ class Board:
                 return row
         return None
 
-    def verify_adding_block_to_board(self, row, column):
-        coordinate = {"row": row, "column": column}
+    def add_block_to_board(self, coordinate):
         if self.check_if_coordinate_within_board_border(coordinate):
             self.update_player_board(coordinate, ";")
         # else:
