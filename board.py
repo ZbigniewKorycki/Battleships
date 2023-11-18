@@ -32,6 +32,7 @@ class Board:
         }
         return starting_board
 
+
     def draw_player_board(self):
         print("Player board:".center(self.size_columns * 2 + 1))
         columns = print(end="  "), [print(num, end=" ") for num in range(1, self.size_columns + 1)], print()
@@ -280,11 +281,6 @@ class Board:
         if coordinate in self.possible_shots_for_ai["normal"]:
             self.possible_shots_for_ai["priority"].append(coordinate)
             self.possible_shots_for_ai["normal"].remove(coordinate)
-
-    def get_coordinate_from_row_and_column(self, row, column):
-        coordinate = {"row": row,
-                      "column": column}
-        return coordinate
 
     def update_player_board(self, coordinate, symbol):
         row = coordinate["row"]
