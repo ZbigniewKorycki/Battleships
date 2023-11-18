@@ -66,9 +66,7 @@ class Board:
 
     def block_ship_near_fields(self, coordinates):
         for coordinate in coordinates:
-            row = coordinate["row"]
-            column = coordinate["column"]
-            neighboring_coordinates = self.get_all_neighboring_coordinates_of_coordinate(row, column)
+            neighboring_coordinates = self.get_all_neighboring_coordinates(coordinate)
             for neighboring_coordinate in neighboring_coordinates:
                 if neighboring_coordinate not in coordinates and self.get_symbol_from_player_board(neighboring_coordinate) == "~":
                     self.add_block_to_board(neighboring_coordinate)
@@ -110,20 +108,18 @@ class Board:
                     self.update_player_board(coordinate, "~")
 
     def add_result_of_player_shot_into_opponent_board(self, coordinate, result):
-        row = coordinate["row"]
-        column = coordinate["column"]
         if self.check_if_coordinate_within_board_border(coordinate):
             if result == "HIT":
                 self.update_opponent_board(coordinate, 'X')
                 self.update_possible_shots_for_ai_after_ship_hit(coordinate)
             elif result == "MISS":
                 self.update_opponent_board(coordinate, 'M')
-                self.update_possible_shots_for_ai_after_miss_hit(row, column)
+                self.update_possible_shots_for_ai_after_miss_hit(coordinate)
             elif result == "SINKING":
-                coordinates_of_sunk_ship = self.get_coordinates_of_sunk_ship_from_last_hit_coordinate(row, column)
+                coordinates_of_sunk_ship = self.get_coordinates_of_sunk_ship_from_last_hit_coordinate(coordinate)
                 for coordinate in coordinates_of_sunk_ship:
                     self.update_opponent_board(coordinate, "S")
-                self.update_possible_shots_for_ai_after_ship_sunk(row, column)
+                self.update_possible_shots_for_ai_after_ship_sunk(coordinate)
         else:
             print("Shot outside board.")
 
@@ -178,7 +174,9 @@ class Board:
         self.draw_player_board()
         self.draw_opponent_board()
 
-    def get_coordinates_of_sunk_ship_from_last_hit_coordinate(self, row, column):
+    def get_coordinates_of_sunk_ship_from_last_hit_coordinate(self, coordinate):
+        row = coordinate["row"]
+        column = coordinate["column"]
         ship_row_index = self.row_index[row]
         coordinates_of_sunk_ship = [{"row": row, "column": column}]
         direct_neighboring_coordinates = [
@@ -221,7 +219,9 @@ class Board:
                 four_directions_neighboring_coordinates.append(neighboring_coordinate)
         return four_directions_neighboring_coordinates
 
-    def get_all_neighboring_coordinates_of_coordinate(self, row, column):
+    def get_all_neighboring_coordinates(self, coordinate):
+        row = coordinate["row"]
+        column = coordinate["column"]
         all_neighboring_coordinates = []
         ship_row_index = self.row_index[row]
         neighboring_coordinates_as_indexes = [[ship_row_index, column - 1], [ship_row_index, column + 1],
@@ -258,19 +258,16 @@ class Board:
             self.upgrade_priority_of_coordinate_shot_for_possible_shots_for_ai(neighboring_coordinate)
         self.remove_coordinate_from_possible_shots_for_ai(coordinate)
 
-    def update_possible_shots_for_ai_after_ship_sunk(self, row, column):
-        coordinates_of_sunk_ship = self.get_coordinates_of_sunk_ship_from_last_hit_coordinate(row, column)
+    def update_possible_shots_for_ai_after_ship_sunk(self, coordinate):
+        coordinates_of_sunk_ship = self.get_coordinates_of_sunk_ship_from_last_hit_coordinate(coordinate)
         for coordinate_of_sunk_ship in coordinates_of_sunk_ship:
             self.remove_coordinate_from_possible_shots_for_ai(coordinate_of_sunk_ship)
-            sunk_ship_coordinate_row = coordinate_of_sunk_ship["row"]
-            sunk_ship_coordinate_column = coordinate_of_sunk_ship["column"]
-            neighboring_coordinates_of_part_of_sunk_ship = self.get_all_neighboring_coordinates_of_coordinate(
-                sunk_ship_coordinate_row, sunk_ship_coordinate_column)
-            for coordinate in neighboring_coordinates_of_part_of_sunk_ship:
-                self.remove_coordinate_from_possible_shots_for_ai(coordinate)
+            neighboring_coordinates_of_part_of_sunk_ship = self.get_all_neighboring_coordinates(
+                coordinate_of_sunk_ship)
+            for neighboring_coordinate in neighboring_coordinates_of_part_of_sunk_ship:
+                self.remove_coordinate_from_possible_shots_for_ai(neighboring_coordinate)
 
-    def update_possible_shots_for_ai_after_miss_hit(self, row, column):
-        coordinate = self.get_coordinate_from_row_and_column(row, column)
+    def update_possible_shots_for_ai_after_miss_hit(self, coordinate):
         self.remove_coordinate_from_possible_shots_for_ai(coordinate)
 
     def remove_coordinate_from_possible_shots_for_ai(self, coordinate):
