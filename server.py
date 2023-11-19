@@ -1,7 +1,7 @@
 import socket
-from data_utils import DataUtils
+from data_utils import DataUtils, DatabaseUtils
 from communication_utils import CommunicationUtilsServer
-from config_variables import HOST, PORT, BUFFER, INTERNET_ADDRESS_FAMILY, SOCKET_TYPE
+from config_variables import HOST, PORT, BUFFER, INTERNET_ADDRESS_FAMILY, SOCKET_TYPE, db_file
 from player import AIPlayer
 
 

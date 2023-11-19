@@ -1,7 +1,7 @@
 import socket
-from data_utils import DataUtils
+from data_utils import DataUtils, DatabaseUtils
 from communication_utils import CommunicationUtilsClient
-from config_variables import HOST, PORT, BUFFER, INTERNET_ADDRESS_FAMILY, SOCKET_TYPE
+from config_variables import HOST, PORT, BUFFER, INTERNET_ADDRESS_FAMILY, SOCKET_TYPE, db_file
 from player import Player, AIPlayer
 
 
@@ -60,25 +60,26 @@ class Client:
             print(client_shot)
             number_of_sunk_signs_in_player_opponent_board = self.player.player_board.count_sunk_signs()
             if number_of_sunk_signs_in_player_opponent_board == 20:
-                print("YOU WIN !")
+                winner_message = "YOU WIN !"
                 break
             self.repeat_shot_check(client_shot, client_socket, "SHOT")
             number_of_sunk_signs_in_player_opponent_board_2 = self.player.player_board.count_sunk_signs()
             if number_of_sunk_signs_in_player_opponent_board_2 == 20:
-                print("YOU WIN !")
+                winner_message = "YOU WIN !"
                 break
             server_shot = self.helpful_feature_for_automation_game(client_socket, "SHOT_REQUEST")
             print(server_shot)
             number_of_sunk_signs_in_ai_player_opponent_board = self.ai_player.player_board.count_sunk_signs()
             if number_of_sunk_signs_in_ai_player_opponent_board == 20:
-                print("ENEMY WINS !")
+                winner_message = "ENEMY WINS !"
                 break
             self.repeat_shot_check(server_shot, client_socket, "SHOT_REQUEST")
             number_of_sunk_signs_in_ai_player_opponent_board_2 = self.ai_player.player_board.count_sunk_signs()
             if number_of_sunk_signs_in_ai_player_opponent_board_2 == 20:
-                print("ENEMY WINS !")
+                winner_message = "ENEMY WINS !"
                 break
             turn += 1
+        print(winner_message)
 
     def check_server_response_instance(self, server_response):
         if isinstance(server_response, str):

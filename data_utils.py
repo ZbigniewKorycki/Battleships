@@ -16,7 +16,7 @@ class DataUtils:
         return json.loads(data)
 
 
-class Database:
+class DatabaseUtils:
     def __init__(self, db_file):
         self.db_file = db_file
         self.create_game_table()
@@ -54,6 +54,7 @@ class Database:
         create_game_table_query = """ CREATE TABLE IF NOT EXISTS games(
                                       game_id INTEGER PRIMARY KEY,
                                       game_datetime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+                                      winner VARCHAR NOT NULL DEFAULT the game has not been completed
                                       ); """
         self.execute_sql_query(create_game_table_query)
 
@@ -73,9 +74,9 @@ class Database:
         self.execute_sql_query(query, (game_datetime, ))
 
     def add_board_to_db(self, game_number, board, board_number):
-        # The first board represents the server's original ship placement along with marked opponent shots.
+        # The first board represents the server's original ship placement along with marked client shots.
         # The second board displays the server's shots, including marked hits.
-        # The third board shows the opponent's original ship placement with marked server shots.
+        # The third board shows the client's original ship placement with marked server shots.
         # The fourth board illustrates the client's shots, including marked hits.
         board_json_serialize = json.dumps(board)
         game_id_query = "SELECT game_id FROM games " \
@@ -85,14 +86,26 @@ class Database:
                 "VALUES (?, ?, ?)"
         self.execute_sql_query(query, (game_id, board_json_serialize, board_number))
 
-    def show_all_games(self):
+    def get_all_games(self):
         query = "SELECT * FROM games"
         all_games = self.execute_sql_query(query, fetch_option = "fetchall")
         return all_games
 
-    def show_board_status_for_game(self, game_number):
+    def get_boards_status_for_game(self, game_number):
         query = "SELECT board_status FROM boards " \
                 "WHERE game_id = (SELECT game_id FROM games WHERE game_id = ?) " \
                 "ORDER BY board_number_in_order"
         boards = self.execute_sql_query(query, (game_number, ), fetch_option = "fetchall")
         return boards
+
+    def set_winner(self, winner_message, game_number):
+        if winner_message == "YOU WIN !":
+            winner = "CLIENT"
+        elif winner_message == "ENEMY WINS !":
+            winner = "SERVER"
+        query = "UPDATE games " \
+                "SET winner = ?" \
+                "WHERE game_id = ?"
+        self.execute_sql_query(query, (winner, game_number, ))
+
+

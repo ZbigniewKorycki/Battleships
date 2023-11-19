@@ -1,4 +1,6 @@
-import random
+from data_utils import DatabaseUtils
+from config_variables import db_file
+
 
 
 class CommunicationUtils:
@@ -122,6 +124,7 @@ class CommunicationUtilsServer(CommunicationUtils):
     def __init__(self, player_server):
         super().__init__()
         self.player_server = player_server
+        self.database_utils = DatabaseUtils(db_file)
 
     def server_game_invitation_response(self):
         if self.server_is_busy:
@@ -168,3 +171,8 @@ class CommunicationUtilsServer(CommunicationUtils):
     def server_confirmation_to_final_ships_positions(self):
         confirmation = self.protocol_template(self.message_type[4], self.status_code[0])
         return confirmation
+
+    def set_game_number(self):
+        games_in_db = self.database_utils.get_all_games()
+        game_number = len(games_in_db) + 1
+        return game_number
