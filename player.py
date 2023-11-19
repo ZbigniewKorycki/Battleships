@@ -4,7 +4,7 @@ import time
 from ships_logic import Ship, Ships
 from board import Board
 from custom_exception import CustomException
-from data_utils import Database
+from data_utils import DatabaseUtils
 from config_variables import db_file
 
 
@@ -12,7 +12,7 @@ class Player:
     def __init__(self):
         self.ships = Ships()
         self.player_board = Board()
-        self.database_service = Database(db_file)
+        self.database_service = DatabaseUtils(db_file)
 
     def coordinates_for_ship_add_to_board(self):
         while self.ships.ships_to_deploy_list:
@@ -96,24 +96,24 @@ class Player:
             orientation = "horizontal"
             return (True, orientation)
 
-    def show_boards_status_for_archived_game(self):
-        all_games = self.database_service.show_all_games()
-        for game in all_games:
-            print(game)
-        try:
-            game_number = input("Which game you want to see ?: ")
-            if int(game_number) > len(all_games):
-                print("There`s no game with this ID number.")
-            else:
-                game_id = int(game_number)
-                boards = self.database_service.show_board_status_for_game(game_id)
-                time_in_sec = input("How fast you want to watch this game ? (type seconds between next boards): ")
-                int_time_in_sec = int(time_in_sec)
-                for board in boards:
-                    print(board)
-                    time.sleep(int_time_in_sec)
-        except ValueError:
-            print(f"Game number has to be an integer in range: {len(all_games)} / Type time in seconds.")
+    # def show_boards_status_for_archived_game(self):
+    #     all_games = self.database_service.show_all_games()
+    #     for game in all_games:
+    #         print(game)
+    #     try:
+    #         game_number = input("Which game you want to see ?: ")
+    #         if int(game_number) > len(all_games):
+    #             print("There`s no game with this ID number.")
+    #         else:
+    #             game_id = int(game_number)
+    #             boards = self.database_service.show_board_status_for_game(game_id)
+    #             time_in_sec = input("How fast you want to watch this game ? (type seconds between next boards): ")
+    #             int_time_in_sec = int(time_in_sec)
+    #             for board in boards:
+    #                 print(board)
+    #                 time.sleep(int_time_in_sec)
+    #     except ValueError:
+    #         print(f"Game number has to be an integer in range: {len(all_games)} / Type time in seconds.")
 
     # for testing
 
