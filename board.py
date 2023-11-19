@@ -95,6 +95,12 @@ class Board:
                 return row
         return None
 
+    def get_index_from_row(self, row_letter):
+        for row, index in self.row_index.items():
+            if row_letter == row:
+                return index
+        return None
+
     def add_block_to_board(self, coordinate):
         if self.check_if_coordinate_within_board_border(coordinate):
             self.update_player_board(coordinate, ";")
@@ -175,7 +181,7 @@ class Board:
     def get_coordinates_of_sunk_ship_from_last_hit_coordinate(self, coordinate):
         row = coordinate["row"]
         column = coordinate["column"]
-        ship_row_index = self.row_index[row]
+        ship_row_index = self.get_index_from_row(row)
         coordinates_of_sunk_ship = [{"row": row, "column": column}]
         direct_neighboring_coordinates = [
             [[ship_row_index, column - 1], [ship_row_index, column - 2], [ship_row_index, column - 3]],  # left
@@ -199,7 +205,7 @@ class Board:
         row = coordinate["row"]
         column = coordinate["column"]
         four_directions_neighboring_coordinates = []
-        ship_row_index = self.row_index[row]
+        ship_row_index = self.get_index_from_row(row)
         neighboring_coordinates_as_indexes = [[ship_row_index, column - 1], [ship_row_index, column + 1],
                                               [ship_row_index - 1, column], [ship_row_index + 1, column]]
         for coordinate_as_index in neighboring_coordinates_as_indexes:
@@ -221,7 +227,7 @@ class Board:
         row = coordinate["row"]
         column = coordinate["column"]
         all_neighboring_coordinates = []
-        ship_row_index = self.row_index[row]
+        ship_row_index = self.get_index_from_row(row)
         neighboring_coordinates_as_indexes = [[ship_row_index, column - 1], [ship_row_index, column + 1],
                                               [ship_row_index - 1, column], [ship_row_index + 1, column],
                                               [ship_row_index - 1, column - 1], [ship_row_index - 1, column + 1],
