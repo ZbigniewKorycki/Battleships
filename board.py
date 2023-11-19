@@ -32,7 +32,6 @@ class Board:
         }
         return starting_board
 
-
     def draw_player_board(self):
         print("Player board:".center(self.size_columns * 2 + 1))
         columns = print(end="  "), [print(num, end=" ") for num in range(1, self.size_columns + 1)], print()
@@ -69,7 +68,8 @@ class Board:
         for coordinate in coordinates:
             neighboring_coordinates = self.get_neighboring_coordinates_in_eight_directions(coordinate)
             for neighboring_coordinate in neighboring_coordinates:
-                if neighboring_coordinate not in coordinates and self.get_symbol_from_player_board(neighboring_coordinate) == "~":
+                if neighboring_coordinate not in coordinates and self.get_symbol_from_player_board(
+                        neighboring_coordinate) == "~":
                     self.add_block_to_board(neighboring_coordinate)
 
     def check_if_coordinates_accessible_to_add_ship(self, ship_coordinates):
@@ -205,33 +205,30 @@ class Board:
     def get_neighboring_coordinates_in_four_directions(self, coordinate):
         row = coordinate["row"]
         column = coordinate["column"]
-        four_directions_neighboring_coordinates = []
-        ship_row_index = self.get_index_from_row(row)
-        neighboring_coordinates_as_indexes = [[ship_row_index, column - 1], [ship_row_index, column + 1],
-                                              [ship_row_index - 1, column], [ship_row_index + 1, column]]
-        for coordinate_as_index in neighboring_coordinates_as_indexes:
-            neighboring_row_index, neighboring_column = coordinate_as_index
-            neighboring_row = self.get_row_from_index(neighboring_row_index)
-            coordinate = {
-                "row": neighboring_row,
-                "column": neighboring_column
-            }
-            if self.check_if_coordinate_within_board_border(coordinate):
-                neighboring_coordinate = {
-                    "row": neighboring_row,
-                    "column": neighboring_column
-                }
-                four_directions_neighboring_coordinates.append(neighboring_coordinate)
-        return four_directions_neighboring_coordinates
+        row_index = self.get_index_from_row(row)
+        neighboring_coordinates_with_row_index = [{"row_index": row_index, "column": column - 1},
+                                                  {"row_index": row_index, "column": column + 1},
+                                                  {"row_index": row_index - 1, "column": column},
+                                                  {"row_index": row_index + 1, "column": column}]
+        neighboring_coordinates = []
+        for coordinate_with_row_index in neighboring_coordinates_with_row_index:
+            coordinate = self.get_coordinate_from_coordinate_with_row_index(coordinate_with_row_index)
+            if coordinate:
+                neighboring_coordinates.append(coordinate)
+        return neighboring_coordinates
 
     def get_neighboring_coordinates_in_eight_directions(self, coordinate):
         row = coordinate["row"]
         column = coordinate["column"]
         row_index = self.get_index_from_row(row)
-        neighboring_coordinates_with_row_index = [{"row_index": row_index, "column": column - 1}, {"row_index": row_index, "column": column + 1},
-                                              {"row_index": row_index - 1, "column": column}, {"row_index": row_index + 1, "column": column},
-                                              {"row_index": row_index - 1, "column": column - 1}, {"row_index": row_index - 1, "column": column + 1},
-                                              {"row_index": row_index + 1, "column": column - 1}, {"row_index": row_index + 1, "column": column + 1}]
+        neighboring_coordinates_with_row_index = [{"row_index": row_index, "column": column - 1},
+                                                  {"row_index": row_index, "column": column + 1},
+                                                  {"row_index": row_index - 1, "column": column},
+                                                  {"row_index": row_index + 1, "column": column},
+                                                  {"row_index": row_index - 1, "column": column - 1},
+                                                  {"row_index": row_index - 1, "column": column + 1},
+                                                  {"row_index": row_index + 1, "column": column - 1},
+                                                  {"row_index": row_index + 1, "column": column + 1}]
         neighboring_coordinates = []
         for coordinate_with_row_index in neighboring_coordinates_with_row_index:
             coordinate = self.get_coordinate_from_coordinate_with_row_index(coordinate_with_row_index)
