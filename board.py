@@ -121,10 +121,11 @@ class Board:
                 self.update_opponent_board(coordinate, 'M')
                 self.update_possible_shots_for_ai_after_miss_hit(coordinate)
             elif result == "SINKING":
+                self.update_possible_shots_for_ai_after_ship_sunk(coordinate)
                 coordinates_of_sunk_ship = self.get_coordinates_of_sunk_ship_from_last_hit_coordinate(coordinate)
                 for coordinate in coordinates_of_sunk_ship:
                     self.update_opponent_board(coordinate, "S")
-                self.update_possible_shots_for_ai_after_ship_sunk(coordinate)
+
         else:
             print("Shot outside board.")
 
@@ -179,27 +180,43 @@ class Board:
         self.draw_player_board()
         self.draw_opponent_board()
 
-    def get_coordinates_of_sunk_ship_from_last_hit_coordinate(self, coordinate):
-        row = coordinate["row"]
-        column = coordinate["column"]
-        ship_row_index = self.get_index_from_row(row)
-        coordinates_of_sunk_ship = [{"row": row, "column": column}]
-        direct_neighboring_coordinates = [
-            [[ship_row_index, column - 1], [ship_row_index, column - 2], [ship_row_index, column - 3]],  # left
-            [[ship_row_index, column + 1], [ship_row_index, column + 2], [ship_row_index, column + 3]],  # right
-            [[ship_row_index - 1, column], [ship_row_index - 2, column], [ship_row_index - 3, column]],  # up
-            [[ship_row_index + 1, column], [ship_row_index + 2, column], [ship_row_index + 3, column]]]  # down
-        for direction in direct_neighboring_coordinates:
-            for distance_apart_ship in direction:
-                neighboring_row_index, neighboring_column = distance_apart_ship
-                neighboring_row = self.get_row_from_index(neighboring_row_index)
-                coordinate = {"row": neighboring_row, "column": neighboring_column}
-                if self.check_if_coordinate_within_board_border(coordinate):
-                    if self.opponent_board[neighboring_row][neighboring_column] == "X":
-                        coordinates_of_sunk_ship.append({"row": neighboring_row,
-                                                         "column": neighboring_column})
+    def get_coordinates_of_sunk_ship_from_last_hit_coordinate(self, last_hit_coordinate_of_sunk_ship):
+        row = last_hit_coordinate_of_sunk_ship["row"]
+        column = last_hit_coordinate_of_sunk_ship["column"]
+        row_index = self.get_index_from_row(row)
+        coordinates_with_row_index = [[{"row_index": row_index, "column": column - distance, "direction": "left"},
+                                       {"row_index": row_index, "column": column + distance, "direction": "right"},
+                                       {"row_index": row_index - distance, "column": column, "direction": "up"},
+                                       {"row_index": row_index + distance, "column": column, "direction": "down"}] for
+                                      distance in range(1, 4)]
+        neighboring_coordinates_with_row_index = []
+        for distance_neig in coordinates_with_row_index:
+            for coordinate in distance_neig:
+                neighboring_coordinates_with_row_index.append(coordinate)
+
+        directions = ['left', 'right', 'up', 'down']
+
+        coordinates_of_sunk_ship = [last_hit_coordinate_of_sunk_ship]
+        for direction in directions:
+            side_neighboring_coordinates_with_row_index = list(
+                filter(lambda x: x["direction"] == direction, neighboring_coordinates_with_row_index))
+            if direction == "left":
+                side_neighboring_coordinates_with_row_index.sort(key=lambda x: x["column"], reverse=True)
+            if direction == "right":
+                side_neighboring_coordinates_with_row_index.sort(key=lambda x: x["column"])
+            if direction == "up":
+                side_neighboring_coordinates_with_row_index.sort(key=lambda x: x["row_index"], reverse=True)
+            if direction == "down":
+                side_neighboring_coordinates_with_row_index.sort(key=lambda x: x["row_index"])
+            for neighboring_coordinate_with_row_index in side_neighboring_coordinates_with_row_index:
+                coordinate = self.get_coordinate_from_coordinate_with_row_index(neighboring_coordinate_with_row_index)
+                if coordinate:
+                    if self.get_symbol_from_opponent_board(coordinate) == "X":
+                        coordinates_of_sunk_ship.append(coordinate)
                     else:
                         break
+                else:
+                    break
         return coordinates_of_sunk_ship
 
     def get_neighboring_coordinates_in_four_directions(self, coordinate):
