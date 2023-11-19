@@ -67,7 +67,7 @@ class Board:
 
     def block_ship_near_fields(self, coordinates):
         for coordinate in coordinates:
-            neighboring_coordinates = self.get_all_neighboring_coordinates(coordinate)
+            neighboring_coordinates = self.get_neighboring_coordinates_in_eight_directions(coordinate)
             for neighboring_coordinate in neighboring_coordinates:
                 if neighboring_coordinate not in coordinates and self.get_symbol_from_player_board(neighboring_coordinate) == "~":
                     self.add_block_to_board(neighboring_coordinate)
@@ -202,7 +202,7 @@ class Board:
                         break
         return coordinates_of_sunk_ship
 
-    def get_neighboring_coordinates_from_four_world_directions(self, coordinate):
+    def get_neighboring_coordinates_in_four_directions(self, coordinate):
         row = coordinate["row"]
         column = coordinate["column"]
         four_directions_neighboring_coordinates = []
@@ -224,7 +224,7 @@ class Board:
                 four_directions_neighboring_coordinates.append(neighboring_coordinate)
         return four_directions_neighboring_coordinates
 
-    def get_all_neighboring_coordinates(self, coordinate):
+    def get_neighboring_coordinates_in_eight_directions(self, coordinate):
         row = coordinate["row"]
         column = coordinate["column"]
         all_neighboring_coordinates = []
@@ -258,7 +258,7 @@ class Board:
         return shots_to_take
 
     def update_possible_shots_for_ai_after_ship_hit(self, coordinate):
-        neighboring_coordinates = self.get_neighboring_coordinates_from_four_world_directions(coordinate)
+        neighboring_coordinates = self.get_neighboring_coordinates_in_four_directions(coordinate)
         for neighboring_coordinate in neighboring_coordinates:
             self.upgrade_priority_of_coordinate_shot_for_possible_shots_for_ai(neighboring_coordinate)
         self.remove_coordinate_from_possible_shots_for_ai(coordinate)
@@ -267,7 +267,7 @@ class Board:
         coordinates_of_sunk_ship = self.get_coordinates_of_sunk_ship_from_last_hit_coordinate(coordinate)
         for coordinate_of_sunk_ship in coordinates_of_sunk_ship:
             self.remove_coordinate_from_possible_shots_for_ai(coordinate_of_sunk_ship)
-            neighboring_coordinates_of_part_of_sunk_ship = self.get_all_neighboring_coordinates(
+            neighboring_coordinates_of_part_of_sunk_ship = self.get_neighboring_coordinates_in_eight_directions(
                 coordinate_of_sunk_ship)
             for neighboring_coordinate in neighboring_coordinates_of_part_of_sunk_ship:
                 self.remove_coordinate_from_possible_shots_for_ai(neighboring_coordinate)
