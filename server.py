@@ -1,7 +1,7 @@
 import socket
-from data_utils import DataUtils, DatabaseUtils
-from communication_utils import CommunicationUtilsServer
-from config_variables import HOST, PORT, BUFFER, INTERNET_ADDRESS_FAMILY, SOCKET_TYPE, db_file
+from data_utils import DataUtils
+from communication_utils import CommunicationUtilsServer, DatabaseCommunicationUtils
+from config_variables import HOST, PORT, BUFFER, INTERNET_ADDRESS_FAMILY, SOCKET_TYPE
 from player import AIPlayer
 
 
@@ -15,6 +15,7 @@ class Server:
         self.data_utils = DataUtils()
         self.ai_player = AIPlayer()
         self.communication_utils = CommunicationUtilsServer(self.ai_player)
+        self.database_communication_utils = DatabaseCommunicationUtils()
         self.is_running = True
 
     def read_client_request(self, client_request_json):
@@ -37,6 +38,8 @@ class Server:
             result = client_request["body"]
             self.ai_player.player_board.add_result_of_player_shot_into_opponent_board(self.communication_utils.last_shot, result)
             return self.communication_utils.server_acknowledgment_to_client_response_for_server_shot(result)
+        elif client_request["type"] == "GAME NUMBER":
+            return self.database_communication_utils.establish_game_number()
         else:
             return self.communication_utils.server_response_to_unknown_command()
 

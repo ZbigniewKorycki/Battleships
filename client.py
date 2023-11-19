@@ -1,5 +1,5 @@
 import socket
-from data_utils import DataUtils, DatabaseUtils
+from data_utils import DataUtils
 from communication_utils import CommunicationUtilsClient
 from config_variables import HOST, PORT, BUFFER, INTERNET_ADDRESS_FAMILY, SOCKET_TYPE, db_file
 from player import Player, AIPlayer
@@ -29,6 +29,8 @@ class Client:
             return self.communication_utils.client_send_final_ships_positions()
         elif client_input == "STOP":
             return self.communication_utils.stop_client_and_server()
+        elif client_input == "GAME NUMBER":
+            return self.communication_utils.ask_for_game_number()
         else:
             return self.communication_utils.client_send_unknown_command()
 
@@ -49,10 +51,15 @@ class Client:
         if server_response['type'] == "GAME_INVITATION" and server_response['status'] == 'OK':
             self.player.aut_coordinates_for_ship_add_to_board()
             self.player.player_board.prepare_board_for_game_start()
+        if server_response["body"] == "GAME NUMBER":
+            game_number = server_response["body"]
+            return game_number
         return server_response
 
     def automation_game(self, client_socket):
         turn = 1
+        game_number = self.create_request_to_server("GAME NUMBER")
+        print(game_number)
         while True:
             print(f">>>>>>>>>>TURN: {turn}<<<<<<<<<<")
             self.player.player_board.reload_boards()
@@ -79,7 +86,6 @@ class Client:
                 winner_message = "ENEMY WINS !"
                 break
             turn += 1
-        print(winner_message)
 
     def check_server_response_instance(self, server_response):
         if isinstance(server_response, str):

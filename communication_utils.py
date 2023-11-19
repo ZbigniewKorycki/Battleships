@@ -55,6 +55,10 @@ class CommunicationUtilsClient(CommunicationUtils):
         client_request = self.protocol_template(self.message_type[0])
         return client_request
 
+    def ask_for_game_number(self):
+        client_request = self.protocol_template(message_type = "GAME NUMBER")
+        return client_request
+
     def stop_client_and_server(self):
         stop_request = "STOP"
         return stop_request
@@ -124,7 +128,6 @@ class CommunicationUtilsServer(CommunicationUtils):
     def __init__(self, player_server):
         super().__init__()
         self.player_server = player_server
-        self.database_utils = DatabaseUtils(db_file)
 
     def server_game_invitation_response(self):
         if self.server_is_busy:
@@ -172,7 +175,15 @@ class CommunicationUtilsServer(CommunicationUtils):
         confirmation = self.protocol_template(self.message_type[4], self.status_code[0])
         return confirmation
 
-    def set_game_number(self):
-        games_in_db = self.database_utils.get_all_games()
-        game_number = len(games_in_db) + 1
-        return game_number
+
+class DatabaseCommunicationUtils(CommunicationUtils):
+    def __init__(self):
+        super().__init__()
+        self.database_utils = DatabaseUtils(db_file)
+
+    def establish_game_number(self):
+        number_of_games_in_the_database = self.database_utils.get_all_games()
+        actually_game_number = len(number_of_games_in_the_database) + 1
+        response = str(self.protocol_template(message_type = "GAME NUMBER", body = str(actually_game_number)))
+        return response
+
