@@ -27,10 +27,10 @@ class Client:
             return self.communication_utils.client_requesting_server_to_shot()
         elif client_input == "BOARD":
             return self.communication_utils.client_send_final_ships_positions()
+        elif client_input == "GAME NUMBER":
+            return self.communication_utils.client_ask_for_game_number()
         elif client_input == "STOP":
             return self.communication_utils.stop_client_and_server()
-        elif client_input == "GAME NUMBER":
-            return self.communication_utils.ask_for_game_number()
         else:
             return self.communication_utils.client_send_unknown_command()
 

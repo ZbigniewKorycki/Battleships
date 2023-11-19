@@ -55,13 +55,9 @@ class CommunicationUtilsClient(CommunicationUtils):
         client_request = self.protocol_template(self.message_type[0])
         return client_request
 
-    def ask_for_game_number(self):
+    def client_ask_for_game_number(self):
         client_request = self.protocol_template(message_type = "GAME NUMBER")
         return client_request
-
-    def stop_client_and_server(self):
-        stop_request = "STOP"
-        return stop_request
 
     def client_shot_request(self):
         counter_max_tries = 2
@@ -122,6 +118,10 @@ class CommunicationUtilsClient(CommunicationUtils):
     def client_send_unknown_command(self):
         message_unknown_command = self.protocol_template(self.message_type[5])
         return message_unknown_command
+
+    def stop_client_and_server(self):
+        stop_request = "STOP"
+        return stop_request
 
 
 class CommunicationUtilsServer(CommunicationUtils):
