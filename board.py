@@ -98,8 +98,6 @@ class Board:
     def add_block_to_board(self, coordinate):
         if self.check_if_coordinate_within_board_border(coordinate):
             self.update_player_board(coordinate, ";")
-        # else:
-        #     print("Block outside board border.")
 
     def remove_blocks_from_board(self):
         for row in self.row_index:
