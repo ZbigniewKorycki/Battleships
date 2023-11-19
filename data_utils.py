@@ -53,8 +53,8 @@ class DatabaseUtils:
     def create_game_table(self):
         create_game_table_query = """ CREATE TABLE IF NOT EXISTS games(
                                       game_id INTEGER PRIMARY KEY,
-                                      game_datetime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-                                      winner VARCHAR NOT NULL DEFAULT the game has not been completed
+                                      game_datetime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                                      winner VARCHAR NOT NULL DEFAULT 'the game has not been completed'
                                       ); """
         self.execute_sql_query(create_game_table_query)
 
@@ -104,8 +104,8 @@ class DatabaseUtils:
         elif winner_message == "ENEMY WINS !":
             winner = "SERVER"
         query = "UPDATE games " \
-                "SET winner = ?" \
+                "SET winner = ? " \
                 "WHERE game_id = ?"
-        self.execute_sql_query(query, (winner, game_number, ))
+        self.execute_sql_query(query, (winner, game_number))
 
 
