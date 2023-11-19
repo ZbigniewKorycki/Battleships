@@ -45,8 +45,8 @@ class Ship:
 
 class Ships:
     def __init__(self):
-        self.ships_list = []
-        self.destroyed_ships_list = []
+        self.active_ships = []
+        self.destroyed_ships = []
         self.ships_type_quantity_list = [
             "Four-masted ship",
             ["Three-masted ship" for _ in range(2)],
@@ -80,5 +80,5 @@ class Ships:
 
     def check_ship_durability(self, ship):
         if ship.ship_durability == 0:
-            self.destroyed_ships_list.append(ship)
-            self.ships_list.remove(ship)
+            self.destroyed_ships.append(ship)
+            self.active_ships.remove(ship)

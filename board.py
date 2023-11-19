@@ -60,7 +60,7 @@ class Board:
             for coordinate in ship.coordinates:
                 self.update_player_board(coordinate, "O")
             self.block_ship_near_fields(ship.coordinates)
-            self.ships.ships_list.append(ship)
+            self.ships.active_ships.append(ship)
             return self.draw_player_board()
         else:
             raise CustomException("There`s another ship in area")
@@ -133,6 +133,7 @@ class Board:
             if self.get_symbol_from_player_board(coordinate) == "O":
                 ship = self.get_ship_by_coordinate(coordinate)
                 ship.make_damage_for_ship()
+                self.ships.check_ship_durability(ship)
                 if ship.ship_durability == 0:
                     result = "SINKING"
                     self.mark_opponent_shot_result_into_player_board(coordinate, result)
@@ -153,7 +154,7 @@ class Board:
             return "The shot is not within the boundaries of the board."
 
     def get_ship_by_coordinate(self, coordinate):
-        for ship in self.ships.ships_list:
+        for ship in *self.ships.active_ships, *self.ships.destroyed_ships:
             if coordinate in ship.coordinates:
                 return ship
 
