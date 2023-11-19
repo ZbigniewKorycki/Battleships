@@ -148,10 +148,8 @@ class Board:
             return "The shot is not within the boundaries of the board."
 
     def get_ship_by_coordinate(self, coordinate):
-        row = coordinate["row"]
-        column = coordinate["column"]
         for ship in self.ships.ships_list:
-            if row in ship.rows_list and column in ship.columns_list:
+            if coordinate in ship.coordinates:
                 return ship
 
     def mark_opponent_shot_result_into_player_board(self, coordinate, result):

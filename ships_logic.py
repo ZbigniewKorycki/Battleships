@@ -8,10 +8,6 @@ class Ship:
         self.size = size
         self.orientation = orientation
         self.coordinates = self.get_coordinates_of_ship()
-        self.rows_list = []
-        self.columns_list = []
-        self.add_rows_to_list = self.establish_ship_rows()
-        self.add_column_to_list = self.establish_ship_columns()
         self.ship_durability = self.size
 
     def ship_hit(self):
@@ -31,25 +27,6 @@ class Ship:
                 coordinate = {"row": row, "column": self.column}
                 coordinates.append(coordinate)
         return coordinates
-
-
-    def establish_ship_rows(self):
-        if self.orientation == "horizontal":
-            self.rows_list.append(self.row)
-        elif self.orientation == "vertical":
-            row_index = self.find_row_letter_index(self.row)
-            for i in range(row_index, row_index + self.size):
-                letter = string.ascii_uppercase[i]
-                self.rows_list.append(letter)
-        return self.rows_list
-
-    def establish_ship_columns(self):
-        if self.orientation == "horizontal":
-            for i in range(self.column, self.column + self.size):
-                self.columns_list.append(i)
-        elif self.orientation == "vertical":
-            self.columns_list.append(self.column)
-        return self.columns_list
 
     def find_row_letter_index(self, row):
         for letter in string.ascii_uppercase:
