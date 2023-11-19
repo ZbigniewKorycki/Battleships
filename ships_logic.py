@@ -10,9 +10,8 @@ class Ship:
         self.coordinates = self.get_coordinates_of_ship()
         self.ship_durability = self.size
 
-    def ship_hit(self):
+    def make_damage_for_ship(self):
         self.ship_durability -= 1
-        return self.ship_durability
 
     def get_coordinates_of_ship(self):
         coordinates = []

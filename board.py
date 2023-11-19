@@ -127,8 +127,9 @@ class Board:
     def result_of_opponent_shot(self, coordinate):
         if self.check_if_coordinate_within_board_border(coordinate):
             if self.get_symbol_from_player_board(coordinate) == "O":
-                hit_ship = self.get_ship_by_coordinate(coordinate)
-                if hit_ship.ship_hit() == 0:
+                ship = self.get_ship_by_coordinate(coordinate)
+                ship.make_damage_for_ship()
+                if ship.ship_durability == 0:
                     result = "SINKING"
                     self.mark_opponent_shot_result_into_player_board(coordinate, result)
                     return result
