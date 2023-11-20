@@ -155,7 +155,7 @@ class Board:
             return "The shot is not within the boundaries of the board."
 
     def get_ship_by_coordinate(self, coordinate):
-        for ship in *self.ships.active_ships, *self.ships.destroyed_ships:
+        for ship in [*self.ships.active_ships, *self.ships.destroyed_ships]:
             if coordinate in ship.coordinates:
                 return ship
 
