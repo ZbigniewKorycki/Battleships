@@ -68,10 +68,10 @@ class DatabaseUtils:
                                        ); """
         self.execute_sql_query(create_board_table_query)
 
-    def add_game_to_db(self, game_datetime):
-        query = "INSERT INTO games (game_datetime) " \
-                "VALUES (?)"
-        self.execute_sql_query(query, (game_datetime, ))
+    def add_game_to_db(self):
+        query = "INSERT INTO games " \
+                "DEFAULT VALUES"
+        self.execute_sql_query(query)
 
     def add_board_to_db(self, game_number, board, board_number):
         # The first board represents the server's original ship placement along with marked client shots.
@@ -87,7 +87,8 @@ class DatabaseUtils:
         self.execute_sql_query(query, (game_id, board_json_serialize, board_number))
 
     def get_all_games(self):
-        query = "SELECT * FROM games"
+        query = "SELECT * FROM games " \
+                "ORDER BY game_id"
         all_games = self.execute_sql_query(query, fetch_option = "fetchall")
         return all_games
 
