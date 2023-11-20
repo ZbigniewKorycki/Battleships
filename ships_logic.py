@@ -55,7 +55,6 @@ class Ships:
         ]
         self.ships_to_deploy_list = []
         self.ships_type_quantity_list_order = self.move_ships_from_ships_type_quantity_list_to_ships_deploy_list()
-        self.ships_coordinates_on_board = {}
 
     def move_ships_from_ships_type_quantity_list_to_ships_deploy_list(self):
         new_ships_list = []
@@ -72,13 +71,32 @@ class Ships:
             self.ships_type_quantity_list.remove(item)
         self.ships_to_deploy_list = new_ships_list
 
-    def save_ships_coordinates(self, ship_type, ship):
-        if ship_type in ["Four-masted ship", "Three-masted ship", "Two-masted ship", "One-masted ship"]:
-            if ship_type not in self.ships_coordinates_on_board:
-                self.ships_coordinates_on_board[ship_type] = []
-            self.ships_coordinates_on_board[ship_type].append(str(ship))
-
     def check_ship_durability(self, ship):
         if ship.ship_durability == 0:
             self.destroyed_ships.append(ship)
             self.active_ships.remove(ship)
+
+    def get_ships_coordinates_on_board(self):
+        final_board_coordinates = {"Four-masted ship": [],
+                                   "Three-masted ship": [],
+                                   "Two-masted ship": [],
+                                   "One-masted ship": []}
+        for ship in *self.active_ships, *self.destroyed_ships:
+            if ship.size == 1:
+                row = ship.coordinates[0]["row"]
+                column = str(ship.coordinates[0]["column"])
+                formatted_coordinate = ''.join([row, column])
+                final_board_coordinates["One-masted ship"].append(formatted_coordinate)
+            else:
+                row_begin = ship.coordinates[0]["row"]
+                column_begin = str(ship.coordinates[0]["column"])
+                row_end = ship.coordinates[-1]["row"]
+                column_end = str(ship.coordinates[-1]["column"])
+                formatted_coordinate = f"{row_begin}{column_begin}-{row_end}{column_end}"
+                if ship.size == 4:
+                    final_board_coordinates["Four-masted ship"].append(formatted_coordinate)
+                if ship.size == 3:
+                    final_board_coordinates["Three-masted ship"].append(formatted_coordinate)
+                if ship.size == 2:
+                    final_board_coordinates["Two-masted ship"].append(formatted_coordinate)
+        return final_board_coordinates

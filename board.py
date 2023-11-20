@@ -262,7 +262,7 @@ class Board:
             return coordinate
 
     def get_positions_of_all_ships(self):
-        return self.ships.ships_coordinates_on_board
+        return self.ships.get_ships_coordinates_on_board()
 
     def get_starting_possible_shots(self):
         shots_to_take = {"priority": [],
