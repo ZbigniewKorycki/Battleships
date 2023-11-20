@@ -13,6 +13,12 @@ ship_31 = Ship("C", 5, 3, "horizontal")
 ship_32 = Ship("E", 5, 3, "horizontal")
 ship_41 = Ship("H", 5, 4, "horizontal")
 
+print(ship_41.coordinates)
+print(ship_31.coordinates)
+print(ship_21.coordinates)
+print(ship_11.coordinates)
+
+
 
 board.add_ship(ship_11)
 board.add_ship(ship_12)
@@ -27,21 +33,9 @@ board.add_ship(ship_41)
 
 board.prepare_board_for_game_start()
 
-print(board.result_of_opponent_shot("A", 1))
-print(board.result_of_opponent_shot("A", 8))
-print(board.result_of_opponent_shot("A", 9))
-print(board.result_of_opponent_shot("B", 9))
-print(board.result_of_opponent_shot("C", 9))
-print(board.result_of_opponent_shot("S", 9))
-print(board.result_of_opponent_shot("H", 7))
-print(board.result_of_opponent_shot("S", 9))
-print(board.result_of_opponent_shot("H", 5))
-print(board.result_of_opponent_shot("H", 6))
-print(board.result_of_opponent_shot("H", 8))
-board.add_result_of_player_shot_into_opponent_board("A", 1, "SINKING")
 board.draw_player_board()
-board.draw_opponent_board()
 
+print(board.ships.get_ships_coordinates_on_board())
 
 
 
