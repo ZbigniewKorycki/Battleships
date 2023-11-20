@@ -55,10 +55,6 @@ class CommunicationUtilsClient(CommunicationUtils):
         client_request = self.protocol_template(self.message_type[0])
         return client_request
 
-    def client_ask_for_game_number(self):
-        client_request = self.protocol_template(message_type = "GAME NUMBER")
-        return client_request
-
     def client_shot_request(self):
         counter_max_tries = 2
         while counter_max_tries > 0:
@@ -118,6 +114,14 @@ class CommunicationUtilsClient(CommunicationUtils):
     def client_send_unknown_command(self):
         message_unknown_command = self.protocol_template(self.message_type[5])
         return message_unknown_command
+
+    def client_request_for_save_game_to_db(self):
+        client_request = self.protocol_template(message_type = "SAVE_GAME")
+        return client_request
+
+    def client_ask_for_game_number(self):
+        client_request = self.protocol_template(message_type = "GAME_NUMBER")
+        return client_request
 
     def stop_client_and_server(self):
         stop_request = "STOP"
@@ -181,9 +185,18 @@ class DatabaseCommunicationUtils(CommunicationUtils):
         super().__init__()
         self.database_utils = DatabaseUtils(db_file)
 
-    def establish_game_number(self):
-        number_of_games_in_the_database = self.database_utils.get_all_games()
-        actually_game_number = len(number_of_games_in_the_database) + 1
-        response = str(self.protocol_template(message_type = "GAME NUMBER", body = str(actually_game_number)))
+    def save_game_to_db(self):
+        self.database_utils.add_game_to_db()
+        response = self.protocol_template(message_type = "SAVE_GAME", body = "The game was successfully added to database")
         return response
+
+    def establish_game_number(self):
+        try:
+            number_of_games_in_the_database = self.database_utils.get_all_games()
+            actually_game_number = number_of_games_in_the_database[-1]
+            response = str(self.protocol_template(message_type = "GAME_NUMBER", body = actually_game_number))
+            return response
+        except IndexError as e:
+            response = self.protocol_template(message_type = "GAME_NUMBER", body = str(e))
+            return response
 
