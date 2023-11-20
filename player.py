@@ -202,8 +202,8 @@ class AIPlayer(Player):
         elif len(possible_shots["normal"]) > 0:
             shot = random.choice(possible_shots["normal"])
         else:
-            shot = {"row": "A",
-                    "column": 1}
+            shot = {"row": "all possible shots used",
+                    "column": 10}
         row = shot["row"]
         column = shot["column"]
         return row, column
