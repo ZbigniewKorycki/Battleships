@@ -38,7 +38,9 @@ class Server:
             result = client_request["body"]
             self.ai_player.player_board.add_result_of_player_shot_into_opponent_board(self.communication_utils.last_shot, result)
             return self.communication_utils.server_acknowledgment_to_client_response_for_server_shot(result)
-        elif client_request["type"] == "GAME NUMBER":
+        elif client_request["type"] == "SAVE_GAME":
+            return self.database_communication_utils.save_game_to_db()
+        elif client_request["type"] == "GAME_NUMBER":
             return self.database_communication_utils.establish_game_number()
         else:
             return self.communication_utils.server_response_to_unknown_command()

@@ -27,7 +27,9 @@ class Client:
             return self.communication_utils.client_requesting_server_to_shot()
         elif client_input == "BOARD":
             return self.communication_utils.client_send_final_ships_positions()
-        elif client_input == "GAME NUMBER":
+        elif client_input == "SAVE_GAME_TO_DB":
+            return self.communication_utils.client_request_for_save_game_to_db()
+        elif client_input == "GAME_NUMBER":
             return self.communication_utils.client_ask_for_game_number()
         elif client_input == "STOP":
             return self.communication_utils.stop_client_and_server()
@@ -51,15 +53,16 @@ class Client:
         if server_response['type'] == "GAME_INVITATION" and server_response['status'] == 'OK':
             self.player.aut_coordinates_for_ship_add_to_board()
             self.player.player_board.prepare_board_for_game_start()
-        if server_response["body"] == "GAME NUMBER":
+        if server_response["body"] == "GAME_NUMBER":
             game_number = server_response["body"]
             return game_number
         return server_response
 
     def automation_game(self, client_socket):
         turn = 1
-        game_number = self.create_request_to_server("GAME NUMBER")
-        print(game_number)
+        self.helpful_feature_for_automation_game(client_socket, "SAVE_GAME_TO_DB")
+        game_number_establish = self.helpful_feature_for_automation_game(client_socket, "GAME_NUMBER")
+        game_number = game_number_establish["body"]
         while True:
             print(f">>>>>>>>>>TURN: {turn}<<<<<<<<<<")
             self.player.player_board.reload_boards()

@@ -81,7 +81,7 @@ class Ships:
                                    "Three-masted ship": [],
                                    "Two-masted ship": [],
                                    "One-masted ship": []}
-        for ship in *self.active_ships, *self.destroyed_ships:
+        for ship in [*self.active_ships, *self.destroyed_ships]:
             if ship.size == 1:
                 row = ship.coordinates[0]["row"]
                 column = str(ship.coordinates[0]["column"])
