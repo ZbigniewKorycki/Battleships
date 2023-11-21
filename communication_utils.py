@@ -196,7 +196,7 @@ class DatabaseCommunicationUtils(CommunicationUtils):
         try:
             number_of_games_in_the_database = self.database_utils.get_all_games()
             actually_game_number = number_of_games_in_the_database[-1]
-            response = str(self.protocol_template(message_type="GAME_NUMBER", body=actually_game_number))
+            response = self.protocol_template(message_type="GAME_NUMBER", body=actually_game_number)
             return response
         except IndexError as e:
             response = self.protocol_template(message_type="GAME_NUMBER", body=str(e))
