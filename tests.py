@@ -87,3 +87,31 @@ class TestBoard(unittest.TestCase):
         self.assertEqual(";", self.board.get_symbol_from_player_board(correct_coordinate))
         self.assertRaises(KeyError, self.board.get_symbol_from_player_board, incorrect_coordinate_wrong_row)
         self.assertRaises(KeyError, self.board.get_symbol_from_player_board, incorrect_coordinate_wrong_column)
+
+    def test_remove_blocks_from_board(self):
+        coordinate_1 = {"row": "B", "column": 5}
+        coordinate_2 = {"row": "A", "column": 5}
+        coordinate_3 = {"row": "J", "column": 10}
+        self.board.add_block_to_board(coordinate_1)
+        self.board.add_block_to_board(coordinate_2)
+        self.board.add_block_to_board(coordinate_3)
+
+        self.assertEqual(";", self.board.get_symbol_from_player_board(coordinate_1))
+        self.assertEqual(";", self.board.get_symbol_from_player_board(coordinate_2))
+        self.assertEqual(";", self.board.get_symbol_from_player_board(coordinate_3))
+
+        self.board.remove_blocks_from_board()
+
+        self.assertNotEquals(";", self.board.get_symbol_from_player_board(coordinate_1))
+        self.assertNotEquals(";", self.board.get_symbol_from_player_board(coordinate_2))
+        self.assertNotEquals(";", self.board.get_symbol_from_player_board(coordinate_3))
+
+        self.assertEqual("~", self.board.get_symbol_from_player_board(coordinate_1))
+        self.assertEqual("~", self.board.get_symbol_from_player_board(coordinate_2))
+        self.assertEqual("~", self.board.get_symbol_from_player_board(coordinate_3))
+
+
+
+
+
+
