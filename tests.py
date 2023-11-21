@@ -110,8 +110,18 @@ class TestBoard(unittest.TestCase):
         self.assertEqual("~", self.board.get_symbol_from_player_board(coordinate_2))
         self.assertEqual("~", self.board.get_symbol_from_player_board(coordinate_3))
 
-
-
-
-
-
+    def test_get_neighboring_coordinates_in_four_directions(self):
+        correct_coordinate = {"row": "C", "column": 5}
+        incorrect_coordinate_with_column_out_of_range = {"row": "J", "column": 11}
+        incorrect_coordinate_with_row_out_of_range = {"row": "K", "column": 3}
+        self.assertIn({"row": "B", "column": 5},
+                      self.board.get_neighboring_coordinates_in_four_directions(correct_coordinate))
+        self.assertIn({"row": "D", "column": 5},
+                      self.board.get_neighboring_coordinates_in_four_directions(correct_coordinate))
+        self.assertIn({"row": "C", "column": 4},
+                      self.board.get_neighboring_coordinates_in_four_directions(correct_coordinate))
+        self.assertIn({"row": "C", "column": 6},
+                      self.board.get_neighboring_coordinates_in_four_directions(correct_coordinate))
+        self.assertEqual(4, len(self.board.get_neighboring_coordinates_in_four_directions(correct_coordinate)))
+        self.assertRaises(TypeError, self.board.get_neighboring_coordinates_in_four_directions, incorrect_coordinate_with_column_out_of_range)
+        self.assertRaises(TypeError, self.board.get_neighboring_coordinates_in_four_directions, incorrect_coordinate_with_row_out_of_range)
