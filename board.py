@@ -23,7 +23,7 @@ class Board:
             "J": 10
         }
         self.ships = Ships()
-        self.possible_shots_for_ai = self.get_starting_possible_shots()
+
 
     def create_starting_board(self):
         starting_board = {
@@ -116,12 +116,9 @@ class Board:
         if self.check_if_coordinate_within_board_border(coordinate):
             if result == "HIT":
                 self.update_opponent_board(coordinate, 'X')
-                self.update_possible_shots_for_ai_after_ship_hit(coordinate)
             elif result == "MISS":
                 self.update_opponent_board(coordinate, 'M')
-                self.update_possible_shots_for_ai_after_miss_hit(coordinate)
             elif result == "SINKING":
-                self.update_possible_shots_for_ai_after_ship_sunk(coordinate)
                 coordinates_of_sunk_ship = self.get_coordinates_of_sunk_ship_from_last_hit_coordinate(coordinate)
                 for coordinate in coordinates_of_sunk_ship:
                     self.update_opponent_board(coordinate, "S")
@@ -270,6 +267,49 @@ class Board:
                                     for row in self.row_index for column in range(1, self.size_columns + 1)]}
         return shots_to_take
 
+
+    def update_player_board(self, coordinate, symbol):
+        row = coordinate["row"]
+        column = coordinate["column"]
+        self.player_board[row][column] = symbol
+
+    def update_opponent_board(self, coordinate, symbol):
+        row = coordinate["row"]
+        column = coordinate["column"]
+        self.opponent_board[row][column] = symbol
+
+    def get_symbol_from_player_board(self, coordinate):
+        row = coordinate["row"]
+        column = coordinate["column"]
+        symbol = self.player_board[row][column]
+        return symbol
+
+    def get_symbol_from_opponent_board(self, coordinate):
+        row = coordinate["row"]
+        column = coordinate["column"]
+        symbol = self.opponent_board[row][column]
+        return symbol
+
+class BoardAI(Board):
+
+    def __init__(self):
+        super().__init__()
+        self.possible_shots_for_ai = self.get_starting_possible_shots()
+
+    def add_result_of_player_shot_into_opponent_board(self, coordinate, result):
+        if self.check_if_coordinate_within_board_border(coordinate):
+            if result == "HIT":
+                self.update_opponent_board(coordinate, 'X')
+                self.update_possible_shots_for_ai_after_ship_hit(coordinate)
+            elif result == "MISS":
+                self.update_opponent_board(coordinate, 'M')
+                self.update_possible_shots_for_ai_after_miss_hit(coordinate)
+            elif result == "SINKING":
+                self.update_possible_shots_for_ai_after_ship_sunk(coordinate)
+                coordinates_of_sunk_ship = self.get_coordinates_of_sunk_ship_from_last_hit_coordinate(coordinate)
+                for coordinate in coordinates_of_sunk_ship:
+                    self.update_opponent_board(coordinate, "S")
+
     def update_possible_shots_for_ai_after_ship_hit(self, coordinate):
         neighboring_coordinates = self.get_neighboring_coordinates_in_four_directions(coordinate)
         for neighboring_coordinate in neighboring_coordinates:
@@ -298,28 +338,6 @@ class Board:
         if coordinate in self.possible_shots_for_ai["normal"]:
             self.possible_shots_for_ai["priority"].append(coordinate)
             self.possible_shots_for_ai["normal"].remove(coordinate)
-
-    def update_player_board(self, coordinate, symbol):
-        row = coordinate["row"]
-        column = coordinate["column"]
-        self.player_board[row][column] = symbol
-
-    def update_opponent_board(self, coordinate, symbol):
-        row = coordinate["row"]
-        column = coordinate["column"]
-        self.opponent_board[row][column] = symbol
-
-    def get_symbol_from_player_board(self, coordinate):
-        row = coordinate["row"]
-        column = coordinate["column"]
-        symbol = self.player_board[row][column]
-        return symbol
-
-    def get_symbol_from_opponent_board(self, coordinate):
-        row = coordinate["row"]
-        column = coordinate["column"]
-        symbol = self.opponent_board[row][column]
-        return symbol
 
 
 if __name__ == "__main__":

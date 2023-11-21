@@ -2,7 +2,7 @@ import string
 import random
 import time
 from ships_logic import Ship, Ships
-from board import Board
+from board import Board, BoardAI
 from custom_exception import CustomException
 from data_utils import DatabaseUtils
 from config_variables import db_file
@@ -19,20 +19,20 @@ class Player:
             try:
                 for ship_type in self.ships.ships_to_deploy_list:
                     row_input = self.row_input(ship_type)
-                    if row_input[0] == True:
+                    if row_input[0]:
                         row = row_input[1]
                     else:
                         print(row_input[1])
                         break
                     column_input = self.column_input(ship_type)
-                    if column_input[0] == True:
+                    if column_input[0]:
                         column = column_input[1]
                     else:
                         print(column_input[1])
                         break
                     size = self.ship_size_establish(ship_type)
                     orientation_input = self.orientation_input(ship_type)
-                    if orientation_input[0] == True:
+                    if orientation_input[0]:
                         orientation = orientation_input[1]
                     else:
                         print(orientation_input[1])
@@ -50,22 +50,22 @@ class Player:
     def row_input(self, ship_type):
         row = input(f"Set row for '{ship_type}' from 'A' to 'J': ").capitalize()
         if row in string.ascii_uppercase[:10]:
-            return (True, row)
+            return True, row
         else:
             error_message = "Row outside index"
-            return (False, error_message)
+            return False, error_message
 
     def column_input(self, ship_type):
         try:
             column = int(input(f"Set column for '{ship_type}' from '1' to '10': "))
             if column in range(1, 11):
-                return (True, column)
+                return True, column
             else:
                 error_message = "Column outside index"
-                return (False, error_message)
+                return False, error_message
         except ValueError:
             error_message = "Column have to be an integer"
-            return (False, error_message)
+            return False, error_message
 
     def ship_size_establish(self, ship_type):
         if ship_type == "Four-masted ship":
@@ -87,13 +87,13 @@ class Player:
                     orientation = "horizontal"
                 elif orientation_input == "V":
                     orientation = "vertical"
-                return (True, orientation)
+                return True, orientation
             else:
                 error_message = "Orientation has to be 'H' or 'V'"
-                return (False, error_message)
+                return False, error_message
         elif ship_type == "One-masted ship":
             orientation = "horizontal"
-            return (True, orientation)
+            return True, orientation
 
     # def show_boards_status_for_archived_game(self):
     #     all_games = self.database_service.show_all_games()
@@ -155,7 +155,11 @@ class Player:
             return orientation
 
 
-class AIPlayer(Player):
+class AIPlayer:
+    def __init__(self):
+        self.ships = Ships()
+        self.player_board = BoardAI()
+        self.database_service = DatabaseUtils(db_file)
 
     def coordinates_for_ship_add_to_board(self):
         while self.ships.ships_to_deploy_list:
@@ -172,6 +176,17 @@ class AIPlayer(Player):
                 continue
             except CustomException:
                 continue
+
+    def ship_size_establish(self, ship_type):
+        if ship_type == "Four-masted ship":
+            size = 4
+        elif ship_type == "Three-masted ship":
+            size = 3
+        elif ship_type == "Two-masted ship":
+            size = 2
+        elif ship_type == "One-masted ship":
+            size = 1
+        return size
 
     def row_input(self):
         row_index = random.randint(0, 9)
