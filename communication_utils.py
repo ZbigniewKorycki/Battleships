@@ -2,7 +2,6 @@ from data_utils import DatabaseUtils
 from config_variables import db_file
 
 
-
 class CommunicationUtils:
 
     def __init__(self):
@@ -116,11 +115,11 @@ class CommunicationUtilsClient(CommunicationUtils):
         return message_unknown_command
 
     def client_request_for_save_game_to_db(self):
-        client_request = self.protocol_template(message_type = "SAVE_GAME")
+        client_request = self.protocol_template(message_type="SAVE_GAME")
         return client_request
 
     def client_ask_for_game_number(self):
-        client_request = self.protocol_template(message_type = "GAME_NUMBER")
+        client_request = self.protocol_template(message_type="GAME_NUMBER")
         return client_request
 
     def stop_client_and_server(self):
@@ -162,11 +161,14 @@ class CommunicationUtilsServer(CommunicationUtils):
 
     def server_acknowledgment_to_client_response_for_server_shot(self, result):
         if result == "MISS":
-            server_response = self.protocol_template(self.message_type[3], self.status_code[0], body = self.shot_result[0])
+            server_response = self.protocol_template(self.message_type[3], self.status_code[0],
+                                                     body=self.shot_result[0])
         elif result == "HIT":
-            server_response = self.protocol_template(self.message_type[3], self.status_code[0], body = self.shot_result[1])
+            server_response = self.protocol_template(self.message_type[3], self.status_code[0],
+                                                     body=self.shot_result[1])
         elif result == "SINKING":
-            server_response = self.protocol_template(self.message_type[3], self.status_code[0], body = self.shot_result[2])
+            server_response = self.protocol_template(self.message_type[3], self.status_code[0],
+                                                     body=self.shot_result[2])
         else:
             server_response = self.protocol_template(self.message_type[3], self.status_code[0])
         return server_response
@@ -187,16 +189,15 @@ class DatabaseCommunicationUtils(CommunicationUtils):
 
     def save_game_to_db(self):
         self.database_utils.add_game_to_db()
-        response = self.protocol_template(message_type = "SAVE_GAME", body = "The game was successfully added to database")
+        response = self.protocol_template(message_type="SAVE_GAME", body="The game was successfully added to database")
         return response
 
     def establish_game_number(self):
         try:
             number_of_games_in_the_database = self.database_utils.get_all_games()
             actually_game_number = number_of_games_in_the_database[-1]
-            response = str(self.protocol_template(message_type = "GAME_NUMBER", body = actually_game_number))
+            response = str(self.protocol_template(message_type="GAME_NUMBER", body=actually_game_number))
             return response
         except IndexError as e:
-            response = self.protocol_template(message_type = "GAME_NUMBER", body = str(e))
+            response = self.protocol_template(message_type="GAME_NUMBER", body=str(e))
             return response
-

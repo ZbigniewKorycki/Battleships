@@ -3,7 +3,6 @@ import sqlite3
 from sqlite3 import Error
 
 
-
 class DataUtils:
 
     def __init__(self):
@@ -30,7 +29,7 @@ class DatabaseUtils:
             print(f"Error: {e}")
             return None
 
-    def execute_sql_query(self, query, *args, fetch_option = None):
+    def execute_sql_query(self, query, *args, fetch_option=None):
         connection = self.create_connection()
         cursor = connection.cursor()
         if connection is not None:
@@ -81,7 +80,7 @@ class DatabaseUtils:
         board_json_serialize = json.dumps(board)
         game_id_query = "SELECT game_id FROM games " \
                         "WHERE game_id = ?"
-        game_id = self.execute_sql_query(game_id_query, (game_number, ), fetch_option = "fetchone")[0]
+        game_id = self.execute_sql_query(game_id_query, (game_number,), fetch_option="fetchone")[0]
         query = "INSERT INTO boards (game_id, board_status, board_number)" \
                 "VALUES (?, ?, ?)"
         self.execute_sql_query(query, (game_id, board_json_serialize, board_number))
@@ -89,14 +88,14 @@ class DatabaseUtils:
     def get_all_games(self):
         query = "SELECT * FROM games " \
                 "ORDER BY game_id"
-        all_games = self.execute_sql_query(query, fetch_option = "fetchall")
+        all_games = self.execute_sql_query(query, fetch_option="fetchall")
         return all_games
 
     def get_boards_status_for_game(self, game_number):
         query = "SELECT board_status FROM boards " \
                 "WHERE game_id = (SELECT game_id FROM games WHERE game_id = ?) " \
                 "ORDER BY board_number_in_order"
-        boards = self.execute_sql_query(query, (game_number, ), fetch_option = "fetchall")
+        boards = self.execute_sql_query(query, (game_number,), fetch_option="fetchall")
         return boards
 
     def set_winner(self, winner_message, game_number):
@@ -108,5 +107,3 @@ class DatabaseUtils:
                 "SET winner = ? " \
                 "WHERE game_id = ?"
         self.execute_sql_query(query, (winner, game_number))
-
-

@@ -6,7 +6,6 @@ class TestBoard(unittest.TestCase):
     def setUp(self):
         self.board = Board()
 
-
     def tearDown(self) -> None:
         pass
 
