@@ -186,10 +186,9 @@ class Board:
                                        {"row_index": row_index - distance, "column": column, "direction": "up"},
                                        {"row_index": row_index + distance, "column": column, "direction": "down"}] for
                                       distance in range(1, 4)]
-        neighboring_coordinates_with_row_index = []
-        for distance_neig in coordinates_with_row_index:
-            for coordinate in distance_neig:
-                neighboring_coordinates_with_row_index.append(coordinate)
+
+        neighboring_coordinates_with_row_index = [coordinate for distance in coordinates_with_row_index for
+                                                  coordinate in distance]
 
         directions = ['left', 'right', 'up', 'down']
 
