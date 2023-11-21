@@ -58,13 +58,13 @@ class Board:
         if self.check_if_coordinates_accessible_to_add_ship(ship.coordinates):
             for coordinate in ship.coordinates:
                 self.update_player_board(coordinate, "O")
-            self.block_ship_near_fields(ship.coordinates)
+            self.block_coordinates_near_ship(ship.coordinates)
             self.ships.active_ships.append(ship)
             return self.draw_player_board()
         else:
             raise CustomException("There`s another ship in area")
 
-    def block_ship_near_fields(self, coordinates):
+    def block_coordinates_near_ship(self, coordinates):
         for coordinate in coordinates:
             neighboring_coordinates = self.get_neighboring_coordinates_in_eight_directions(coordinate)
             for neighboring_coordinate in neighboring_coordinates:
