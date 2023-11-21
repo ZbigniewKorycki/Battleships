@@ -294,50 +294,50 @@ class BoardAI(Board):
 
     def __init__(self):
         super().__init__()
-        self.possible_shots_for_ai = self.get_starting_possible_shots()
+        self.possible_shots_for_player_ai = self.get_starting_possible_shots()
 
     def add_result_of_player_shot_into_opponent_board(self, coordinate, result):
         if self.check_if_coordinate_within_board_border(coordinate):
             if result == "HIT":
                 self.update_opponent_board(coordinate, 'X')
-                self.update_possible_shots_for_ai_after_ship_hit(coordinate)
+                self.update_possible_shots_for_player_ai_after_ship_hit(coordinate)
             elif result == "MISS":
                 self.update_opponent_board(coordinate, 'M')
-                self.update_possible_shots_for_ai_after_miss_hit(coordinate)
+                self.update_possible_shots_for_player_ai_after_miss_hit(coordinate)
             elif result == "SINKING":
-                self.update_possible_shots_for_ai_after_ship_sunk(coordinate)
+                self.update_possible_shots_for_player_ai_after_ship_sunk(coordinate)
                 coordinates_of_sunk_ship = self.get_coordinates_of_sunk_ship_from_last_hit_coordinate(coordinate)
                 for coordinate in coordinates_of_sunk_ship:
                     self.update_opponent_board(coordinate, "S")
 
-    def update_possible_shots_for_ai_after_ship_hit(self, coordinate):
+    def update_possible_shots_for_player_ai_after_ship_hit(self, coordinate):
         neighboring_coordinates = self.get_neighboring_coordinates_in_four_directions(coordinate)
         for neighboring_coordinate in neighboring_coordinates:
-            self.upgrade_priority_of_coordinate_shot_for_possible_shots_for_ai(neighboring_coordinate)
-        self.remove_coordinate_from_possible_shots_for_ai(coordinate)
+            self.upgrade_priority_of_coordinate_shot_for_possible_shots_for_player_ai(neighboring_coordinate)
+        self.remove_coordinate_from_possible_shots_for_player_ai(coordinate)
 
-    def update_possible_shots_for_ai_after_ship_sunk(self, coordinate):
+    def update_possible_shots_for_player_ai_after_ship_sunk(self, coordinate):
         coordinates_of_sunk_ship = self.get_coordinates_of_sunk_ship_from_last_hit_coordinate(coordinate)
         for coordinate_of_sunk_ship in coordinates_of_sunk_ship:
-            self.remove_coordinate_from_possible_shots_for_ai(coordinate_of_sunk_ship)
+            self.remove_coordinate_from_possible_shots_for_player_ai(coordinate_of_sunk_ship)
             neighboring_coordinates_of_part_of_sunk_ship = self.get_neighboring_coordinates_in_eight_directions(
                 coordinate_of_sunk_ship)
             for neighboring_coordinate in neighboring_coordinates_of_part_of_sunk_ship:
-                self.remove_coordinate_from_possible_shots_for_ai(neighboring_coordinate)
+                self.remove_coordinate_from_possible_shots_for_player_ai(neighboring_coordinate)
 
-    def update_possible_shots_for_ai_after_miss_hit(self, coordinate):
-        self.remove_coordinate_from_possible_shots_for_ai(coordinate)
+    def update_possible_shots_for_player_ai_after_miss_hit(self, coordinate):
+        self.remove_coordinate_from_possible_shots_for_player_ai(coordinate)
 
-    def remove_coordinate_from_possible_shots_for_ai(self, coordinate):
-        if coordinate in self.possible_shots_for_ai["priority"]:
-            self.possible_shots_for_ai["priority"].remove(coordinate)
-        if coordinate in self.possible_shots_for_ai["normal"]:
-            self.possible_shots_for_ai["normal"].remove(coordinate)
+    def remove_coordinate_from_possible_shots_for_player_ai(self, coordinate):
+        if coordinate in self.possible_shots_for_player_ai["priority"]:
+            self.possible_shots_for_player_ai["priority"].remove(coordinate)
+        if coordinate in self.possible_shots_for_player_ai["normal"]:
+            self.possible_shots_for_player_ai["normal"].remove(coordinate)
 
-    def upgrade_priority_of_coordinate_shot_for_possible_shots_for_ai(self, coordinate):
-        if coordinate in self.possible_shots_for_ai["normal"]:
-            self.possible_shots_for_ai["priority"].append(coordinate)
-            self.possible_shots_for_ai["normal"].remove(coordinate)
+    def upgrade_priority_of_coordinate_shot_for_possible_shots_for_player_ai(self, coordinate):
+        if coordinate in self.possible_shots_for_player_ai["normal"]:
+            self.possible_shots_for_player_ai["priority"].append(coordinate)
+            self.possible_shots_for_player_ai["normal"].remove(coordinate)
 
 
 if __name__ == "__main__":

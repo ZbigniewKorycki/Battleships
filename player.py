@@ -211,7 +211,7 @@ class AIPlayer:
             return orientation
 
     def ai_shot(self):
-        possible_shots = self.player_board.possible_shots_for_ai
+        possible_shots = self.player_board.possible_shots_for_player_ai
         if len(possible_shots["priority"]) > 0:
             shot = random.choice(possible_shots["priority"])
         elif len(possible_shots["normal"]) > 0:
