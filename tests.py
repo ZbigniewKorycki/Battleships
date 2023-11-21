@@ -54,3 +54,17 @@ class TestBoard(unittest.TestCase):
         self.assertIs(row_4, None)
         self.assertIs(row_5, None)
         self.assertIs(row_6, None)
+
+    def test_get_index_from_row(self):
+        index_1 = self.board.get_index_from_row(1)
+        index_2 = self.board.get_index_from_row(0)
+        index_3 = self.board.get_index_from_row("A")
+        index_4 = self.board.get_index_from_row("J")
+        index_5 = self.board.get_index_from_row("a")
+        index_6 = self.board.get_index_from_row("Z")
+        self.assertIs(index_1, None)
+        self.assertIs(index_2, None)
+        self.assertEqual(1, index_3)
+        self.assertEqual(10, index_4)
+        self.assertIs(index_5, None)
+        self.assertIs(index_6, None)
