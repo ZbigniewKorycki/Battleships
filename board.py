@@ -176,8 +176,7 @@ class Board:
         self.draw_opponent_board()
 
     def get_coordinates_of_sunk_ship_from_last_hit_coordinate(self, last_hit_coordinate_of_sunk_ship):
-        row = last_hit_coordinate_of_sunk_ship["row"]
-        column = last_hit_coordinate_of_sunk_ship["column"]
+        row, column = self.get_row_and_column_from_coordinate(last_hit_coordinate_of_sunk_ship)
         row_index = self.get_index_from_row(row)
         coordinates_with_row_index = [[{"row_index": row_index, "column": column - distance, "direction": "left"},
                                        {"row_index": row_index, "column": column + distance, "direction": "right"},
@@ -264,24 +263,20 @@ class Board:
 
 
     def update_player_board(self, coordinate, symbol):
-        row = coordinate["row"]
-        column = coordinate["column"]
+        row, column = self.get_row_and_column_from_coordinate(coordinate)
         self.player_board[row][column] = symbol
 
     def update_opponent_board(self, coordinate, symbol):
-        row = coordinate["row"]
-        column = coordinate["column"]
+        row, column = self.get_row_and_column_from_coordinate(coordinate)
         self.opponent_board[row][column] = symbol
 
     def get_symbol_from_player_board(self, coordinate):
-        row = coordinate["row"]
-        column = coordinate["column"]
+        row, column = self.get_row_and_column_from_coordinate(coordinate)
         symbol = self.player_board[row][column]
         return symbol
 
     def get_symbol_from_opponent_board(self, coordinate):
-        row = coordinate["row"]
-        column = coordinate["column"]
+        row, column = self.get_row_and_column_from_coordinate(coordinate)
         symbol = self.opponent_board[row][column]
         return symbol
 
