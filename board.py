@@ -82,9 +82,7 @@ class Board:
             return True
 
     def check_if_coordinate_within_board_border(self, coordinate):
-        row = coordinate["row"]
-        column = coordinate["column"]
-        if row in self.row_index and column in range(1, self.size_columns + 1):
+        if coordinate["row"] in self.row_index and coordinate["column"] in range(1, self.size_columns + 1):
             return True
         else:
             return False
@@ -216,8 +214,7 @@ class Board:
         return coordinates_of_sunk_ship
 
     def get_neighboring_coordinates_in_four_directions(self, coordinate):
-        row = coordinate["row"]
-        column = coordinate["column"]
+        row, column = self.get_row_and_column_from_coordinate(coordinate)
         row_index = self.get_index_from_row(row)
         neighboring_coordinates_with_row_index = [{"row_index": row_index, "column": column - 1},
                                                   {"row_index": row_index, "column": column + 1},
@@ -231,8 +228,7 @@ class Board:
         return neighboring_coordinates
 
     def get_neighboring_coordinates_in_eight_directions(self, coordinate):
-        row = coordinate["row"]
-        column = coordinate["column"]
+        row, column = self.get_row_and_column_from_coordinate(coordinate)
         row_index = self.get_index_from_row(row)
         neighboring_coordinates_with_row_index = [{"row_index": row_index, "column": column - 1},
                                                   {"row_index": row_index, "column": column + 1},
@@ -288,6 +284,12 @@ class Board:
         column = coordinate["column"]
         symbol = self.opponent_board[row][column]
         return symbol
+
+    def get_row_and_column_from_coordinate(self, coordinate):
+        if self.check_if_coordinate_within_board_border(coordinate):
+            return coordinate["row"], coordinate["column"]
+        else:
+            return None
 
 class BoardAI(Board):
 
