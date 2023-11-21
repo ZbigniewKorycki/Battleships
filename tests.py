@@ -68,3 +68,17 @@ class TestBoard(unittest.TestCase):
         self.assertEqual(10, index_4)
         self.assertIs(index_5, None)
         self.assertIs(index_6, None)
+
+    def test_add_block_to_board(self):
+        correct_coordinate = {"row": "B", "column": 5}
+        incorrect_coordinate_wrong_row = {"row": "Z", "column": 1}
+        incorrect_coordinate_wrong_column = {"row": "A", "column": 100}
+
+        self.board.add_block_to_board(correct_coordinate)
+        self.board.add_block_to_board(incorrect_coordinate_wrong_row)
+        self.board.add_block_to_board(incorrect_coordinate_wrong_column)
+
+        self.assertEqual(";", self.board.get_symbol_from_player_board(correct_coordinate))
+        self.assertRaises(KeyError, self.board.get_symbol_from_player_board, incorrect_coordinate_wrong_row)
+        self.assertRaises(KeyError, self.board.get_symbol_from_player_board, incorrect_coordinate_wrong_column)
+
