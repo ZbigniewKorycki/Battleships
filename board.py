@@ -62,7 +62,7 @@ class Board:
             self.ships.active_ships.append(ship)
             return True
         else:
-            raise CustomException("There`s another ship in area")
+            raise CustomException("There's another ship in area or ship not within board border.")
 
     def block_coordinates_near_ship(self, coordinates):
         for coordinate in coordinates:

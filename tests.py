@@ -1,5 +1,7 @@
 import unittest
 from board import Board
+from custom_exception import CustomException
+from ships_logic import Ship, Ships
 
 
 class TestBoard(unittest.TestCase):
@@ -85,8 +87,8 @@ class TestBoard(unittest.TestCase):
         self.board.add_block_to_board(incorrect_coordinate_wrong_column)
 
         self.assertEqual(";", self.board.get_symbol_from_player_board(correct_coordinate))
-        self.assertRaises(TypeError, self.board.get_symbol_from_player_board, incorrect_coordinate_wrong_row)
-        self.assertRaises(TypeError, self.board.get_symbol_from_player_board, incorrect_coordinate_wrong_column)
+        self.assertIs(None, self.board.get_symbol_from_player_board(incorrect_coordinate_wrong_row))
+        self.assertIs(None, self.board.get_symbol_from_player_board(incorrect_coordinate_wrong_column))
 
     def test_remove_blocks_from_board(self):
         coordinate_1 = {"row": "B", "column": 5}
@@ -194,3 +196,18 @@ class TestBoard(unittest.TestCase):
         coordinate3 = self.board.get_coordinate_from_coordinate_with_row_index(
             incorrect_coordinate_with_column_as_letter)
         self.assertIs(None, coordinate3)
+
+    def test_add_ship(self):
+        ship_size_1 = Ship(row="A", column=1, size=1, orientation="horizontal")
+        ship_size_2 = Ship(row="C", column=3, size=2, orientation="vertical")
+        ship_size_3 = Ship(row="F", column=7, size=3, orientation="horizontal")
+        ship_size_4 = Ship(row="A", column=10, size=4, orientation="vertical")
+
+        self.assertTrue(self.board.add_ship(ship_size_1))
+        self.assertTrue(self.board.add_ship(ship_size_2))
+        self.assertTrue(self.board.add_ship(ship_size_3))
+        self.assertTrue(self.board.add_ship(ship_size_4))
+
+        ship_with_incorrect_coordinates = Ship(row="A", column=11, size=1, orientation="horizontal")
+        self.assertRaises(CustomException, self.board.add_ship, ship_with_incorrect_coordinates)
+
