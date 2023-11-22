@@ -121,9 +121,6 @@ class Board:
                 for coordinate in coordinates_of_sunk_ship:
                     self.update_opponent_board(coordinate, "S")
 
-        else:
-            print("Shot outside board.")
-
     def result_of_opponent_shot(self, coordinate):
         if self.check_if_coordinate_within_board_border(coordinate):
             if self.get_symbol_from_player_board(coordinate) == "O":
