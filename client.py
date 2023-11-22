@@ -86,7 +86,7 @@ class Client:
             self.repeat_shot_check(server_shot, client_socket, "SHOT_REQUEST")
             number_of_sunk_signs_in_ai_player_opponent_board_2 = self.ai_player.player_board.count_sunk_signs()
             if number_of_sunk_signs_in_ai_player_opponent_board_2 == 20:
-                winner = "SERVER!"
+                winner = "SERVER"
                 break
             turn += 1
         winner_message = self.communication_feature_template(client_socket, "SAVE_WINNER_TO_DB", winner)
