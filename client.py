@@ -18,7 +18,7 @@ class Client:
         self.communication_utils = CommunicationUtilsClient(self.player)
         self.is_running = True
 
-    def create_request_to_server(self, client_input):
+    def create_request_to_server(self, client_input, args=None):
         if client_input == "START":
             return self.communication_utils.client_game_invitation_request()
         elif client_input == "SHOT":
@@ -30,9 +30,12 @@ class Client:
         elif client_input == "SAVE_GAME_TO_DB":
             return self.communication_utils.client_request_to_db_service("SAVE_GAME_TO_DB")
         elif client_input == "SAVE_BOARD_STATUS_TO_DB":
-            return self.communication_utils.client_request_to_db_service("SAVE_BOARD_STATUS_TO_DB")
-        elif client_input == "GAME_NUMBER":
-            return self.communication_utils.client_request_to_db_service("GAME_NUMBER")
+            return self.communication_utils.client_request_to_db_service("SAVE_BOARD_STATUS_TO_DB", {"player_board": self.player.player_board,
+                                                                                                     "opponent_board": self.ai_player.player_board})
+        elif client_input == "SAVE_WINNER_TO_DB":
+            return self.communication_utils.client_request_to_db_service("SAVE_WINNER_TO_DB", {"winner": args})
+        elif client_input == "SHOW_ARCHIVED_GAMES":
+            return self.communication_utils.client_request_to_db_service("SHOW_ARCHIVED_GAMES")
         elif client_input == "STOP":
             return self.communication_utils.stop_client_and_server()
         else:
@@ -55,42 +58,40 @@ class Client:
         if server_response['type'] == "GAME_INVITATION" and server_response['status'] == 'OK':
             self.player.aut_coordinates_for_ship_add_to_board()
             self.player.player_board.prepare_board_for_game_start()
-        if server_response["body"] == "GAME_NUMBER":
-            game_number = server_response["body"]
-            return game_number
         return server_response
 
     def automation_game(self, client_socket):
         turn = 1
-        self.communication_feature_template(client_socket, "SAVE_GAME_TO_DB")
-        game_number_establish = self.communication_feature_template(client_socket, "GAME_NUMBER")
-        game_number = game_number_establish["body"]
         while True:
             print(f">>>>>>>>>>TURN: {turn}<<<<<<<<<<")
             self.player.player_board.reload_boards()
+            self.communication_feature_template(client_socket, "SAVE_BOARD_STATUS_TO_DB")
             client_shot = self.communication_feature_template(client_socket, "SHOT")
             print(client_shot)
             number_of_sunk_signs_in_player_opponent_board = self.player.player_board.count_sunk_signs()
             if number_of_sunk_signs_in_player_opponent_board == 20:
-                winner_message = "YOU WIN !"
+                winner = "CLIENT"
                 break
             self.repeat_shot_check(client_shot, client_socket, "SHOT")
             number_of_sunk_signs_in_player_opponent_board_2 = self.player.player_board.count_sunk_signs()
             if number_of_sunk_signs_in_player_opponent_board_2 == 20:
-                winner_message = "YOU WIN !"
+                winner = "CLIENT"
                 break
             server_shot = self.communication_feature_template(client_socket, "SHOT_REQUEST")
             print(server_shot)
             number_of_sunk_signs_in_ai_player_opponent_board = self.ai_player.player_board.count_sunk_signs()
             if number_of_sunk_signs_in_ai_player_opponent_board == 20:
-                winner_message = "ENEMY WINS !"
+                winner= "SERVER"
                 break
             self.repeat_shot_check(server_shot, client_socket, "SHOT_REQUEST")
             number_of_sunk_signs_in_ai_player_opponent_board_2 = self.ai_player.player_board.count_sunk_signs()
             if number_of_sunk_signs_in_ai_player_opponent_board_2 == 20:
-                winner_message = "ENEMY WINS !"
+                winner = "SERVER!"
                 break
             turn += 1
+        winner_message = self.communication_feature_template(client_socket, "SAVE_WINNER_TO_DB", winner)
+        print(winner_message["body"])
+
 
     def check_server_response_instance(self, server_response):
         if isinstance(server_response, str):
@@ -112,8 +113,8 @@ class Client:
                 if shot_response not in ["HIT", "SINKING"]:
                     shot_repeat = False
 
-    def communication_feature_template(self, client_socket, request):
-        client_request = self.create_request_to_server(request)
+    def communication_feature_template(self, client_socket, request, args=None):
+        client_request = self.create_request_to_server(request, args)
         client_request_json = self.data_utils.serialize_to_json(client_request)
         client_socket.sendall(client_request_json)
         server_response_json = client_socket.recv(self.buffer)
@@ -136,7 +137,21 @@ class Client:
                     server_response_json = client_socket.recv(self.buffer)
                     self.read_server_response(server_response_json, client_socket)
                     if client_input == "START":
+                        self.communication_feature_template(client_socket, "SAVE_GAME_TO_DB")
                         self.automation_game(client_socket)
+                    elif client_input == "SHOW":
+                        server_response = self.communication_feature_template(client_socket, "SHOW_ARCHIVED_GAMES")
+                        all_games = server_response["body"]
+                        if all_games == None or all_games == []:
+                            print("There`s no game to watch")
+                        else:
+                            for game in all_games:
+                                print(game)
+                            game_id = input("Which game do you want to watch ? Give her ID: ")
+                            try:
+                                pass
+                            except ValueError as e:
+                                print(e)
 
     def stop(self, client_socket, client_input):
         client_request = self.create_request_to_server(client_input)
