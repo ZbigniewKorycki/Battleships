@@ -114,12 +114,13 @@ class CommunicationUtilsClient(CommunicationUtils):
         message_unknown_command = self.protocol_template(self.message_type[5])
         return message_unknown_command
 
-    def client_request_for_save_game_to_db(self):
-        client_request = self.protocol_template(message_type="SAVE_GAME")
-        return client_request
-
-    def client_ask_for_game_number(self):
-        client_request = self.protocol_template(message_type="GAME_NUMBER")
+    def client_request_to_db_service(self, request):
+        if request == "SAVE_GAME_TO_DB":
+            client_request = self.protocol_template(message_type="SAVE_GAME")
+        elif request == "SAVE_BOARD_STATUS_TO_DB":
+            client_request = self.protocol_template(message_type="SAVE_BOARD_STATUS")
+        elif request == "GAME_NUMBER":
+            client_request = self.protocol_template(message_type="GAME_NUMBER")
         return client_request
 
     def stop_client_and_server(self):

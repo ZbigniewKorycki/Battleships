@@ -43,6 +43,8 @@ class Server:
             return self.database_communication_utils.save_game_to_db()
         elif client_request["type"] == "GAME_NUMBER":
             return self.database_communication_utils.establish_game_number()
+        elif client_request["type"] == "SAVE_BOARD_STATUS":
+            pass
         else:
             return self.communication_utils.server_response_to_unknown_command()
 
