@@ -200,7 +200,6 @@ Odpowiedź serwera:
 
 
 ## Przykładowy diagram rozgrywki
-```mermaid
 Klient -->> Serwer: Zaproszenie do gry
 Serwer -->> Klient: Potwierdzenie zaproszenia
 
@@ -217,5 +216,3 @@ Klient, Serwer: Dalszy przebieg gry, aż do zakończenia
 
 Klient -->> Serwer: Przesłanie rozmieszczenia statków 
 Serwer -->> Klient: Potwierdzenie otrzymania rozmieszczenie
-
-```
