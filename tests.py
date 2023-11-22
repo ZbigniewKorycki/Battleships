@@ -208,6 +208,9 @@ class TestBoard(unittest.TestCase):
         self.assertTrue(self.board.add_ship(ship_size_3))
         self.assertTrue(self.board.add_ship(ship_size_4))
 
-        ship_with_incorrect_coordinates = Ship(row="A", column=11, size=1, orientation="horizontal")
-        self.assertRaises(CustomException, self.board.add_ship, ship_with_incorrect_coordinates)
+        ship_with_incorrect_coordinates_without_board = Ship(row="A", column=11, size=1, orientation="horizontal")
+        self.assertRaises(CustomException, self.board.add_ship, ship_with_incorrect_coordinates_without_board)
 
+        ship_with_incorrect_coordinates_too_close_another_ship = Ship(row="B", column=1, size=3,
+                                                                      orientation="horizontal")
+        self.assertRaises(CustomException, self.board.add_ship, ship_with_incorrect_coordinates_too_close_another_ship)
