@@ -200,23 +200,24 @@ Odpowiedź serwera:
 
 
 ## Przykładowy diagram rozgrywki
-```mermaid
-sequenceDiagram
 Klient -->> Serwer: Zaproszenie do gry
+
 Serwer -->> Klient: Potwierdzenie zaproszenia
 
 Klient -->> Serwer: Strzał
+
 Serwer -->> Klient: Resultat strzału
 
 Klient -->> Serwer: Żądanie strzału przez serwer
+
 Serwer -->> Klient: Strzał serwera
 
 Klient -->> Serwer: Rezultat strzału serwera
+
 Serwer -->> Klient: Potwierdzenie otrzymania rezultatu
 
 Klient, Serwer: Dalszy przebieg gry, aż do zakończenia
 
 Klient -->> Serwer: Przesłanie rozmieszczenia statków 
-Serwer -->> Klient: Potwierdzenie otrzymania rozmieszczenie
 
-```
+Serwer -->> Klient: Potwierdzenie otrzymania rozmieszczenie
