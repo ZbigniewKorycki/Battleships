@@ -39,6 +39,7 @@ class Player:
                         break
                     ship = Ship(row, column, size, orientation)
                     self.player_board.add_ship(ship)
+                    self.player_board.draw_player_board()
                     self.ships.ships_to_deploy_list.remove(ship_type)
             except KeyError:
                 print("Ship outside the board, try again")
@@ -126,6 +127,7 @@ class Player:
                     orientation = self.aut_orientation_input(ship_type)
                     ship = Ship(row, column, size, orientation)
                     self.player_board.add_ship(ship)
+                    self.player_board.draw_player_board()
                     self.ships.ships_to_deploy_list.remove(ship_type)
             except KeyError:
                 continue
@@ -171,6 +173,7 @@ class AIPlayer:
                     orientation = self.orientation_input(ship_type)
                     ship = Ship(row, column, size, orientation)
                     self.player_board.add_ship(ship)
+                    self.player_board.draw_player_board()
                     self.ships.ships_to_deploy_list.remove(ship_type)
             except KeyError:
                 continue
