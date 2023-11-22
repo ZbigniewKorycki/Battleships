@@ -255,13 +255,6 @@ class Board:
     def get_positions_of_all_ships(self):
         return self.ships.get_ships_coordinates_on_board()
 
-    def get_starting_possible_shots(self):
-        shots_to_take = {"priority": [],
-                         "normal": [{"row": row, "column": column}
-                                    for row in self.row_index for column in range(1, self.size_columns + 1)]}
-        return shots_to_take
-
-
     def update_player_board(self, coordinate, symbol):
         row, column = self.get_row_and_column_from_coordinate(coordinate)
         self.player_board[row][column] = symbol
@@ -291,6 +284,12 @@ class BoardAI(Board):
     def __init__(self):
         super().__init__()
         self.possible_shots_for_player_ai = self.get_starting_possible_shots()
+
+    def get_starting_possible_shots(self):
+        shots_to_take = {"priority": [],
+                         "normal": [{"row": row, "column": column}
+                                    for row in self.row_index for column in range(1, self.size_columns + 1)]}
+        return shots_to_take
 
     def add_result_of_player_shot_into_opponent_board(self, coordinate, result):
         if self.check_if_coordinate_within_board_border(coordinate):
