@@ -28,9 +28,11 @@ class Client:
         elif client_input == "BOARD":
             return self.communication_utils.client_send_final_ships_positions()
         elif client_input == "SAVE_GAME_TO_DB":
-            return self.communication_utils.client_request_for_save_game_to_db()
+            return self.communication_utils.client_request_to_db_service("SAVE_GAME_TO_DB")
+        elif client_input == "SAVE_BOARD_STATUS_TO_DB":
+            return self.communication_utils.client_request_to_db_service("SAVE_BOARD_STATUS_TO_DB")
         elif client_input == "GAME_NUMBER":
-            return self.communication_utils.client_ask_for_game_number()
+            return self.communication_utils.client_request_to_db_service("GAME_NUMBER")
         elif client_input == "STOP":
             return self.communication_utils.stop_client_and_server()
         else:
@@ -60,13 +62,13 @@ class Client:
 
     def automation_game(self, client_socket):
         turn = 1
-        self.helpful_feature_for_automation_game(client_socket, "SAVE_GAME_TO_DB")
-        game_number_establish = self.helpful_feature_for_automation_game(client_socket, "GAME_NUMBER")
+        self.communication_feature_template(client_socket, "SAVE_GAME_TO_DB")
+        game_number_establish = self.communication_feature_template(client_socket, "GAME_NUMBER")
         game_number = game_number_establish["body"]
         while True:
             print(f">>>>>>>>>>TURN: {turn}<<<<<<<<<<")
             self.player.player_board.reload_boards()
-            client_shot = self.helpful_feature_for_automation_game(client_socket, "SHOT")
+            client_shot = self.communication_feature_template(client_socket, "SHOT")
             print(client_shot)
             number_of_sunk_signs_in_player_opponent_board = self.player.player_board.count_sunk_signs()
             if number_of_sunk_signs_in_player_opponent_board == 20:
@@ -77,7 +79,7 @@ class Client:
             if number_of_sunk_signs_in_player_opponent_board_2 == 20:
                 winner_message = "YOU WIN !"
                 break
-            server_shot = self.helpful_feature_for_automation_game(client_socket, "SHOT_REQUEST")
+            server_shot = self.communication_feature_template(client_socket, "SHOT_REQUEST")
             print(server_shot)
             number_of_sunk_signs_in_ai_player_opponent_board = self.ai_player.player_board.count_sunk_signs()
             if number_of_sunk_signs_in_ai_player_opponent_board == 20:
@@ -106,17 +108,17 @@ class Client:
                 if number_of_sunk_signs_in_player_opponent_board == 20 or number_of_sunk_signs_in_ai_player_opponent_board == 20:
                     break
                 self.player.player_board.reload_boards()
-                shot_response = self.helpful_feature_for_automation_game(client_socket, shot)
+                shot_response = self.communication_feature_template(client_socket, shot)
                 if shot_response not in ["HIT", "SINKING"]:
                     shot_repeat = False
 
-    def helpful_feature_for_automation_game(self, client_socket, shot):
-        shot = self.create_request_to_server(shot)
-        shot_json = self.data_utils.serialize_to_json(shot)
-        client_socket.sendall(shot_json)
-        server_response_for_shot_json = client_socket.recv(self.buffer)
-        server_response_for_shot = self.read_server_response(server_response_for_shot_json, client_socket)
-        return server_response_for_shot
+    def communication_feature_template(self, client_socket, request):
+        client_request = self.create_request_to_server(request)
+        client_request_json = self.data_utils.serialize_to_json(client_request)
+        client_socket.sendall(client_request_json)
+        server_response_json = client_socket.recv(self.buffer)
+        server_response = self.read_server_response(server_response_json, client_socket)
+        return server_response
 
     def start(self):
         with socket.socket(self.internet_address_family, self.socket_type) as client_socket:

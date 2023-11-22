@@ -14,12 +14,17 @@ class DataUtils:
     def deserialize_json(self, data):
         return json.loads(data)
 
+    def board_json_serialize(self, board_status):
+        return json.dumps(board_status)
+
 
 class DatabaseUtils:
     def __init__(self, db_file):
         self.db_file = db_file
         self.create_game_table()
-        self.create_board_table()
+        self.create_board_table("starting_boards")
+        self.create_board_table("player_boards_status")
+        self.create_board_table("opponent_boards_status")
 
     def create_connection(self):
         try:
@@ -57,12 +62,11 @@ class DatabaseUtils:
                                       ); """
         self.execute_sql_query(create_game_table_query)
 
-    def create_board_table(self):
-        create_board_table_query = """ CREATE TABLE IF NOT EXISTS boards(
+    def create_board_table(self, board_table_name):
+        create_board_table_query = f""" CREATE TABLE IF NOT EXISTS {board_table_name}(
                                        board_id INTEGER PRIMARY KEY,
                                        game_id INTEGER NOT NULL,
                                        board_status TEXT NOT NULL,
-                                       board_number_in_order INTEGER NOT NULL,
                                        FOREIGN KEY (game_id) REFERENCES games (game_id) ON DELETE CASCADE
                                        ); """
         self.execute_sql_query(create_board_table_query)
@@ -72,18 +76,13 @@ class DatabaseUtils:
                 "DEFAULT VALUES"
         self.execute_sql_query(query)
 
-    def add_board_to_db(self, game_number, board, board_number):
-        # The first board represents the server's original ship placement along with marked client shots.
-        # The second board displays the server's shots, including marked hits.
-        # The third board shows the client's original ship placement with marked server shots.
-        # The fourth board illustrates the client's shots, including marked hits.
-        board_json_serialize = json.dumps(board)
+    def add_board_to_db(self, game_number, boards_table, board_status):
         game_id_query = "SELECT game_id FROM games " \
                         "WHERE game_id = ?"
         game_id = self.execute_sql_query(game_id_query, (game_number,), fetch_option="fetchone")[0]
-        query = "INSERT INTO boards (game_id, board_status, board_number)" \
+        query = f"INSERT INTO {boards_table} (game_id, board_status)" \
                 "VALUES (?, ?, ?)"
-        self.execute_sql_query(query, (game_id, board_json_serialize, board_number))
+        self.execute_sql_query(query, (game_id, board_status))
 
     def get_all_games(self):
         query = "SELECT * FROM games " \
@@ -91,12 +90,12 @@ class DatabaseUtils:
         all_games = self.execute_sql_query(query, fetch_option="fetchall")
         return all_games
 
-    def get_boards_status_for_game(self, game_number):
-        query = "SELECT board_status FROM boards " \
-                "WHERE game_id = (SELECT game_id FROM games WHERE game_id = ?) " \
-                "ORDER BY board_number_in_order"
-        boards = self.execute_sql_query(query, (game_number,), fetch_option="fetchall")
-        return boards
+    # def get_boards_status_for_game(self, game_number):
+    #     query = "SELECT board_status FROM boards " \
+    #             "WHERE game_id = (SELECT game_id FROM games WHERE game_id = ?) " \
+    #             "ORDER BY board_number_in_order"
+    #     boards = self.execute_sql_query(query, (game_number,), fetch_option="fetchall")
+    #     return boards
 
     def set_winner(self, winner_message, game_number):
         if winner_message == "YOU WIN !":
