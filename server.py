@@ -44,7 +44,14 @@ class Server:
         elif client_request["type"] == "GAME_NUMBER":
             return self.database_communication_utils.establish_game_number()
         elif client_request["type"] == "SAVE_BOARD_STATUS":
-            pass
+            player_board = client_request["body"]["player_board"]
+            opponent_board = client_request["body"]["opponent_board"]
+            return self.database_communication_utils.save_board_to_db(player_board, opponent_board)
+        elif client_request["type"] == "SAVE_WINNER":
+            winner = client_request["body"]["winner"]
+            return self.database_communication_utils.set_winner_in_table(winner)
+        elif client_request["type"] == "ARCHIVED_GAMES":
+            return self.database_communication_utils.show_all_games()
         else:
             return self.communication_utils.server_response_to_unknown_command()
 
@@ -54,6 +61,7 @@ class Server:
             server_socket.listen()
             client_socket, address = server_socket.accept()
             while self.is_running:
+                self.database_communication_utils.delete_games_without_winner()
                 client_request_json = client_socket.recv(self.buffer)
                 client_request = self.read_client_request(client_request_json)
                 print(client_request)

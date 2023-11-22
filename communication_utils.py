@@ -28,7 +28,7 @@ class CommunicationUtils:
             2: "SINKING"
         }
 
-    def protocol_template(self, message_type="null", status="null", message="null", body='null'):
+    def protocol_template(self, message_type="null", status="null", message="null", body="null"):
         template = {
             "type": message_type,
             "status": status,
@@ -114,13 +114,15 @@ class CommunicationUtilsClient(CommunicationUtils):
         message_unknown_command = self.protocol_template(self.message_type[5])
         return message_unknown_command
 
-    def client_request_to_db_service(self, request):
+    def client_request_to_db_service(self, request, args=None):
         if request == "SAVE_GAME_TO_DB":
             client_request = self.protocol_template(message_type="SAVE_GAME")
         elif request == "SAVE_BOARD_STATUS_TO_DB":
-            client_request = self.protocol_template(message_type="SAVE_BOARD_STATUS")
-        elif request == "GAME_NUMBER":
-            client_request = self.protocol_template(message_type="GAME_NUMBER")
+            client_request = self.protocol_template(message_type="SAVE_BOARD_STATUS", body=args)
+        elif request == "SAVE_WINNER_TO_DB":
+            client_request = self.protocol_template(message_type="SAVE_WINNER", body=args)
+        elif request == "SHOW_ARCHIVED_GAMES":
+            client_request = self.protocol_template(message_type="ARCHIVED_GAMES")
         return client_request
 
     def stop_client_and_server(self):
@@ -193,12 +195,29 @@ class DatabaseCommunicationUtils(CommunicationUtils):
         response = self.protocol_template(message_type="SAVE_GAME", body="The game was successfully added to database")
         return response
 
+    def save_board_to_db(self, player_board, opponent_board):
+        game_number = self.establish_game_number()
+        self.database_utils.add_board_to_db(game_number, player_board, "client_boards")
+        self.database_utils.add_board_to_db(game_number, opponent_board, "server_boards")
+        response = self.protocol_template(message_type="SAVE_BOARDS", body="Boards was successfully added to database")
+        return response
+
+    def set_winner_in_table(self, winner):
+        game_number = self.establish_game_number()
+        self.database_utils.set_winner(game_number, winner)
+        response = self.protocol_template(message_type="SAVE_WINNER", body=f"{winner} WINS !")
+        return response
+
+    def delete_games_without_winner(self):
+        return self.database_utils.delete_games_with_non_finite_status()
+
+    def show_all_games(self):
+        all_games = self.database_utils.get_all_games()
+        response = self.protocol_template(message_type="ARCHIVED_GAMES", body=all_games)
+        return response
+
     def establish_game_number(self):
-        try:
-            number_of_games_in_the_database = self.database_utils.get_all_games()
-            actually_game_number = number_of_games_in_the_database[-1]
-            response = self.protocol_template(message_type="GAME_NUMBER", body=actually_game_number)
-            return response
-        except IndexError as e:
-            response = self.protocol_template(message_type="GAME_NUMBER", body=str(e))
-            return response
+        number_of_games_in_the_database = self.database_utils.get_all_games()
+        actually_game_number = number_of_games_in_the_database[-1]
+        return actually_game_number
+
