@@ -1,6 +1,5 @@
 import string
 import random
-import time
 from ships_logic import Ship, Ships
 from board import Board, BoardAI
 from custom_exception import CustomException
@@ -95,25 +94,6 @@ class Player:
         elif ship_type == "One-masted ship":
             orientation = "horizontal"
             return True, orientation
-
-    # def show_boards_status_for_archived_game(self):
-    #     all_games = self.database_service.show_all_games()
-    #     for game in all_games:
-    #         print(game)
-    #     try:
-    #         game_number = input("Which game you want to see ?: ")
-    #         if int(game_number) > len(all_games):
-    #             print("There`s no game with this ID number.")
-    #         else:
-    #             game_id = int(game_number)
-    #             boards = self.database_service.show_board_status_for_game(game_id)
-    #             time_in_sec = input("How fast you want to watch this game ? (type seconds between next boards): ")
-    #             int_time_in_sec = int(time_in_sec)
-    #             for board in boards:
-    #                 print(board)
-    #                 time.sleep(int_time_in_sec)
-    #     except ValueError:
-    #         print(f"Game number has to be an integer in range: {len(all_games)} / Type time in seconds.")
 
     # for testing
 
