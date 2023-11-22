@@ -85,13 +85,14 @@ class TestBoard(unittest.TestCase):
         self.board.add_block_to_board(incorrect_coordinate_wrong_column)
 
         self.assertEqual(";", self.board.get_symbol_from_player_board(correct_coordinate))
-        self.assertRaises(KeyError, self.board.get_symbol_from_player_board, incorrect_coordinate_wrong_row)
-        self.assertRaises(KeyError, self.board.get_symbol_from_player_board, incorrect_coordinate_wrong_column)
+        self.assertRaises(TypeError, self.board.get_symbol_from_player_board, incorrect_coordinate_wrong_row)
+        self.assertRaises(TypeError, self.board.get_symbol_from_player_board, incorrect_coordinate_wrong_column)
 
     def test_remove_blocks_from_board(self):
         coordinate_1 = {"row": "B", "column": 5}
         coordinate_2 = {"row": "A", "column": 5}
         coordinate_3 = {"row": "J", "column": 10}
+
         self.board.add_block_to_board(coordinate_1)
         self.board.add_block_to_board(coordinate_2)
         self.board.add_block_to_board(coordinate_3)
@@ -111,9 +112,8 @@ class TestBoard(unittest.TestCase):
         self.assertEqual("~", self.board.get_symbol_from_player_board(coordinate_3))
 
     def test_get_neighboring_coordinates_in_four_directions(self):
+        # correct coordinate should have 4 neighboring coordinates
         correct_coordinate = {"row": "C", "column": 5}
-        incorrect_coordinate_with_column_out_of_range = {"row": "J", "column": 11}
-        incorrect_coordinate_with_row_out_of_range = {"row": "K", "column": 3}
         self.assertIn({"row": "B", "column": 5},
                       self.board.get_neighboring_coordinates_in_four_directions(correct_coordinate))
         self.assertIn({"row": "D", "column": 5},
@@ -123,5 +123,54 @@ class TestBoard(unittest.TestCase):
         self.assertIn({"row": "C", "column": 6},
                       self.board.get_neighboring_coordinates_in_four_directions(correct_coordinate))
         self.assertEqual(4, len(self.board.get_neighboring_coordinates_in_four_directions(correct_coordinate)))
-        self.assertRaises(TypeError, self.board.get_neighboring_coordinates_in_four_directions, incorrect_coordinate_with_column_out_of_range)
-        self.assertRaises(TypeError, self.board.get_neighboring_coordinates_in_four_directions, incorrect_coordinate_with_row_out_of_range)
+
+        # incorrect coordinates
+        incorrect_coordinate_with_column_out_of_range = {"row": "J", "column": 11}
+        self.assertRaises(TypeError, self.board.get_neighboring_coordinates_in_four_directions,
+                          incorrect_coordinate_with_column_out_of_range)
+
+        incorrect_coordinate_with_row_out_of_range = {"row": "K", "column": 3}
+        self.assertRaises(TypeError, self.board.get_neighboring_coordinates_in_four_directions,
+                          incorrect_coordinate_with_row_out_of_range)
+
+
+    def test_get_neighboring_coordinates_in_eight_directions(self):
+        #Coordinate of right down corner - should have only 3 neighboring coordinates
+        correct_coordinate_right_down_corner = {"row": "J", "column": 10}
+        self.assertIn({"row": "I", "column": 10},
+                      self.board.get_neighboring_coordinates_in_eight_directions(correct_coordinate_right_down_corner))
+        self.assertIn({"row": "J", "column": 9},
+                      self.board.get_neighboring_coordinates_in_eight_directions(correct_coordinate_right_down_corner))
+        self.assertIn({"row": "I", "column": 9},
+                      self.board.get_neighboring_coordinates_in_eight_directions(correct_coordinate_right_down_corner))
+        self.assertEqual(3, len(self.board.get_neighboring_coordinates_in_eight_directions(correct_coordinate_right_down_corner)))
+
+        # Coordinate which should have 8 neighboring coordinates
+        correct_coordinate_middle = {"row": "E", "column": 5}
+        self.assertIn({"row": "E", "column": 4},
+                      self.board.get_neighboring_coordinates_in_eight_directions(correct_coordinate_middle))
+        self.assertIn({"row": "E", "column": 6},
+                      self.board.get_neighboring_coordinates_in_eight_directions(correct_coordinate_middle))
+        self.assertIn({"row": "D", "column": 4},
+                      self.board.get_neighboring_coordinates_in_eight_directions(correct_coordinate_middle))
+        self.assertIn({"row": "D", "column": 5},
+                      self.board.get_neighboring_coordinates_in_eight_directions(correct_coordinate_middle))
+        self.assertIn({"row": "D", "column": 6},
+                      self.board.get_neighboring_coordinates_in_eight_directions(correct_coordinate_middle))
+        self.assertIn({"row": "F", "column": 4},
+                      self.board.get_neighboring_coordinates_in_eight_directions(correct_coordinate_middle))
+        self.assertIn({"row": "F", "column": 5},
+                      self.board.get_neighboring_coordinates_in_eight_directions(correct_coordinate_middle))
+        self.assertIn({"row": "F", "column": 6},
+                      self.board.get_neighboring_coordinates_in_eight_directions(correct_coordinate_middle))
+        self.assertEqual(8, len(self.board.get_neighboring_coordinates_in_eight_directions(
+            correct_coordinate_middle)))
+
+        #incorrect coordinates
+        incorrect_coordinate_with_column_out_of_range = {"row": "J", "column": 11}
+        self.assertRaises(TypeError, self.board.get_neighboring_coordinates_in_eight_directions,
+                          incorrect_coordinate_with_column_out_of_range)
+
+        incorrect_coordinate_with_row_out_of_range = {"row": "K", "column": 3}
+        self.assertRaises(TypeError, self.board.get_neighboring_coordinates_in_eight_directions,
+                          incorrect_coordinate_with_row_out_of_range)
