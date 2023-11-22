@@ -60,7 +60,7 @@ class Board:
                 self.update_player_board(coordinate, "O")
             self.block_coordinates_near_ship(ship.coordinates)
             self.ships.active_ships.append(ship)
-            return self.draw_player_board()
+            return True
         else:
             raise CustomException("There`s another ship in area")
 
@@ -253,22 +253,38 @@ class Board:
         return self.ships.get_ships_coordinates_on_board()
 
     def update_player_board(self, coordinate, symbol):
-        row, column = self.get_row_and_column_from_coordinate(coordinate)
-        self.player_board[row][column] = symbol
+        try:
+            row, column = self.get_row_and_column_from_coordinate(coordinate)
+        except TypeError:
+            return None
+        else:
+            self.player_board[row][column] = symbol
 
     def update_opponent_board(self, coordinate, symbol):
-        row, column = self.get_row_and_column_from_coordinate(coordinate)
-        self.opponent_board[row][column] = symbol
+        try:
+            row, column = self.get_row_and_column_from_coordinate(coordinate)
+        except TypeError:
+            return None
+        else:
+            self.opponent_board[row][column] = symbol
 
     def get_symbol_from_player_board(self, coordinate):
-        row, column = self.get_row_and_column_from_coordinate(coordinate)
-        symbol = self.player_board[row][column]
-        return symbol
+        try:
+            row, column = self.get_row_and_column_from_coordinate(coordinate)
+        except TypeError:
+            return None
+        else:
+            symbol = self.player_board[row][column]
+            return symbol
 
     def get_symbol_from_opponent_board(self, coordinate):
-        row, column = self.get_row_and_column_from_coordinate(coordinate)
-        symbol = self.opponent_board[row][column]
-        return symbol
+        try:
+            row, column = self.get_row_and_column_from_coordinate(coordinate)
+        except TypeError:
+            return None
+        else:
+            symbol = self.opponent_board[row][column]
+            return symbol
 
     def get_row_and_column_from_coordinate(self, coordinate):
         if self.check_if_coordinate_within_board_border(coordinate):
