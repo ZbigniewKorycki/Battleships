@@ -68,7 +68,7 @@ class Client:
         while True:
             print(f">>>>>>>>>>TURN: {turn}<<<<<<<<<<")
             self.player.player_board.reload_boards()
-            self.communication_feature_template(client_socket, "SAVE_BOARD_STATUS_TO_DB")
+            # self.communication_feature_template(client_socket, "SAVE_BOARD_STATUS_TO_DB")
             client_shot = self.communication_feature_template(client_socket, "SHOT")
             print(client_shot)
             number_of_sunk_signs_in_player_opponent_board = self.player.player_board.count_sunk_signs()
@@ -111,7 +111,7 @@ class Client:
                 if number_of_sunk_signs_in_player_opponent_board == 20 or number_of_sunk_signs_in_ai_player_opponent_board == 20:
                     break
                 self.player.player_board.reload_boards()
-                self.communication_feature_template(client_socket, "SAVE_BOARD_STATUS_TO_DB")
+                # self.communication_feature_template(client_socket, "SAVE_BOARD_STATUS_TO_DB")
                 shot_response = self.communication_feature_template(client_socket, shot)
                 if shot_response not in ["HIT", "SINKING"]:
                     shot_repeat = False

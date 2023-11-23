@@ -60,11 +60,11 @@ class Server:
 
     def start(self):
         with socket.socket(self.internet_address_family, self.socket_type) as server_socket:
+            self.database_communication_utils.delete_games_without_winner()
             server_socket.bind((self.host, self.port))
             server_socket.listen()
             client_socket, address = server_socket.accept()
             while self.is_running:
-                self.database_communication_utils.delete_games_without_winner()
                 client_request_json = client_socket.recv(self.buffer)
                 client_request = self.read_client_request(client_request_json)
                 print(client_request)

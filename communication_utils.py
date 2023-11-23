@@ -225,6 +225,6 @@ class DatabaseCommunicationUtils(CommunicationUtils):
 
     def establish_game_number(self):
         number_of_games_in_the_database = self.database_utils.get_all_games()
-        actually_game_number = number_of_games_in_the_database[-1]
+        actually_game_number = len(number_of_games_in_the_database)
         return actually_game_number
 
