@@ -24,6 +24,13 @@ class Board:
         }
         self.ships = Ships()
 
+    def to_json_serializable(self):
+        return {
+            'size_rows': self.size_rows,
+            'size_columns': self.size_columns,
+            'player_board': self.player_board,
+            'opponent_board': self.opponent_board
+        }
 
     def create_starting_board(self):
         starting_board = {
