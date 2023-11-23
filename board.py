@@ -216,12 +216,7 @@ class Board:
                                                   {"row_index": row_index, "column": column + 1},
                                                   {"row_index": row_index - 1, "column": column},
                                                   {"row_index": row_index + 1, "column": column}]
-        neighboring_coordinates = []
-        for coordinate_with_row_index in neighboring_coordinates_with_row_index:
-            coordinate = self.get_coordinate_from_coordinate_with_row_index(coordinate_with_row_index)
-            if coordinate:
-                neighboring_coordinates.append(coordinate)
-        return neighboring_coordinates
+        return self.get_coordinates_from_list_of_coordinates_with_row_index(neighboring_coordinates_with_row_index)
 
     def get_neighboring_coordinates_in_eight_directions(self, coordinate):
         row, column = self.get_row_and_column_from_coordinate(coordinate)
@@ -234,12 +229,16 @@ class Board:
                                                   {"row_index": row_index - 1, "column": column + 1},
                                                   {"row_index": row_index + 1, "column": column - 1},
                                                   {"row_index": row_index + 1, "column": column + 1}]
-        neighboring_coordinates = []
-        for coordinate_with_row_index in neighboring_coordinates_with_row_index:
+
+        return self.get_coordinates_from_list_of_coordinates_with_row_index(neighboring_coordinates_with_row_index)
+
+    def get_coordinates_from_list_of_coordinates_with_row_index(self, list_of_coordinates_with_row_index):
+        coordinates = []
+        for coordinate_with_row_index in list_of_coordinates_with_row_index:
             coordinate = self.get_coordinate_from_coordinate_with_row_index(coordinate_with_row_index)
             if coordinate:
-                neighboring_coordinates.append(coordinate)
-        return neighboring_coordinates
+                coordinates.append(coordinate)
+        return coordinates
 
     def get_coordinate_from_coordinate_with_row_index(self, coordinate_with_row_index):
         coordinate = {
