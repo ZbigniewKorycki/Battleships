@@ -52,6 +52,9 @@ class Server:
             return self.database_communication_utils.set_winner_in_table(winner)
         elif client_request["type"] == "ARCHIVED_GAMES":
             return self.database_communication_utils.show_all_games()
+        elif client_request["type"] == "WATCH_GAME":
+            game_id = client_request["body"]["game_id"]
+            return self.database_communication_utils.show_one_game(game_id)
         else:
             return self.communication_utils.server_response_to_unknown_command()
 

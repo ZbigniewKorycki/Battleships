@@ -123,6 +123,8 @@ class CommunicationUtilsClient(CommunicationUtils):
             client_request = self.protocol_template(message_type="SAVE_WINNER", body=args)
         elif request == "SHOW_ARCHIVED_GAMES":
             client_request = self.protocol_template(message_type="ARCHIVED_GAMES")
+        elif request == "WATCH_GAME":
+            client_request = self.protocol_template(message_type="WATCH_GAME", body=args)
         return client_request
 
     def stop_client_and_server(self):
@@ -214,6 +216,11 @@ class DatabaseCommunicationUtils(CommunicationUtils):
     def show_all_games(self):
         all_games = self.database_utils.get_all_games()
         response = self.protocol_template(message_type="ARCHIVED_GAMES", body=all_games)
+        return response
+
+    def show_one_game(self, game_id):
+        boards = self.database_utils.get_one_game(game_id)
+        response = self.protocol_template(message_type="BOARDS_FOR_ONE_GAME", body=boards)
         return response
 
     def establish_game_number(self):

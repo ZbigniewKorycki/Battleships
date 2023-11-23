@@ -82,7 +82,7 @@ class DatabaseUtils:
         game_id = self.execute_sql_query(game_id_query, (game_number,), fetch_option="fetchone")[0]
         board_status_json = self.data_utils.board_json_serialize(board_status)
         query = f"INSERT INTO {board_table} (game_id, board_status)" \
-                "VALUES (?, ?)"
+                 "VALUES (?, ?)"
         self.execute_sql_query(query, (game_id, board_status_json))
 
     def get_all_games(self):
@@ -101,3 +101,15 @@ class DatabaseUtils:
                 "SET winner = ? " \
                 "WHERE game_id = ?"
         self.execute_sql_query(query, (winner, game_number))
+
+    def get_one_game(self, game_id):
+        client_boards_query = "SELECT board_status FROM client_boards" \
+                              "WHERE game_id = ?" \
+                              "ORDER BY board_id"
+        client_boards = self.execute_sql_query(client_boards_query, (game_id, ), fetch_option="fetchall")
+        server_boards_query = "SELECT board_status FROM server_boards" \
+                              "WHERE game_id = ?" \
+                              "ORDER BY board_id"
+        server_boards = self.execute_sql_query(server_boards_query, (game_id, ), fetch_option="fetchall")
+        return (client_boards, server_boards)
+
