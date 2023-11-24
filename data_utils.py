@@ -1,20 +1,15 @@
 import json
 import sqlite3
 from sqlite3 import Error
-from board import Board, BoardAI
+
 
 
 class DataUtils:
-
     def __init__(self):
         self.encode_format = "UTF-8"
 
     def serialize_to_json(self, data):
-        if isinstance(data, Board) or isinstance(data, BoardAI):
-            data_to_serialize = data.to_json_serializable()
-            return json.dumps(data_to_serialize).encode(self.encode_format)
-        else:
-            return json.dumps(data).encode(self.encode_format)
+        return json.dumps(data).encode(self.encode_format)
 
     def deserialize_json(self, data):
         return json.loads(data)
@@ -111,10 +106,11 @@ class DatabaseUtils:
         client_boards_query = "SELECT board_status FROM client_boards " \
                               "WHERE game_id = ? " \
                               "ORDER BY board_id"
-        client_boards = self.execute_sql_query(client_boards_query, (game_id, ), fetch_option="fetchall")
+        serialized_client_boards = self.execute_sql_query(client_boards_query, (game_id,), fetch_option="fetchall")
         server_boards_query = "SELECT board_status FROM server_boards " \
                               "WHERE game_id = ? " \
                               "ORDER BY board_id"
-        server_boards = self.execute_sql_query(server_boards_query, (game_id, ), fetch_option="fetchall")
-        return (client_boards, server_boards)
-
+        serialized_server_boards = self.execute_sql_query(server_boards_query, (game_id,), fetch_option="fetchall")
+        client_boards = [json.loads(result[0]) for result in serialized_client_boards]
+        server_boards = [json.loads(result[0]) for result in serialized_server_boards]
+        return {"client_boards": client_boards, "server_boards": server_boards}

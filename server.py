@@ -45,7 +45,7 @@ class Server:
             return self.database_communication_utils.establish_game_number()
         elif client_request["type"] == "SAVE_BOARD_STATUS":
             player_board = client_request["body"]["player_board"]
-            opponent_board = client_request["body"]["opponent_board"]
+            opponent_board = self.ai_player.player_board.board_to_dict()
             return self.database_communication_utils.save_board_to_db(player_board, opponent_board)
         elif client_request["type"] == "SAVE_WINNER":
             winner = client_request["body"]["winner"]
@@ -67,7 +67,7 @@ class Server:
             while self.is_running:
                 client_request_json = client_socket.recv(self.buffer)
                 client_request = self.read_client_request(client_request_json)
-                print(client_request)
+                # print(client_request)
                 if client_request == "STOP":
                     self.stop(server_socket)
                 else:
