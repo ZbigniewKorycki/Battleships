@@ -2,7 +2,7 @@ import socket
 import time
 from data_utils import DataUtils
 from communication_utils import CommunicationUtilsClient
-from config_variables import HOST, PORT, BUFFER, INTERNET_ADDRESS_FAMILY, SOCKET_TYPE, db_file
+from config_variables import HOST, PORT, BUFFER, INTERNET_ADDRESS_FAMILY, SOCKET_TYPE
 from player import Player, AIPlayer
 
 
@@ -31,8 +31,8 @@ class Client:
         elif client_input == "SAVE_GAME_TO_DB":
             return self.communication_utils.client_request_to_db_service("SAVE_GAME_TO_DB")
         elif client_input == "SAVE_BOARD_STATUS_TO_DB":
-            return self.communication_utils.client_request_to_db_service("SAVE_BOARD_STATUS_TO_DB", {"player_board": self.player.player_board,
-                                                                                                     "opponent_board": self.ai_player.player_board})
+            player_board = self.player.player_board.board_to_dict()
+            return self.communication_utils.client_request_to_db_service("SAVE_BOARD_STATUS_TO_DB", {"player_board": player_board})
         elif client_input == "SAVE_WINNER_TO_DB":
             return self.communication_utils.client_request_to_db_service("SAVE_WINNER_TO_DB", {"winner": args})
         elif client_input == "SHOW_ARCHIVED_GAMES":
@@ -68,7 +68,7 @@ class Client:
         while True:
             print(f">>>>>>>>>>TURN: {turn}<<<<<<<<<<")
             self.player.player_board.reload_boards()
-            # self.communication_feature_template(client_socket, "SAVE_BOARD_STATUS_TO_DB")
+            self.communication_feature_template(client_socket, "SAVE_BOARD_STATUS_TO_DB")
             client_shot = self.communication_feature_template(client_socket, "SHOT")
             print(client_shot)
             number_of_sunk_signs_in_player_opponent_board = self.player.player_board.count_sunk_signs()
@@ -111,7 +111,7 @@ class Client:
                 if number_of_sunk_signs_in_player_opponent_board == 20 or number_of_sunk_signs_in_ai_player_opponent_board == 20:
                     break
                 self.player.player_board.reload_boards()
-                # self.communication_feature_template(client_socket, "SAVE_BOARD_STATUS_TO_DB")
+                self.communication_feature_template(client_socket, "SAVE_BOARD_STATUS_TO_DB")
                 shot_response = self.communication_feature_template(client_socket, shot)
                 if shot_response not in ["HIT", "SINKING"]:
                     shot_repeat = False
@@ -154,13 +154,16 @@ class Client:
                             try:
                                 int_game_id = int(game_id)
                                 boards = self.communication_feature_template(client_socket, "WATCH_GAME", int_game_id)
-                                client_boards = boards[0]
-                                server_boards = boards[1]
+                                print(boards, type(boards))
+                                client_boards = boards["body"]["client_boards"]
+                                server_boards = boards["body"]["server_boards"]
                                 break_between_boards = input("Specify how fast you want to watch the gameplay in seconds: ")
                                 int_break_between_boards = int(break_between_boards)
                                 for i in range(0, len(client_boards)):
+                                    print("CLIENT BOARD:")
                                     print(client_boards[i])
                                     time.sleep(int_break_between_boards)
+                                    print("SERVER BOARD:")
                                     print(server_boards[i])
                                     time.sleep(int_break_between_boards)
                                 print("THE END")
