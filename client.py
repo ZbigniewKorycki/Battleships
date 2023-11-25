@@ -6,6 +6,7 @@ from config_variables import HOST, PORT, BUFFER, INTERNET_ADDRESS_FAMILY, SOCKET
 from player import Player, AIPlayer
 
 
+
 class Client:
     def __init__(self):
         self.host = HOST
