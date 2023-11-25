@@ -213,6 +213,9 @@ class DatabaseCommunicationUtils(CommunicationUtils):
     def delete_games_without_winner(self):
         return self.database_utils.delete_games_with_non_finite_status()
 
+    def delete_game_boards_without_winner(self, board_table):
+        return self.database_utils.delete_boards_for_game_with_non_finite_status(board_table)
+
     def show_all_games(self):
         all_games = self.database_utils.get_all_games()
         response = self.protocol_template(message_type="ARCHIVED_GAMES", body=all_games)
