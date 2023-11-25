@@ -96,6 +96,11 @@ class DatabaseUtils:
                 "WHERE winner = 'the game has not been completed'"
         self.execute_sql_query(query)
 
+    def delete_boards_for_game_with_non_finite_status(self, board_table):
+        query = f"DELETE FROM {board_table} " \
+                f"WHERE game_id IN (SELECT game_id FROM games WHERE winner = 'the game has not been completed')"
+        self.execute_sql_query(query)
+
     def set_winner(self, game_number, winner):
         query = "UPDATE games " \
                 "SET winner = ? " \

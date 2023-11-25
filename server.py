@@ -58,9 +58,14 @@ class Server:
         else:
             return self.communication_utils.server_response_to_unknown_command()
 
+    def clean_up_database(self):
+        self.database_communication_utils.delete_game_boards_without_winner("client_boards")
+        self.database_communication_utils.delete_game_boards_without_winner("server_boards")
+        self.database_communication_utils.delete_games_without_winner()
+
     def start(self):
         with socket.socket(self.internet_address_family, self.socket_type) as server_socket:
-            self.database_communication_utils.delete_games_without_winner()
+            self.clean_up_database()
             server_socket.bind((self.host, self.port))
             server_socket.listen()
             client_socket, address = server_socket.accept()

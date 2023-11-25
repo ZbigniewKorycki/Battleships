@@ -50,9 +50,9 @@ class Board:
             for letter, row in self.opponent_board.items()
         ]
 
-    def count_sunk_signs(self):
+    def count_sunk_signs(self, board_type):
         numbers_of_sunk_signs = sum(
-            [1 for key_outer, inner_dict in self.opponent_board.items() for key_inner, value in inner_dict.items() if
+            [1 for key_outer, inner_dict in board_type.items() for key_inner, value in inner_dict.items() if
              value == "S"])
         return numbers_of_sunk_signs
 

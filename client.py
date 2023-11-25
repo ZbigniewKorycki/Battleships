@@ -6,6 +6,7 @@ from config_variables import HOST, PORT, BUFFER, INTERNET_ADDRESS_FAMILY, SOCKET
 from player import Player, AIPlayer
 
 
+
 class Client:
     def __init__(self):
         self.host = HOST
@@ -71,27 +72,29 @@ class Client:
             self.communication_feature_template(client_socket, "SAVE_BOARD_STATUS_TO_DB")
             client_shot = self.communication_feature_template(client_socket, "SHOT")
             print(client_shot)
-            number_of_sunk_signs_in_player_opponent_board = self.player.player_board.count_sunk_signs()
+            number_of_sunk_signs_in_player_opponent_board = self.player.player_board.count_sunk_signs(self.player.player_board.opponent_board)
             if number_of_sunk_signs_in_player_opponent_board == 20:
                 winner = "CLIENT"
                 break
             self.repeat_shot_check(client_shot, client_socket, "SHOT")
-            number_of_sunk_signs_in_player_opponent_board_2 = self.player.player_board.count_sunk_signs()
+            number_of_sunk_signs_in_player_opponent_board_2 = self.player.player_board.count_sunk_signs(self.player.player_board.opponent_board)
             if number_of_sunk_signs_in_player_opponent_board_2 == 20:
                 winner = "CLIENT"
                 break
             server_shot = self.communication_feature_template(client_socket, "SHOT_REQUEST")
             print(server_shot)
-            number_of_sunk_signs_in_ai_player_opponent_board = self.ai_player.player_board.count_sunk_signs()
+            number_of_sunk_signs_in_ai_player_opponent_board = self.player.player_board.count_sunk_signs(self.player.player_board.player_board)
             if number_of_sunk_signs_in_ai_player_opponent_board == 20:
                 winner= "SERVER"
                 break
             self.repeat_shot_check(server_shot, client_socket, "SHOT_REQUEST")
-            number_of_sunk_signs_in_ai_player_opponent_board_2 = self.ai_player.player_board.count_sunk_signs()
+            number_of_sunk_signs_in_ai_player_opponent_board_2 = self.ai_player.player_board.count_sunk_signs(self.player.player_board.player_board)
             if number_of_sunk_signs_in_ai_player_opponent_board_2 == 20:
                 winner = "SERVER"
                 break
             turn += 1
+        self.player.player_board.reload_boards()
+        self.communication_feature_template(client_socket, "SAVE_BOARD_TO_DB")
         winner_message = self.communication_feature_template(client_socket, "SAVE_WINNER_TO_DB", winner)
         print(winner_message["body"])
 
@@ -106,8 +109,8 @@ class Client:
         if check_server_response in ["HIT", "SINKING"]:
             shot_repeat = True
             while shot_repeat:
-                number_of_sunk_signs_in_player_opponent_board = self.player.player_board.count_sunk_signs()
-                number_of_sunk_signs_in_ai_player_opponent_board = self.ai_player.player_board.count_sunk_signs()
+                number_of_sunk_signs_in_player_opponent_board = self.player.player_board.count_sunk_signs(self.player.player_board.opponent_board)
+                number_of_sunk_signs_in_ai_player_opponent_board = self.ai_player.player_board.count_sunk_signs(self.player.player_board.player_board)
                 if number_of_sunk_signs_in_player_opponent_board == 20 or number_of_sunk_signs_in_ai_player_opponent_board == 20:
                     break
                 self.player.player_board.reload_boards()
