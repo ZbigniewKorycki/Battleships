@@ -127,6 +127,33 @@ class Client:
         server_response = self.read_server_response(server_response_json, client_socket)
         return server_response
 
+    def show_archived_game_service(self, client_socket):
+        server_response = self.communication_feature_template(client_socket, "SHOW_ARCHIVED_GAMES")
+        all_games = server_response["body"]
+        if all_games == None or all_games == []:
+            print("There`s no game to watch")
+        else:
+            for game in all_games:
+                print(game)
+            game_id = input("Which game do you want to watch ? Give ID: ")
+            try:
+                int_game_id = int(game_id)
+                boards = self.communication_feature_template(client_socket, "WATCH_GAME", int_game_id)
+                client_boards = boards["body"]["client_boards"]
+                server_boards = boards["body"]["server_boards"]
+                break_between_boards = input("Specify how fast you want to watch the gameplay in seconds: ")
+                int_break_between_boards = int(break_between_boards)
+                for i in range(0, len(client_boards)):
+                    print("CLIENT BOARD:")
+                    print(client_boards[i])
+                    time.sleep(int_break_between_boards)
+                    print("SERVER BOARD:")
+                    print(server_boards[i])
+                    time.sleep(int_break_between_boards)
+                print("THE END")
+            except ValueError as e:
+                print(e)
+
     def start(self):
         with socket.socket(self.internet_address_family, self.socket_type) as client_socket:
             client_socket.connect((self.host, self.port))
@@ -146,32 +173,7 @@ class Client:
                         self.communication_feature_template(client_socket, "SAVE_GAME_TO_DB")
                         self.automation_game(client_socket)
                     elif client_input == "SHOW":
-                        server_response = self.communication_feature_template(client_socket, "SHOW_ARCHIVED_GAMES")
-                        all_games = server_response["body"]
-                        if all_games == None or all_games == []:
-                            print("There`s no game to watch")
-                        else:
-                            for game in all_games:
-                                print(game)
-                            game_id = input("Which game do you want to watch ? Give ID: ")
-                            try:
-                                int_game_id = int(game_id)
-                                boards = self.communication_feature_template(client_socket, "WATCH_GAME", int_game_id)
-                                print(boards, type(boards))
-                                client_boards = boards["body"]["client_boards"]
-                                server_boards = boards["body"]["server_boards"]
-                                break_between_boards = input("Specify how fast you want to watch the gameplay in seconds: ")
-                                int_break_between_boards = int(break_between_boards)
-                                for i in range(0, len(client_boards)):
-                                    print("CLIENT BOARD:")
-                                    print(client_boards[i])
-                                    time.sleep(int_break_between_boards)
-                                    print("SERVER BOARD:")
-                                    print(server_boards[i])
-                                    time.sleep(int_break_between_boards)
-                                print("THE END")
-                            except ValueError as e:
-                                print(e)
+                        self.show_archived_game_service(client_socket)
 
     def stop(self, client_socket, client_input):
         client_request = self.create_request_to_server(client_input)
