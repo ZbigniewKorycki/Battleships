@@ -29,7 +29,7 @@ class Board:
 
     def print_boards_for_archived_games(self, board):
         column_headings = [" "] + [str(i) for i in range(1, 11)]
-        print(' '.join(column_headings))
+        print(" ".join(column_headings))
         for row, inner_dict in board.items():
             row_values = " ".join(inner_dict.values())
             print(row, row_values)
