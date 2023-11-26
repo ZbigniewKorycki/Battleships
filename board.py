@@ -27,6 +27,13 @@ class Board:
     def board_to_dict(self):
         return dict(self.player_board)
 
+    def print_boards_for_archived_games(self, board):
+        column_headings = [" "] + [str(i) for i in range(1, 11)]
+        print(' '.join(column_headings))
+        for row, inner_dict in board.items():
+            row_values = " ".join(inner_dict.values())
+            print(row, row_values)
+
     def create_starting_board(self):
         starting_board = {
             row: {col: "~" for col in range(1, self.size_columns + 1)}
