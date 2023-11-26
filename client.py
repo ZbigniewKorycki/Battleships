@@ -114,8 +114,8 @@ class Client:
                 if number_of_sunk_signs_in_player_opponent_board == 20 or number_of_sunk_signs_in_ai_player_opponent_board == 20:
                     break
                 self.player.player_board.reload_boards()
-                self.communication_feature_template(client_socket, "SAVE_BOARD_STATUS_TO_DB")
                 shot_response = self.communication_feature_template(client_socket, shot)
+                self.communication_feature_template(client_socket, "SAVE_BOARD_STATUS_TO_DB")
                 if shot_response not in ["HIT", "SINKING"]:
                     shot_repeat = False
 
@@ -134,23 +134,26 @@ class Client:
             print("There`s no game to watch")
         else:
             for game in all_games:
-                print(game)
+                print("Game_ID:", game[0], "|", "Date:", game[1], "|", "Winner:", game[2])
             game_id = input("Which game do you want to watch ? Give ID: ")
             try:
                 int_game_id = int(game_id)
-                boards = self.communication_feature_template(client_socket, "WATCH_GAME", int_game_id)
-                client_boards = boards["body"]["client_boards"]
-                server_boards = boards["body"]["server_boards"]
-                break_between_boards = input("Specify how fast you want to watch the gameplay in seconds: ")
-                int_break_between_boards = int(break_between_boards)
-                for i in range(0, len(client_boards)):
-                    print("CLIENT BOARD:")
-                    print(client_boards[i])
-                    time.sleep(int_break_between_boards)
-                    print("SERVER BOARD:")
-                    print(server_boards[i])
-                    time.sleep(int_break_between_boards)
-                print("THE END")
+                if int_game_id > len(all_games):
+                    print("There`s no game with this ID")
+                else:
+                    boards = self.communication_feature_template(client_socket, "WATCH_GAME", int_game_id)
+                    client_boards = boards["body"]["client_boards"]
+                    server_boards = boards["body"]["server_boards"]
+                    break_between_boards = input("Specify how fast you want to watch the gameplay in seconds: ")
+                    int_break_between_boards = int(break_between_boards)
+                    for i in range(0, len(client_boards)):
+                        print("CLIENT BOARD:")
+                        self.player.player_board.print_boards_for_archived_games(client_boards[i])
+                        time.sleep(int_break_between_boards)
+                        print("SERVER BOARD:")
+                        self.player.player_board.print_boards_for_archived_games(server_boards[i])
+                        time.sleep(int_break_between_boards)
+                    print("THE END")
             except ValueError as e:
                 print(e)
 
