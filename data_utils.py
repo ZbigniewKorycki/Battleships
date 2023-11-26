@@ -58,7 +58,7 @@ class DatabaseUtils:
         create_games_table_query = """ CREATE TABLE IF NOT EXISTS games(
                                       game_id INTEGER PRIMARY KEY,
                                       game_datetime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                                      winner VARCHAR NOT NULL DEFAULT 'the game has not been completed'
+                                      winner VARCHAR DEFAULT NULL
                                       ); """
         self.execute_sql_query(create_games_table_query)
 
@@ -93,12 +93,12 @@ class DatabaseUtils:
 
     def delete_games_with_non_finite_status(self):
         query = "DELETE FROM games " \
-                "WHERE winner = 'the game has not been completed'"
+                "WHERE winner is NULL"
         self.execute_sql_query(query)
 
     def delete_boards_for_game_with_non_finite_status(self, board_table):
         query = f"DELETE FROM {board_table} " \
-                f"WHERE game_id IN (SELECT game_id FROM games WHERE winner = 'the game has not been completed')"
+                f"WHERE game_id IN (SELECT game_id FROM games WHERE winner is NULL)"
         self.execute_sql_query(query)
 
     def set_winner(self, game_number, winner):
