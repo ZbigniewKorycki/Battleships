@@ -98,14 +98,15 @@ class Client:
         winner_message = self.communication_feature_template(client_socket, "SAVE_WINNER_TO_DB", winner)
         print(winner_message["body"])
 
-    def check_server_response_instance(self, server_response):
+    @staticmethod
+    def check_server_response_instance(server_response):
         if isinstance(server_response, str):
             return server_response
         elif isinstance(server_response, dict):
             return server_response["body"]
 
     def repeat_shot_check(self, server_response_object, client_socket, shot):
-        check_server_response = self.check_server_response_instance(server_response_object)
+        check_server_response = Client.check_server_response_instance(server_response_object)
         if check_server_response in ["HIT", "SINKING"]:
             shot_repeat = True
             while shot_repeat:
@@ -177,6 +178,12 @@ class Client:
                         self.automation_game(client_socket)
                     elif client_input == "SHOW":
                         self.show_archived_game_service(client_socket)
+                    elif client_input == "AGAIN":
+                        self.player = Player()
+                        self.ai_player = AIPlayer()
+                        self.communication_utils = CommunicationUtilsClient(self.player)
+                        self.communication_feature_template(client_socket, "SAVE_GAME_TO_DB")
+                        self.automation_game(client_socket)
 
     def stop(self, client_socket, client_input):
         client_request = self.create_request_to_server(client_input)

@@ -59,7 +59,7 @@ class CommunicationUtilsClient(CommunicationUtils):
         while counter_max_tries > 0:
             row_input = input("CHOOSE ROW FROM 'A' TO 'J': ").capitalize()
             column_input = input("CHOOSE COLUMN FROM '1' TO '10': ")
-            if not self.verify_client_shot_request(row_input, column_input):
+            if not CommunicationUtilsClient.verify_client_shot_request(row_input, column_input):
                 counter_max_tries -= 1
                 if counter_max_tries == 1:
                     print(f"Incorrect coordinates, you have last chance to give correct, row: (A-J) column: (1-10).")
@@ -79,8 +79,8 @@ class CommunicationUtilsClient(CommunicationUtils):
         self.last_shot = message_invalid_shot_request
         return client_invalid_shot
 
-    def verify_client_shot_request(self, row, column):
-        # row should be string, column integer
+    @staticmethod
+    def verify_client_shot_request(row, column):
         try:
             int(row)
         except ValueError:
