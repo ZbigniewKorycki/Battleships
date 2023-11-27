@@ -39,7 +39,7 @@ class Server:
             return self.comm_utils.server_confirmation_to_final_ships_positions()
         elif client_request["type"] == "RESULT":
             result = client_request["body"]
-            self.ai_player.player_board.add_result_of_player_shot_into_opponent_board(
+            self.ai_player.player_board.add_result_of_shot_into_opponent_board(
                 self.comm_utils.last_shot, result
             )
             return self.comm_utils.server_acknowledgment_to_client_response_for_server_shot(
