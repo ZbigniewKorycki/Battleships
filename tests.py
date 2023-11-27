@@ -1,7 +1,10 @@
+import json
 import unittest
 from board import Board
 from custom_exception import CustomException
 from ships_logic import Ship, Ships
+from data_utils import DataUtils, DatabaseUtils
+from config_variables import test_db_file
 
 
 class TestBoard(unittest.TestCase):
@@ -214,3 +217,78 @@ class TestBoard(unittest.TestCase):
         ship_with_incorrect_coordinates_too_close_another_ship = Ship(row="B", column=1, size=3,
                                                                       orientation="horizontal")
         self.assertRaises(CustomException, self.board.add_ship, ship_with_incorrect_coordinates_too_close_another_ship)
+
+
+class TestDataUtils(unittest.TestCase):
+    def setUp(self):
+        self.data_utils = DataUtils()
+
+    def test_serialize_to_json(self):
+        dict_data = {"key1": "value1", "key2": "value2"}
+        json_data = self.data_utils.serialize_to_json(dict_data)
+        self.assertIsInstance(json_data, bytes)
+
+    def test_deserialize_json(self):
+        json_data = b'{"key1": "value1", "key2": "value2"}'
+        dict_data = self.data_utils.deserialize_json(json_data)
+        self.assertIsInstance(dict_data, dict)
+        self.assertEqual(dict_data, {"key1": "value1", "key2": "value2"})
+
+
+class TestDatabaseUtils(unittest.TestCase):
+    def setUp(self):
+        self.database_utils = DatabaseUtils(test_db_file)
+        self.database_utils.create_game_table()
+        self.database_utils.create_board_table("test_boards")
+        self.connection = self.database_utils.create_connection()
+        self.delete_games_query = "DELETE FROM games"
+        self.delete_boards_query = "DELETE FROM test_boards"
+
+    def tearDown(self):
+        self.connection.close()
+
+    def test_create_game_table(self):
+        query = "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'games';"
+        result = self.database_utils.execute_sql_query(query, fetch_option="fetchone")
+        self.assertIsNotNone(result)
+
+    def test_create_board_table(self):
+        query = f"SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'test_boards';"
+        result = self.database_utils.execute_sql_query(query, fetch_option="fetchone")
+        self.assertIsNotNone(result)
+
+    def test_add_game_to_db(self):
+        self.database_utils.execute_sql_query(self.delete_games_query)
+        for _ in range(5):
+            self.database_utils.add_game_to_db()
+        games = self.database_utils.get_all_games()
+        self.assertIsNotNone(games)
+        self.assertEqual(5, len(games))
+
+    def test_delete_games_with_non_finite_status(self):
+        self.database_utils.delete_boards_for_game_with_non_finite_status(board_table="games")
+        query = "SELECT * FROM games WHERE winner is NULL"
+        result = self.database_utils.execute_sql_query(query)
+        self.assertIsNone(result)
+
+    def test_set_winner(self):
+        self.database_utils.add_game_to_db()
+        self.database_utils.set_winner(1, "TEST_WINNER")
+        result_query = "SELECT winner FROM games WHERE game_id = ?"
+        result = self.database_utils.execute_sql_query(result_query, "1", fetch_option="fetchone")
+        self.assertIsNotNone(result)
+        self.assertEqual("TEST_WINNER", result[0])
+        self.database_utils.execute_sql_query(self.delete_games_query)
+
+    def test_add_board_to_db(self):
+        board_status = {"A":{"1": "~", "2": "~", "3": "~", "4": "~", "5": "~", "6": "~", "7": "~", "8": "~", "9": "~", "10": "~"}}
+        self.database_utils.add_game_to_db()
+        self.database_utils.add_board_to_db(1, board_status, "test_boards")
+        board_query = "SELECT board_status FROM test_boards WHERE game_id = ?"
+        result = self.database_utils.execute_sql_query(board_query, "1", fetch_option="fetchone")
+        self.assertIsNotNone(result)
+        self.assertEqual(board_status, json.loads(result[0]))
+        self.database_utils.execute_sql_query(self.delete_boards_query)
+        self.database_utils.execute_sql_query(self.delete_games_query)
+
+
