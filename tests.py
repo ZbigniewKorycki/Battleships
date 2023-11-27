@@ -24,20 +24,20 @@ class TestBoard(unittest.TestCase):
     def test_if_coord_within_board_border(self):
         # rows A-J, columns 1-10
 
-        coord_correct_first_row_first_column = (
-            self.board.if_coord_within_board_border({"row": "A", "column": 1})
+        coord_correct_first_row_first_column = self.board.if_coord_within_board_border(
+            {"row": "A", "column": 1}
         )
-        coord_correct_first_row_last_column = (
-            self.board.if_coord_within_board_border({"row": "A", "column": 10})
+        coord_correct_first_row_last_column = self.board.if_coord_within_board_border(
+            {"row": "A", "column": 10}
         )
-        coord_correct_last_row_first_column = (
-            self.board.if_coord_within_board_border({"row": "J", "column": 1})
+        coord_correct_last_row_first_column = self.board.if_coord_within_board_border(
+            {"row": "J", "column": 1}
         )
-        coord_correct_last_row_last_column = (
-            self.board.if_coord_within_board_border({"row": "J", "column": 10})
+        coord_correct_last_row_last_column = self.board.if_coord_within_board_border(
+            {"row": "J", "column": 10}
         )
-        coord_incorrect_column_of_of_range = (
-            self.board.if_coord_within_board_border({"row": "A", "column": 11})
+        coord_incorrect_column_of_of_range = self.board.if_coord_within_board_border(
+            {"row": "A", "column": 11}
         )
         coord_incorrect_row_of_of_range = self.board.if_coord_within_board_border(
             {"row": "K", "column": 1}
@@ -51,8 +51,8 @@ class TestBoard(unittest.TestCase):
         coord_incorrect_row_as_numeric = self.board.if_coord_within_board_border(
             {"row": 5, "column": 5}
         )
-        coord_incorrect_column_as_letter = (
-            self.board.if_coord_within_board_border({"row": "A", "column": "A"})
+        coord_incorrect_column_as_letter = self.board.if_coord_within_board_border(
+            {"row": "A", "column": "A"}
         )
 
         self.assertTrue(coord_correct_first_row_first_column)

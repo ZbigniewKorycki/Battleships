@@ -23,7 +23,7 @@ class CommunicationUtils:
         }
         self.shot_result = {0: "MISS", 1: "HIT", 2: "SINKING"}
 
-    def protocol_template(
+    def protocol_temp(
         self, message_type="null", status="null", message="null", body="null"
     ):
         template = {
@@ -40,12 +40,12 @@ class CommunicationUtilsClient(CommunicationUtils):
         super().__init__()
         self.player_client = player_client
 
-    def protocol_template(self, message_type="null", body="null", *args):
+    def protocol_temp(self, message_type="null", body="null", *args):
         template = {"type": message_type, "body": body}
         return template
 
     def client_game_invitation_request(self):
-        client_request = self.protocol_template(self.message_type[0])
+        client_request = self.protocol_temp(self.message_type[0])
         return client_request
 
     def client_shot_request(self):
@@ -59,17 +59,17 @@ class CommunicationUtilsClient(CommunicationUtils):
                 counter_max_tries -= 1
                 if counter_max_tries == 1:
                     print(
-                        f"Incorrect coordinates, you have last chance to give correct, row: (A-J) column: (1-10)."
+                        "Incorrect coordinates, you have last chance to give correct, row: (A-J) column: (1-10)."
                     )
             else:
                 message_shot_request = {"row": row_input, "column": int(column_input)}
-                client_shot = self.protocol_template(
+                client_shot = self.protocol_temp(
                     self.message_type[1], message_shot_request
                 )
                 self.last_shot = message_shot_request
                 return client_shot
         message_invalid_shot_request = {"row": "INVALID", "column": 1}
-        client_invalid_shot = self.protocol_template(
+        client_invalid_shot = self.protocol_temp(
             self.message_type[1], message_invalid_shot_request
         )
         self.last_shot = message_invalid_shot_request
@@ -90,47 +90,43 @@ class CommunicationUtilsClient(CommunicationUtils):
             return False
 
     def client_requesting_server_to_shot(self):
-        shot_request = self.protocol_template(self.message_type[2])
+        shot_request = self.protocol_temp(self.message_type[2])
         return shot_request
 
     def client_response_for_server_shot(self, server_shot_request):
         coord = server_shot_request["body"]
         shot_result = self.player_client.player_board.result_of_opponent_shot(coord)
         if shot_result == "MISS" or shot_result == "HIT" or shot_result == "SINKING":
-            return self.protocol_template(self.message_type[3], body=shot_result)
+            return self.protocol_temp(self.message_type[3], body=shot_result)
         else:
-            return self.protocol_template(self.message_type[3], body="MISS")
+            return self.protocol_temp(self.message_type[3], body="MISS")
 
     def client_send_final_ships_positions(self):
         final_ships_positions = (
             self.player_client.player_board.get_positions_of_all_ships()
         )
-        message_with_final_ships_positions = self.protocol_template(
+        message_with_final_ships_positions = self.protocol_temp(
             self.message_type[4], final_ships_positions
         )
         return message_with_final_ships_positions
 
     def client_send_unknown_command(self):
-        message_unknown_command = self.protocol_template(self.message_type[5])
+        message_unknown_command = self.protocol_temp(self.message_type[5])
         return message_unknown_command
 
     def client_request_to_db_service(self, request, args=None):
         if request == "SAVE_GAME_TO_DB":
-            client_request = self.protocol_template(message_type="SAVE_GAME")
+            client_request = self.protocol_temp(message_type="SAVE_GAME")
         elif request == "SAVE_BOARD_STATUS_TO_DB":
-            client_request = self.protocol_template(
+            client_request = self.protocol_temp(
                 message_type="SAVE_BOARD_STATUS", body=args
             )
         elif request == "SAVE_WINNER_TO_DB":
-            client_request = self.protocol_template(
-                message_type="SAVE_WINNER", body=args
-            )
+            client_request = self.protocol_temp(message_type="SAVE_WINNER", body=args)
         elif request == "SHOW_ARCHIVED_GAMES":
-            client_request = self.protocol_template(message_type="ARCHIVED_GAMES")
+            client_request = self.protocol_temp(message_type="ARCHIVED_GAMES")
         elif request == "WATCH_GAME":
-            client_request = self.protocol_template(
-                message_type="WATCH_GAME", body=args
-            )
+            client_request = self.protocol_temp(message_type="WATCH_GAME", body=args)
         return client_request
 
     @staticmethod
@@ -146,13 +142,13 @@ class CommunicationUtilsServer(CommunicationUtils):
 
     def server_game_invitation_response(self):
         if self.server_is_busy:
-            server_response = self.protocol_template(
+            server_response = self.protocol_temp(
                 self.message_type[0],
                 self.status_code[1],
                 "Server is playing the other game",
             )
         else:
-            server_response = self.protocol_template(
+            server_response = self.protocol_temp(
                 self.message_type[0], self.status_code[0]
             )
             self.server_is_busy = True
@@ -162,11 +158,11 @@ class CommunicationUtilsServer(CommunicationUtils):
         coord = client_shot_request["body"]
         shot_result = self.player_server.player_board.result_of_opponent_shot(coord)
         if shot_result == "MISS" or shot_result == "HIT" or shot_result == "SINKING":
-            return self.protocol_template(
+            return self.protocol_temp(
                 self.message_type[1], self.status_code[0], body=shot_result
             )
         else:
-            return self.protocol_template(
+            return self.protocol_temp(
                 self.message_type[1],
                 self.status_code[2],
                 "The shot within the boundaries of the board",
@@ -176,38 +172,38 @@ class CommunicationUtilsServer(CommunicationUtils):
         row, column = self.player_server.ai_shot()
         shot_message = {"row": row, "column": column}
         self.last_shot = shot_message
-        server_shot_message = self.protocol_template(
+        server_shot_message = self.protocol_temp(
             self.message_type[2], self.status_code[0], body=shot_message
         )
         return server_shot_message
 
     def server_acknowledgment_to_client_response_for_server_shot(self, result):
         if result == "MISS":
-            server_response = self.protocol_template(
+            server_response = self.protocol_temp(
                 self.message_type[3], self.status_code[0], body=self.shot_result[0]
             )
         elif result == "HIT":
-            server_response = self.protocol_template(
+            server_response = self.protocol_temp(
                 self.message_type[3], self.status_code[0], body=self.shot_result[1]
             )
         elif result == "SINKING":
-            server_response = self.protocol_template(
+            server_response = self.protocol_temp(
                 self.message_type[3], self.status_code[0], body=self.shot_result[2]
             )
         else:
-            server_response = self.protocol_template(
+            server_response = self.protocol_temp(
                 self.message_type[3], self.status_code[0]
             )
         return server_response
 
     def server_response_to_unknown_command(self):
-        unknown_command_message = self.protocol_template(
+        unknown_command_message = self.protocol_temp(
             self.message_type[5], self.status_code[4]
         )
         return unknown_command_message
 
     def server_confirmation_to_final_ships_positions(self):
-        confirmation = self.protocol_template(self.message_type[4], self.status_code[0])
+        confirmation = self.protocol_temp(self.message_type[4], self.status_code[0])
         return confirmation
 
 
@@ -218,7 +214,7 @@ class DatabaseCommunicationUtils(CommunicationUtils):
 
     def save_game_to_db(self):
         self.database_utils.add_game_to_db()
-        response = self.protocol_template(
+        response = self.protocol_temp(
             message_type="SAVE_GAME", body="The game was successfully added to database"
         )
         return response
@@ -229,7 +225,7 @@ class DatabaseCommunicationUtils(CommunicationUtils):
         self.database_utils.add_board_to_db(
             game_number, opponent_board, "server_boards"
         )
-        response = self.protocol_template(
+        response = self.protocol_temp(
             message_type="SAVE_BOARDS", body="Boards was successfully added to database"
         )
         return response
@@ -237,7 +233,7 @@ class DatabaseCommunicationUtils(CommunicationUtils):
     def set_winner_in_table(self, winner):
         game_number = self.establish_game_number()
         self.database_utils.set_winner(game_number, winner)
-        response = self.protocol_template(
+        response = self.protocol_temp(
             message_type="SAVE_WINNER", body=f"{winner} WINS !"
         )
         return response
@@ -252,14 +248,12 @@ class DatabaseCommunicationUtils(CommunicationUtils):
 
     def show_all_games(self):
         all_games = self.database_utils.get_all_games()
-        response = self.protocol_template(message_type="ARCHIVED_GAMES", body=all_games)
+        response = self.protocol_temp(message_type="ARCHIVED_GAMES", body=all_games)
         return response
 
     def show_one_game(self, game_id):
         boards = self.database_utils.get_one_game(game_id)
-        response = self.protocol_template(
-            message_type="BOARDS_FOR_ONE_GAME", body=boards
-        )
+        response = self.protocol_temp(message_type="BOARDS_FOR_ONE_GAME", body=boards)
         return response
 
     def establish_game_number(self):

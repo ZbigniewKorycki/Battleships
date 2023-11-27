@@ -16,48 +16,44 @@ class Client:
         self.data_utils = DataUtils()
         self.player = Player()
         self.ai_player = AIPlayer()
-        self.communication_utils = CommunicationUtilsClient(self.player)
+        self.comm_utils = CommunicationUtilsClient(self.player)
         self.is_running = True
 
     def create_request_to_server(self, client_input, args=None):
         if client_input == "START":
-            return self.communication_utils.client_game_invitation_request()
+            return self.comm_utils.client_game_invitation_request()
         elif client_input == "SHOT":
-            return self.communication_utils.client_shot_request()
+            return self.comm_utils.client_shot_request()
         elif client_input == "SHOT_REQUEST":
-            return self.communication_utils.client_requesting_server_to_shot()
+            return self.comm_utils.client_requesting_server_to_shot()
         elif client_input == "BOARD":
-            return self.communication_utils.client_send_final_ships_positions()
+            return self.comm_utils.client_send_final_ships_positions()
         elif client_input == "SAVE_GAME_TO_DB":
-            return self.communication_utils.client_request_to_db_service(
-                "SAVE_GAME_TO_DB"
-            )
+            return self.comm_utils.client_request_to_db_service("SAVE_GAME_TO_DB")
         elif client_input == "SAVE_BOARD_STATUS_TO_DB":
             player_board = self.player.player_board.board_to_dict()
-            return self.communication_utils.client_request_to_db_service(
+            return self.comm_utils.client_request_to_db_service(
                 "SAVE_BOARD_STATUS_TO_DB", {"player_board": player_board}
             )
         elif client_input == "SAVE_WINNER_TO_DB":
-            return self.communication_utils.client_request_to_db_service(
+            return self.comm_utils.client_request_to_db_service(
                 "SAVE_WINNER_TO_DB", {"winner": args}
             )
         elif client_input == "SHOW_ARCHIVED_GAMES":
-            return self.communication_utils.client_request_to_db_service(
-                "SHOW_ARCHIVED_GAMES"
-            )
+            return self.comm_utils.client_request_to_db_service("SHOW_ARCHIVED_GAMES")
         elif client_input == "WATCH_GAME":
-            return self.communication_utils.client_request_to_db_service(
+            return self.comm_utils.client_request_to_db_service(
                 "WATCH_GAME", {"game_id": args}
             )
         elif client_input == "STOP":
             return CommunicationUtilsClient.stop_client_and_server()
         else:
-            return self.communication_utils.client_send_unknown_command()
+            return self.comm_utils.client_send_unknown_command()
 
     def read_server_response(self, server_response_json, client_socket):
         server_response = DataUtils.deserialize_json(server_response_json)
         if server_response["type"] == "SHOT_REQUEST":
-            client_response = self.communication_utils.client_response_for_server_shot(
+            client_response = self.comm_utils.client_response_for_server_shot(
                 server_response
             )
             client_response_json = self.data_utils.serialize_to_json(client_response)
@@ -68,7 +64,7 @@ class Client:
         if server_response["type"] == "SHOT" and server_response["status"] == "OK":
             result = server_response["body"]
             self.player.player_board.add_result_of_shot_into_opponent_board(
-                self.communication_utils.last_shot, result
+                self.comm_utils.last_shot, result
             )
             return result
         if (
@@ -186,7 +182,7 @@ class Client:
             client_socket, "SHOW_ARCHIVED_GAMES"
         )
         all_games = server_response["body"]
-        if all_games == None or all_games == []:
+        if all_games is None or all_games == []:
             print("There`s no game to watch")
         else:
             for game in all_games:
@@ -253,7 +249,7 @@ class Client:
                     elif client_input == "AGAIN":
                         self.player = Player()
                         self.ai_player = AIPlayer()
-                        self.communication_utils = CommunicationUtilsClient(self.player)
+                        self.comm_utils = CommunicationUtilsClient(self.player)
                         self.communication_feature_template(
                             client_socket, "SAVE_GAME_TO_DB"
                         )
