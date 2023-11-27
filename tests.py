@@ -230,7 +230,7 @@ class TestDataUtils(unittest.TestCase):
 
     def test_deserialize_json(self):
         json_data = b'{"key1": "value1", "key2": "value2"}'
-        dict_data = self.data_utils.deserialize_json(json_data)
+        dict_data = DataUtils.deserialize_json(json_data)
         self.assertIsInstance(dict_data, dict)
         self.assertEqual(dict_data, {"key1": "value1", "key2": "value2"})
 
