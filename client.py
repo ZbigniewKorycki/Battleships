@@ -71,7 +71,7 @@ class Client:
             self.player.player_board.reload_boards()
             self.communication_feature_template(client_socket, "SAVE_BOARD_STATUS_TO_DB")
             client_shot = self.communication_feature_template(client_socket, "SHOT")
-            print(client_shot)
+            # print(client_shot)
             number_of_sunk_signs_in_player_opponent_board = self.player.player_board.count_sunk_signs(self.player.player_board.opponent_board)
             if number_of_sunk_signs_in_player_opponent_board == 20:
                 winner = "CLIENT"
@@ -82,7 +82,7 @@ class Client:
                 winner = "CLIENT"
                 break
             server_shot = self.communication_feature_template(client_socket, "SHOT_REQUEST")
-            print(server_shot)
+            # print(server_shot)
             number_of_sunk_signs_in_ai_player_opponent_board = self.player.player_board.count_sunk_signs(self.player.player_board.player_board)
             if number_of_sunk_signs_in_ai_player_opponent_board == 20:
                 winner= "SERVER"
