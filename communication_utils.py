@@ -127,7 +127,8 @@ class CommunicationUtilsClient(CommunicationUtils):
             client_request = self.protocol_template(message_type="WATCH_GAME", body=args)
         return client_request
 
-    def stop_client_and_server(self):
+    @staticmethod
+    def stop_client_and_server():
         stop_request = "STOP"
         return stop_request
 

@@ -41,7 +41,7 @@ class Client:
         elif client_input == "WATCH_GAME":
             return self.communication_utils.client_request_to_db_service("WATCH_GAME", {"game_id": args})
         elif client_input == "STOP":
-            return self.communication_utils.stop_client_and_server()
+            return CommunicationUtilsClient.stop_client_and_server()
         else:
             return self.communication_utils.client_send_unknown_command()
 
