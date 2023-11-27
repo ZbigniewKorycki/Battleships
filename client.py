@@ -72,7 +72,7 @@ class Client:
             and server_response["status"] == "OK"
         ):
             self.player.player_board.draw_player_board()
-            self.player.coords_for_ship_add_to_board()
+            self.player.aut_coords_for_ship_add_to_board()
             self.player.player_board.prepare_board_for_game_start()
         return server_response
 
