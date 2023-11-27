@@ -13,7 +13,7 @@ class Player:
         self.player_board = Board()
         self.database_service = DatabaseUtils(db_file)
 
-    def coordinates_for_ship_add_to_board(self):
+    def coords_for_ship_add_to_board(self):
         while self.ships.ships_to_deploy_list:
             try:
                 for ship_type in self.ships.ships_to_deploy_list:
@@ -102,7 +102,7 @@ class Player:
 
     # for testing
 
-    def aut_coordinates_for_ship_add_to_board(self):
+    def aut_coords_for_ship_add_to_board(self):
         while self.ships.ships_to_deploy_list:
             try:
                 for ship_type in self.ships.ships_to_deploy_list:
@@ -151,7 +151,7 @@ class AIPlayer:
         self.player_board = BoardAI()
         self.database_service = DatabaseUtils(db_file)
 
-    def coordinates_for_ship_add_to_board(self):
+    def coords_for_ship_add_to_board(self):
         while self.ships.ships_to_deploy_list:
             try:
                 for ship_type in self.ships.ships_to_deploy_list:
@@ -194,7 +194,7 @@ class AIPlayer:
             return orientation
 
     def ai_shot(self):
-        possible_shots = self.player_board.possible_shots_for_player_ai
+        possible_shots = self.player_board.possible_shots
         if len(possible_shots["priority"]) > 0:
             shot = random.choice(possible_shots["priority"])
         elif len(possible_shots["normal"]) > 0:

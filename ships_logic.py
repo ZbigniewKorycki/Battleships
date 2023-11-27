@@ -7,25 +7,25 @@ class Ship:
         self.column = column
         self.size = size
         self.orientation = orientation
-        self.coordinates = self.get_coordinates_of_ship()
+        self.coords = self.get_coords_of_ship()
         self.ship_durability = self.size
 
     def make_damage_for_ship(self):
         self.ship_durability -= 1
 
-    def get_coordinates_of_ship(self):
-        coordinates = []
+    def get_coords_of_ship(self):
+        coords = []
         if self.orientation == "horizontal":
             for column in range(self.column, self.column + self.size):
-                coordinate = {"row": self.row, "column": column}
-                coordinates.append(coordinate)
+                coord = {"row": self.row, "column": column}
+                coords.append(coord)
         elif self.orientation == "vertical":
             row_index = Ship.find_row_letter_index(self.row)
             for index in range(row_index, row_index + self.size):
                 row = string.ascii_uppercase[index]
-                coordinate = {"row": row, "column": self.column}
-                coordinates.append(coordinate)
-        return coordinates
+                coord = {"row": row, "column": self.column}
+                coords.append(coord)
+        return coords
 
     @staticmethod
     def find_row_letter_index(row):
@@ -77,8 +77,8 @@ class Ships:
             self.destroyed_ships.append(ship)
             self.active_ships.remove(ship)
 
-    def get_ships_coordinates_on_board(self):
-        final_board_coordinates = {
+    def get_ships_coords_on_board(self):
+        final_board_coords = {
             "Four-masted ship": [],
             "Three-masted ship": [],
             "Two-masted ship": [],
@@ -86,28 +86,28 @@ class Ships:
         }
         for ship in [*self.active_ships, *self.destroyed_ships]:
             if ship.size == 1:
-                row = ship.coordinates[0]["row"]
-                column = str(ship.coordinates[0]["column"])
-                formatted_coordinate = "".join([row, column])
-                final_board_coordinates["One-masted ship"].append(formatted_coordinate)
+                row = ship.coords[0]["row"]
+                column = str(ship.coords[0]["column"])
+                formatted_coord = "".join([row, column])
+                final_board_coords["One-masted ship"].append(formatted_coord)
             else:
-                row_begin = ship.coordinates[0]["row"]
-                column_begin = str(ship.coordinates[0]["column"])
-                row_end = ship.coordinates[-1]["row"]
-                column_end = str(ship.coordinates[-1]["column"])
-                formatted_coordinate = (
+                row_begin = ship.coords[0]["row"]
+                column_begin = str(ship.coords[0]["column"])
+                row_end = ship.coords[-1]["row"]
+                column_end = str(ship.coords[-1]["column"])
+                formatted_coord = (
                     f"{row_begin}{column_begin}-{row_end}{column_end}"
                 )
                 if ship.size == 4:
-                    final_board_coordinates["Four-masted ship"].append(
-                        formatted_coordinate
+                    final_board_coords["Four-masted ship"].append(
+                        formatted_coord
                     )
                 if ship.size == 3:
-                    final_board_coordinates["Three-masted ship"].append(
-                        formatted_coordinate
+                    final_board_coords["Three-masted ship"].append(
+                        formatted_coord
                     )
                 if ship.size == 2:
-                    final_board_coordinates["Two-masted ship"].append(
-                        formatted_coordinate
+                    final_board_coords["Two-masted ship"].append(
+                        formatted_coord
                     )
-        return final_board_coordinates
+        return final_board_coords

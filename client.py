@@ -67,7 +67,7 @@ class Client:
             return server_response
         if server_response["type"] == "SHOT" and server_response["status"] == "OK":
             result = server_response["body"]
-            self.player.player_board.add_result_of_player_shot_into_opponent_board(
+            self.player.player_board.add_result_of_shot_into_opponent_board(
                 self.communication_utils.last_shot, result
             )
             return result
@@ -76,7 +76,7 @@ class Client:
             and server_response["status"] == "OK"
         ):
             self.player.player_board.draw_player_board()
-            self.player.coordinates_for_ship_add_to_board()
+            self.player.coords_for_ship_add_to_board()
             self.player.player_board.prepare_board_for_game_start()
         return server_response
 

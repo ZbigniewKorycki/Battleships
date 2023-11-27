@@ -28,7 +28,7 @@ class Server:
                 self.communication_utils.server_game_invitation_response()
             )
             if response_for_game_invitation["status"] == "OK":
-                self.ai_player.coordinates_for_ship_add_to_board()
+                self.ai_player.coords_for_ship_add_to_board()
                 self.ai_player.player_board.prepare_board_for_game_start()
             return response_for_game_invitation
         elif client_request["type"] == "SHOT":
