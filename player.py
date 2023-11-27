@@ -17,20 +17,20 @@ class Player:
         while self.ships.ships_to_deploy_list:
             try:
                 for ship_type in self.ships.ships_to_deploy_list:
-                    row_input = self.row_input(ship_type)
+                    row_input = Player.row_input(ship_type)
                     if row_input[0]:
                         row = row_input[1]
                     else:
                         print(row_input[1])
                         break
-                    column_input = self.column_input(ship_type)
+                    column_input = Player.column_input(ship_type)
                     if column_input[0]:
                         column = column_input[1]
                     else:
                         print(column_input[1])
                         break
-                    size = self.ship_size_establish(ship_type)
-                    orientation_input = self.orientation_input(ship_type)
+                    size = Player.ship_size_establish(ship_type)
+                    orientation_input = Player.orientation_input(ship_type)
                     if orientation_input[0]:
                         orientation = orientation_input[1]
                     else:
@@ -47,7 +47,8 @@ class Player:
                 print(e)
                 continue
 
-    def row_input(self, ship_type):
+    @staticmethod
+    def row_input(ship_type):
         row = input(f"Set row for '{ship_type}' from 'A' to 'J': ").capitalize()
         if row in string.ascii_uppercase[:10]:
             return True, row
@@ -55,7 +56,8 @@ class Player:
             error_message = "Row outside index"
             return False, error_message
 
-    def column_input(self, ship_type):
+    @staticmethod
+    def column_input(ship_type):
         try:
             column = int(input(f"Set column for '{ship_type}' from '1' to '10': "))
             if column in range(1, 11):
@@ -67,7 +69,8 @@ class Player:
             error_message = "Column have to be an integer"
             return False, error_message
 
-    def ship_size_establish(self, ship_type):
+    @staticmethod
+    def ship_size_establish(ship_type):
         if ship_type == "Four-masted ship":
             size = 4
         elif ship_type == "Three-masted ship":
@@ -78,7 +81,8 @@ class Player:
             size = 1
         return size
 
-    def orientation_input(self, ship_type):
+    @staticmethod
+    def orientation_input(ship_type):
         if ship_type != "One-masted ship":
             orientation_input = input(
                 f"In which direction would you set '{ship_type}' ? Put 'H' for horizontal, 'V' for vertical: ").capitalize()
@@ -101,10 +105,10 @@ class Player:
         while self.ships.ships_to_deploy_list:
             try:
                 for ship_type in self.ships.ships_to_deploy_list:
-                    row = self.aut_row_input()
-                    column = self.aut_column_input()
-                    size = self.ship_size_establish(ship_type)
-                    orientation = self.aut_orientation_input(ship_type)
+                    row = Player.aut_row_input()
+                    column = Player.aut_column_input()
+                    size = Player.ship_size_establish(ship_type)
+                    orientation = Player.aut_orientation_input(ship_type)
                     ship = Ship(row, column, size, orientation)
                     self.player_board.add_ship(ship)
                     self.player_board.draw_player_board()
@@ -114,16 +118,19 @@ class Player:
             except CustomException:
                 continue
 
-    def aut_row_input(self):
+    @staticmethod
+    def aut_row_input():
         row_index = random.randint(0, 9)
         row = string.ascii_uppercase[row_index]
         return row
 
-    def aut_column_input(self):
+    @staticmethod
+    def aut_column_input():
         column = random.randint(1, 10)
         return column
 
-    def aut_orientation_input(self, ship_type):
+    @staticmethod
+    def aut_orientation_input(ship_type):
         if ship_type != "One-masted ship":
             available_options = ["H", "V"]
             orientation = random.choice(available_options)
@@ -147,10 +154,10 @@ class AIPlayer:
         while self.ships.ships_to_deploy_list:
             try:
                 for ship_type in self.ships.ships_to_deploy_list:
-                    row = self.row_input()
-                    column = self.column_input()
-                    size = self.ship_size_establish(ship_type)
-                    orientation = self.orientation_input(ship_type)
+                    row = AIPlayer.row_input()
+                    column = AIPlayer.column_input()
+                    size = Player.ship_size_establish(ship_type)
+                    orientation = AIPlayer.orientation_input(ship_type)
                     ship = Ship(row, column, size, orientation)
                     self.player_board.add_ship(ship)
                     self.player_board.draw_player_board()
@@ -160,27 +167,19 @@ class AIPlayer:
             except CustomException:
                 continue
 
-    def ship_size_establish(self, ship_type):
-        if ship_type == "Four-masted ship":
-            size = 4
-        elif ship_type == "Three-masted ship":
-            size = 3
-        elif ship_type == "Two-masted ship":
-            size = 2
-        elif ship_type == "One-masted ship":
-            size = 1
-        return size
-
-    def row_input(self):
+    @staticmethod
+    def row_input():
         row_index = random.randint(0, 9)
         row = string.ascii_uppercase[row_index]
         return row
 
-    def column_input(self):
+    @staticmethod
+    def column_input():
         column = random.randint(1, 10)
         return column
 
-    def orientation_input(self, ship_type):
+    @staticmethod
+    def orientation_input(ship_type):
         if ship_type != "One-masted ship":
             available_options = ["H", "V"]
             orientation = random.choice(available_options)

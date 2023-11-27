@@ -18,8 +18,9 @@ class Server:
         self.database_communication_utils = DatabaseCommunicationUtils()
         self.is_running = True
 
-    def read_client_request(self, client_request_json):
-        return self.data_utils.deserialize_json(client_request_json)
+    @staticmethod
+    def read_client_request(client_request_json):
+        return DataUtils.deserialize_json(client_request_json)
 
     def create_response_to_client(self, client_request):
         if client_request['type'] == 'GAME_INVITATION':
