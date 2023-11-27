@@ -95,19 +95,11 @@ class Ships:
                 column_begin = str(ship.coords[0]["column"])
                 row_end = ship.coords[-1]["row"]
                 column_end = str(ship.coords[-1]["column"])
-                formatted_coord = (
-                    f"{row_begin}{column_begin}-{row_end}{column_end}"
-                )
+                formatted_coord = f"{row_begin}{column_begin}-{row_end}{column_end}"
                 if ship.size == 4:
-                    final_board_coords["Four-masted ship"].append(
-                        formatted_coord
-                    )
+                    final_board_coords["Four-masted ship"].append(formatted_coord)
                 if ship.size == 3:
-                    final_board_coords["Three-masted ship"].append(
-                        formatted_coord
-                    )
+                    final_board_coords["Three-masted ship"].append(formatted_coord)
                 if ship.size == 2:
-                    final_board_coords["Two-masted ship"].append(
-                        formatted_coord
-                    )
+                    final_board_coords["Two-masted ship"].append(formatted_coord)
         return final_board_coords

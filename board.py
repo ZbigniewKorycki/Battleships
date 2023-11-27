@@ -37,7 +37,7 @@ class Board:
     def create_starting_board(self):
         starting_board = {
             row: {col: "~" for col in range(1, self.size_columns + 1)}
-            for row in string.ascii_uppercase[0: self.size_rows]
+            for row in string.ascii_uppercase[0 : self.size_rows]
         }
         return starting_board
 
@@ -90,9 +90,7 @@ class Board:
 
     def block_coords_near_ship(self, coords):
         for coord in coords:
-            neighb_coords = (
-                self.get_neighb_coords_in_eight_directions(coord)
-            )
+            neighb_coords = self.get_neighb_coords_in_eight_directions(coord)
             for neighb_coord in neighb_coords:
                 if (
                     neighb_coord not in coords
@@ -104,12 +102,12 @@ class Board:
         for coord in ship_coords:
             if self.get_symbol_player_board(coord) in [";", "O"]:
                 return False
-            if not self.check_if_coord_within_board_border(coord):
+            if not self.if_coord_within_board_border(coord):
                 return False
         else:
             return True
 
-    def check_if_coord_within_board_border(self, coord):
+    def if_coord_within_board_border(self, coord):
         if coord["row"] in self.row_index and coord["column"] in range(
             1, self.size_columns + 1
         ):
@@ -130,7 +128,7 @@ class Board:
         return None
 
     def add_block_to_board(self, coord):
-        if self.check_if_coord_within_board_border(coord):
+        if self.if_coord_within_board_border(coord):
             self.update_player_board(coord, ";")
 
     def remove_blocks_from_board(self):
@@ -141,22 +139,20 @@ class Board:
                     self.update_player_board(coord, "~")
 
     def add_result_of_shot_into_opponent_board(self, coord, result):
-        if self.check_if_coord_within_board_border(coord):
+        if self.if_coord_within_board_border(coord):
             if result == "HIT":
                 self.update_opponent_board(coord, "X")
             elif result == "MISS":
                 self.update_opponent_board(coord, "M")
             elif result == "SINKING":
-                coords_of_sunk_ship = (
-                    self.get_coords_of_sunk_ship_from_last_hit_coord(
-                        coord
-                    )
+                coords_of_sunk_ship = self.get_coords_of_sunk_ship_from_last_hit_coord(
+                    coord
                 )
                 for coord in coords_of_sunk_ship:
                     self.update_opponent_board(coord, "S")
 
     def result_of_opponent_shot(self, coord):
-        if self.check_if_coord_within_board_border(coord):
+        if self.if_coord_within_board_border(coord):
             if self.get_symbol_player_board(coord) == "O":
                 ship = self.get_ship_by_coord(coord)
                 ship.make_damage_for_ship()
@@ -206,12 +202,8 @@ class Board:
         self.draw_player_board()
         self.draw_opponent_board()
 
-    def get_coords_of_sunk_ship_from_last_hit_coord(
-        self, last_hit_coord_of_sunk_ship
-    ):
-        row, column = self.get_row_and_column_from_coord(
-            last_hit_coord_of_sunk_ship
-        )
+    def get_coords_of_sunk_ship_from_last_hit_coord(self, last_hit_coord):
+        row, column = self.get_row_and_column_from_coord(last_hit_coord)
         row_index = self.get_index_from_row(row)
         coords_with_row_index = [
             [
@@ -240,14 +232,12 @@ class Board:
         ]
 
         neighb_coords_with_row_index = [
-            coord
-            for distance in coords_with_row_index
-            for coord in distance
+            coord for distance in coords_with_row_index for coord in distance
         ]
 
         directions = ["left", "right", "up", "down"]
 
-        coords_of_sunk_ship = [last_hit_coord_of_sunk_ship]
+        coords_of_sunk_ship = [last_hit_coord]
         for direction in directions:
             side_neighb_coords_with_row_index = list(
                 filter(
@@ -260,20 +250,14 @@ class Board:
                     key=lambda x: x["column"], reverse=True
                 )
             if direction == "right":
-                side_neighb_coords_with_row_index.sort(
-                    key=lambda x: x["column"]
-                )
+                side_neighb_coords_with_row_index.sort(key=lambda x: x["column"])
             if direction == "up":
                 side_neighb_coords_with_row_index.sort(
                     key=lambda x: x["row_index"], reverse=True
                 )
             if direction == "down":
-                side_neighb_coords_with_row_index.sort(
-                    key=lambda x: x["row_index"]
-                )
-            for (
-                neighb_coord_with_row_index
-            ) in side_neighb_coords_with_row_index:
+                side_neighb_coords_with_row_index.sort(key=lambda x: x["row_index"])
+            for neighb_coord_with_row_index in side_neighb_coords_with_row_index:
                 coord = self.get_coord_from_coord_with_row_index(
                     neighb_coord_with_row_index
                 )
@@ -322,9 +306,7 @@ class Board:
     ):
         coords = []
         for coord_with_row_index in list_of_coords_with_row_index:
-            coord = self.get_coord_from_coord_with_row_index(
-                coord_with_row_index
-            )
+            coord = self.get_coord_from_coord_with_row_index(coord_with_row_index)
             if coord:
                 coords.append(coord)
         return coords
@@ -334,7 +316,7 @@ class Board:
             "row": self.get_row_from_index(coord_with_row_index["row_index"]),
             "column": coord_with_row_index["column"],
         }
-        if self.check_if_coord_within_board_border(coord):
+        if self.if_coord_within_board_border(coord):
             return coord
 
     def get_positions_of_all_ships(self):
@@ -375,7 +357,7 @@ class Board:
             return symbol
 
     def get_row_and_column_from_coord(self, coord):
-        if self.check_if_coord_within_board_border(coord):
+        if self.if_coord_within_board_border(coord):
             return coord["row"], coord["column"]
         else:
             return None
@@ -398,7 +380,7 @@ class BoardAI(Board):
         return shots_to_take
 
     def add_result_of_shot_into_opponent_board(self, coord, result):
-        if self.check_if_coord_within_board_border(coord):
+        if self.if_coord_within_board_border(coord):
             if result == "HIT":
                 self.update_opponent_board(coord, "X")
                 self.update_possible_shots_after_ship_hit(coord)
@@ -407,41 +389,27 @@ class BoardAI(Board):
                 self.update_possible_shots_after_miss_hit(coord)
             elif result == "SINKING":
                 self.update_possible_shots_after_ship_sunk(coord)
-                coords_of_sunk_ship = (
-                    self.get_coords_of_sunk_ship_from_last_hit_coord(
-                        coord
-                    )
+                coords_of_sunk_ship = self.get_coords_of_sunk_ship_from_last_hit_coord(
+                    coord
                 )
                 for coord in coords_of_sunk_ship:
                     self.update_opponent_board(coord, "S")
 
     def update_possible_shots_after_ship_hit(self, coord):
-        neighb_coords = self.get_neighb_coords_in_four_directions(
-            coord
-        )
+        neighb_coords = self.get_neighb_coords_in_four_directions(coord)
         for neighb_coord in neighb_coords:
-            self.upgrade_priority_of_coord_shot_for_possible_shots(
-                neighb_coord
-            )
+            self.upgrade_prio_of_coord_shot_for_possible_shots(neighb_coord)
         self.remove_coord_from_possible_shots(coord)
 
     def update_possible_shots_after_ship_sunk(self, coord):
-        coords_of_sunk_ship = (
-            self.get_coords_of_sunk_ship_from_last_hit_coord(coord)
-        )
+        coords_of_sunk_ship = self.get_coords_of_sunk_ship_from_last_hit_coord(coord)
         for coord_of_sunk_ship in coords_of_sunk_ship:
-            self.remove_coord_from_possible_shots(
-                coord_of_sunk_ship
-            )
+            self.remove_coord_from_possible_shots(coord_of_sunk_ship)
             neighb_coords_of_part_of_sunk_ship = (
-                self.get_neighb_coords_in_eight_directions(
-                    coord_of_sunk_ship
-                )
+                self.get_neighb_coords_in_eight_directions(coord_of_sunk_ship)
             )
             for neighb_coord in neighb_coords_of_part_of_sunk_ship:
-                self.remove_coord_from_possible_shots(
-                    neighb_coord
-                )
+                self.remove_coord_from_possible_shots(neighb_coord)
 
     def update_possible_shots_after_miss_hit(self, coord):
         self.remove_coord_from_possible_shots(coord)
@@ -452,9 +420,7 @@ class BoardAI(Board):
         if coord in self.possible_shots["normal"]:
             self.possible_shots["normal"].remove(coord)
 
-    def upgrade_priority_of_coord_shot_for_possible_shots(
-        self, coord
-    ):
+    def upgrade_prio_of_coord_shot_for_possible_shots(self, coord):
         if coord in self.possible_shots["normal"]:
             self.possible_shots["priority"].append(coord)
             self.possible_shots["normal"].remove(coord)
