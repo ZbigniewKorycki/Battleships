@@ -65,7 +65,7 @@ class Server:
 
     def start(self):
         with socket.socket(self.internet_address_family, self.socket_type) as server_socket:
-            print("SERVER`S UP.")
+            print("SERVER`S UP")
             self.clean_up_database()
             server_socket.bind((self.host, self.port))
             server_socket.listen()
