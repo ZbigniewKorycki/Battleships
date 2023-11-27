@@ -11,7 +11,8 @@ class DataUtils:
     def serialize_to_json(self, data):
         return json.dumps(data).encode(self.encode_format)
 
-    def deserialize_json(self, data):
+    @staticmethod
+    def deserialize_json(data):
         return json.loads(data)
 
 

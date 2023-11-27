@@ -46,13 +46,13 @@ class Client:
             return self.communication_utils.client_send_unknown_command()
 
     def read_server_response(self, server_response_json, client_socket):
-        server_response = self.data_utils.deserialize_json(server_response_json)
+        server_response = DataUtils.deserialize_json(server_response_json)
         if server_response['type'] == "SHOT_REQUEST":
             client_response = self.communication_utils.client_response_for_server_shot(server_response)
             client_response_json = self.data_utils.serialize_to_json(client_response)
             client_socket.sendall(client_response_json)
             server_response_json = client_socket.recv(self.buffer)
-            server_response = self.data_utils.deserialize_json(server_response_json)
+            server_response = DataUtils.deserialize_json(server_response_json)
             return server_response
         if server_response['type'] == "SHOT" and server_response['status'] == "OK":
             result = server_response["body"]
