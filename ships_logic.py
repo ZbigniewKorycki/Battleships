@@ -20,14 +20,15 @@ class Ship:
                 coordinate = {"row": self.row, "column": column}
                 coordinates.append(coordinate)
         elif self.orientation == "vertical":
-            row_index = self.find_row_letter_index(self.row)
+            row_index = Ship.find_row_letter_index(self.row)
             for index in range(row_index, row_index + self.size):
                 row = string.ascii_uppercase[index]
                 coordinate = {"row": row, "column": self.column}
                 coordinates.append(coordinate)
         return coordinates
 
-    def find_row_letter_index(self, row):
+    @staticmethod
+    def find_row_letter_index(row):
         for letter in string.ascii_uppercase:
             if letter == row:
                 row_index = string.ascii_uppercase.index(row)
@@ -54,7 +55,7 @@ class Ships:
             ["One-masted ship" for _ in range(4)]
         ]
         self.ships_to_deploy_list = []
-        self.ships_type_quantity_list_order = self.move_ships_from_ships_type_quantity_list_to_ships_deploy_list()
+        self.move_ships_from_ships_type_quantity_list_to_ships_deploy_list()
 
     def move_ships_from_ships_type_quantity_list_to_ships_deploy_list(self):
         new_ships_list = []
