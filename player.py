@@ -85,7 +85,8 @@ class Player:
     def orientation_input(ship_type):
         if ship_type != "One-masted ship":
             orientation_input = input(
-                f"In which direction would you set '{ship_type}' ? Put 'H' for horizontal, 'V' for vertical: ").capitalize()
+                f"In which direction would you set '{ship_type}' ? Put 'H' for horizontal, 'V' for vertical: "
+            ).capitalize()
             if orientation_input in ["H", "V"]:
                 if orientation_input == "H":
                     orientation = "horizontal"
@@ -199,8 +200,7 @@ class AIPlayer:
         elif len(possible_shots["normal"]) > 0:
             shot = random.choice(possible_shots["normal"])
         else:
-            shot = {"row": "all possible shots used",
-                    "column": 10}
+            shot = {"row": "all possible shots used", "column": 10}
         row = shot["row"]
         column = shot["column"]
         return row, column

@@ -20,7 +20,7 @@ class Board:
             "G": 7,
             "H": 8,
             "I": 9,
-            "J": 10
+            "J": 10,
         }
         self.ships = Ships()
 
@@ -37,13 +37,17 @@ class Board:
     def create_starting_board(self):
         starting_board = {
             row: {col: "~" for col in range(1, self.size_columns + 1)}
-            for row in string.ascii_uppercase[0: self.size_rows]
+            for row in string.ascii_uppercase[0 : self.size_rows]
         }
         return starting_board
 
     def draw_player_board(self):
         print("Player board:".center(self.size_columns * 2 + 1))
-        columns = print(end="  "), [print(num, end=" ") for num in range(1, self.size_columns + 1)], print()
+        columns = (
+            print(end="  "),
+            [print(num, end=" ") for num in range(1, self.size_columns + 1)],
+            print(),
+        )
         rows_with_value = [
             print(letter, " ".join(list(row.values())))
             for letter, row in self.player_board.items()
@@ -51,7 +55,11 @@ class Board:
 
     def draw_opponent_board(self):
         print("Opponent board:".center(self.size_columns * 2 + 1))
-        columns = print(end="  "), [print(num, end=" ") for num in range(1, self.size_columns + 1)], print()
+        columns = (
+            print(end="  "),
+            [print(num, end=" ") for num in range(1, self.size_columns + 1)],
+            print(),
+        )
         rows_with_value = [
             print(letter, " ".join(list(row.values())))
             for letter, row in self.opponent_board.items()
@@ -59,8 +67,13 @@ class Board:
 
     def count_sunk_signs(self, board_type):
         numbers_of_sunk_signs = sum(
-            [1 for key_outer, inner_dict in board_type.items() for key_inner, value in inner_dict.items() if
-             value == "S"])
+            [
+                1
+                for key_outer, inner_dict in board_type.items()
+                for key_inner, value in inner_dict.items()
+                if value == "S"
+            ]
+        )
         return numbers_of_sunk_signs
 
     def add_ship(self, ship):
@@ -71,14 +84,20 @@ class Board:
             self.ships.active_ships.append(ship)
             return True
         else:
-            raise CustomException("There's another ship in area or ship not within board border.")
+            raise CustomException(
+                "There's another ship in area or ship not within board border."
+            )
 
     def block_coordinates_near_ship(self, coordinates):
         for coordinate in coordinates:
-            neighboring_coordinates = self.get_neighboring_coordinates_in_eight_directions(coordinate)
+            neighboring_coordinates = (
+                self.get_neighboring_coordinates_in_eight_directions(coordinate)
+            )
             for neighboring_coordinate in neighboring_coordinates:
-                if neighboring_coordinate not in coordinates and self.get_symbol_from_player_board(
-                        neighboring_coordinate) == "~":
+                if (
+                    neighboring_coordinate not in coordinates
+                    and self.get_symbol_from_player_board(neighboring_coordinate) == "~"
+                ):
                     self.add_block_to_board(neighboring_coordinate)
 
     def check_if_coordinates_accessible_to_add_ship(self, ship_coordinates):
@@ -91,7 +110,9 @@ class Board:
             return True
 
     def check_if_coordinate_within_board_border(self, coordinate):
-        if coordinate["row"] in self.row_index and coordinate["column"] in range(1, self.size_columns + 1):
+        if coordinate["row"] in self.row_index and coordinate["column"] in range(
+            1, self.size_columns + 1
+        ):
             return True
         else:
             return False
@@ -122,11 +143,15 @@ class Board:
     def add_result_of_player_shot_into_opponent_board(self, coordinate, result):
         if self.check_if_coordinate_within_board_border(coordinate):
             if result == "HIT":
-                self.update_opponent_board(coordinate, 'X')
+                self.update_opponent_board(coordinate, "X")
             elif result == "MISS":
-                self.update_opponent_board(coordinate, 'M')
+                self.update_opponent_board(coordinate, "M")
             elif result == "SINKING":
-                coordinates_of_sunk_ship = self.get_coordinates_of_sunk_ship_from_last_hit_coordinate(coordinate)
+                coordinates_of_sunk_ship = (
+                    self.get_coordinates_of_sunk_ship_from_last_hit_coordinate(
+                        coordinate
+                    )
+                )
                 for coordinate in coordinates_of_sunk_ship:
                     self.update_opponent_board(coordinate, "S")
 
@@ -181,34 +206,77 @@ class Board:
         self.draw_player_board()
         self.draw_opponent_board()
 
-    def get_coordinates_of_sunk_ship_from_last_hit_coordinate(self, last_hit_coordinate_of_sunk_ship):
-        row, column = self.get_row_and_column_from_coordinate(last_hit_coordinate_of_sunk_ship)
+    def get_coordinates_of_sunk_ship_from_last_hit_coordinate(
+        self, last_hit_coordinate_of_sunk_ship
+    ):
+        row, column = self.get_row_and_column_from_coordinate(
+            last_hit_coordinate_of_sunk_ship
+        )
         row_index = self.get_index_from_row(row)
-        coordinates_with_row_index = [[{"row_index": row_index, "column": column - distance, "direction": "left"},
-                                       {"row_index": row_index, "column": column + distance, "direction": "right"},
-                                       {"row_index": row_index - distance, "column": column, "direction": "up"},
-                                       {"row_index": row_index + distance, "column": column, "direction": "down"}] for
-                                      distance in range(1, 4)]
+        coordinates_with_row_index = [
+            [
+                {
+                    "row_index": row_index,
+                    "column": column - distance,
+                    "direction": "left",
+                },
+                {
+                    "row_index": row_index,
+                    "column": column + distance,
+                    "direction": "right",
+                },
+                {
+                    "row_index": row_index - distance,
+                    "column": column,
+                    "direction": "up",
+                },
+                {
+                    "row_index": row_index + distance,
+                    "column": column,
+                    "direction": "down",
+                },
+            ]
+            for distance in range(1, 4)
+        ]
 
-        neighboring_coordinates_with_row_index = [coordinate for distance in coordinates_with_row_index for
-                                                  coordinate in distance]
+        neighboring_coordinates_with_row_index = [
+            coordinate
+            for distance in coordinates_with_row_index
+            for coordinate in distance
+        ]
 
-        directions = ['left', 'right', 'up', 'down']
+        directions = ["left", "right", "up", "down"]
 
         coordinates_of_sunk_ship = [last_hit_coordinate_of_sunk_ship]
         for direction in directions:
             side_neighboring_coordinates_with_row_index = list(
-                filter(lambda x: x["direction"] == direction, neighboring_coordinates_with_row_index))
+                filter(
+                    lambda x: x["direction"] == direction,
+                    neighboring_coordinates_with_row_index,
+                )
+            )
             if direction == "left":
-                side_neighboring_coordinates_with_row_index.sort(key=lambda x: x["column"], reverse=True)
+                side_neighboring_coordinates_with_row_index.sort(
+                    key=lambda x: x["column"], reverse=True
+                )
             if direction == "right":
-                side_neighboring_coordinates_with_row_index.sort(key=lambda x: x["column"])
+                side_neighboring_coordinates_with_row_index.sort(
+                    key=lambda x: x["column"]
+                )
             if direction == "up":
-                side_neighboring_coordinates_with_row_index.sort(key=lambda x: x["row_index"], reverse=True)
+                side_neighboring_coordinates_with_row_index.sort(
+                    key=lambda x: x["row_index"], reverse=True
+                )
             if direction == "down":
-                side_neighboring_coordinates_with_row_index.sort(key=lambda x: x["row_index"])
-            for neighboring_coordinate_with_row_index in side_neighboring_coordinates_with_row_index:
-                coordinate = self.get_coordinate_from_coordinate_with_row_index(neighboring_coordinate_with_row_index)
+                side_neighboring_coordinates_with_row_index.sort(
+                    key=lambda x: x["row_index"]
+                )
+            for (
+                neighboring_coordinate_with_row_index
+            ) in side_neighboring_coordinates_with_row_index:
+                coordinate = self.get_coordinate_from_coordinate_with_row_index(
+                    neighboring_coordinate_with_row_index
+                )
                 if coordinate:
                     if self.get_symbol_from_opponent_board(coordinate) == "X":
                         coordinates_of_sunk_ship.append(coordinate)
@@ -221,30 +289,42 @@ class Board:
     def get_neighboring_coordinates_in_four_directions(self, coordinate):
         row, column = self.get_row_and_column_from_coordinate(coordinate)
         row_index = self.get_index_from_row(row)
-        neighboring_coordinates_with_row_index = [{"row_index": row_index, "column": column - 1},
-                                                  {"row_index": row_index, "column": column + 1},
-                                                  {"row_index": row_index - 1, "column": column},
-                                                  {"row_index": row_index + 1, "column": column}]
-        return self.get_coordinates_from_list_of_coordinates_with_row_index(neighboring_coordinates_with_row_index)
+        neighboring_coordinates_with_row_index = [
+            {"row_index": row_index, "column": column - 1},
+            {"row_index": row_index, "column": column + 1},
+            {"row_index": row_index - 1, "column": column},
+            {"row_index": row_index + 1, "column": column},
+        ]
+        return self.get_coordinates_from_list_of_coordinates_with_row_index(
+            neighboring_coordinates_with_row_index
+        )
 
     def get_neighboring_coordinates_in_eight_directions(self, coordinate):
         row, column = self.get_row_and_column_from_coordinate(coordinate)
         row_index = self.get_index_from_row(row)
-        neighboring_coordinates_with_row_index = [{"row_index": row_index, "column": column - 1},
-                                                  {"row_index": row_index, "column": column + 1},
-                                                  {"row_index": row_index - 1, "column": column},
-                                                  {"row_index": row_index + 1, "column": column},
-                                                  {"row_index": row_index - 1, "column": column - 1},
-                                                  {"row_index": row_index - 1, "column": column + 1},
-                                                  {"row_index": row_index + 1, "column": column - 1},
-                                                  {"row_index": row_index + 1, "column": column + 1}]
+        neighboring_coordinates_with_row_index = [
+            {"row_index": row_index, "column": column - 1},
+            {"row_index": row_index, "column": column + 1},
+            {"row_index": row_index - 1, "column": column},
+            {"row_index": row_index + 1, "column": column},
+            {"row_index": row_index - 1, "column": column - 1},
+            {"row_index": row_index - 1, "column": column + 1},
+            {"row_index": row_index + 1, "column": column - 1},
+            {"row_index": row_index + 1, "column": column + 1},
+        ]
 
-        return self.get_coordinates_from_list_of_coordinates_with_row_index(neighboring_coordinates_with_row_index)
+        return self.get_coordinates_from_list_of_coordinates_with_row_index(
+            neighboring_coordinates_with_row_index
+        )
 
-    def get_coordinates_from_list_of_coordinates_with_row_index(self, list_of_coordinates_with_row_index):
+    def get_coordinates_from_list_of_coordinates_with_row_index(
+        self, list_of_coordinates_with_row_index
+    ):
         coordinates = []
         for coordinate_with_row_index in list_of_coordinates_with_row_index:
-            coordinate = self.get_coordinate_from_coordinate_with_row_index(coordinate_with_row_index)
+            coordinate = self.get_coordinate_from_coordinate_with_row_index(
+                coordinate_with_row_index
+            )
             if coordinate:
                 coordinates.append(coordinate)
         return coordinates
@@ -252,7 +332,7 @@ class Board:
     def get_coordinate_from_coordinate_with_row_index(self, coordinate_with_row_index):
         coordinate = {
             "row": self.get_row_from_index(coordinate_with_row_index["row_index"]),
-            "column": coordinate_with_row_index["column"]
+            "column": coordinate_with_row_index["column"],
         }
         if self.check_if_coordinate_within_board_border(coordinate):
             return coordinate
@@ -302,45 +382,66 @@ class Board:
 
 
 class BoardAI(Board):
-
     def __init__(self):
         super().__init__()
         self.possible_shots_for_player_ai = self.get_starting_possible_shots()
 
     def get_starting_possible_shots(self):
-        shots_to_take = {"priority": [],
-                         "normal": [{"row": row, "column": column}
-                                    for row in self.row_index for column in range(1, self.size_columns + 1)]}
+        shots_to_take = {
+            "priority": [],
+            "normal": [
+                {"row": row, "column": column}
+                for row in self.row_index
+                for column in range(1, self.size_columns + 1)
+            ],
+        }
         return shots_to_take
 
     def add_result_of_player_shot_into_opponent_board(self, coordinate, result):
         if self.check_if_coordinate_within_board_border(coordinate):
             if result == "HIT":
-                self.update_opponent_board(coordinate, 'X')
+                self.update_opponent_board(coordinate, "X")
                 self.update_possible_shots_for_player_ai_after_ship_hit(coordinate)
             elif result == "MISS":
-                self.update_opponent_board(coordinate, 'M')
+                self.update_opponent_board(coordinate, "M")
                 self.update_possible_shots_for_player_ai_after_miss_hit(coordinate)
             elif result == "SINKING":
                 self.update_possible_shots_for_player_ai_after_ship_sunk(coordinate)
-                coordinates_of_sunk_ship = self.get_coordinates_of_sunk_ship_from_last_hit_coordinate(coordinate)
+                coordinates_of_sunk_ship = (
+                    self.get_coordinates_of_sunk_ship_from_last_hit_coordinate(
+                        coordinate
+                    )
+                )
                 for coordinate in coordinates_of_sunk_ship:
                     self.update_opponent_board(coordinate, "S")
 
     def update_possible_shots_for_player_ai_after_ship_hit(self, coordinate):
-        neighboring_coordinates = self.get_neighboring_coordinates_in_four_directions(coordinate)
+        neighboring_coordinates = self.get_neighboring_coordinates_in_four_directions(
+            coordinate
+        )
         for neighboring_coordinate in neighboring_coordinates:
-            self.upgrade_priority_of_coordinate_shot_for_possible_shots_for_player_ai(neighboring_coordinate)
+            self.upgrade_priority_of_coordinate_shot_for_possible_shots_for_player_ai(
+                neighboring_coordinate
+            )
         self.remove_coordinate_from_possible_shots_for_player_ai(coordinate)
 
     def update_possible_shots_for_player_ai_after_ship_sunk(self, coordinate):
-        coordinates_of_sunk_ship = self.get_coordinates_of_sunk_ship_from_last_hit_coordinate(coordinate)
+        coordinates_of_sunk_ship = (
+            self.get_coordinates_of_sunk_ship_from_last_hit_coordinate(coordinate)
+        )
         for coordinate_of_sunk_ship in coordinates_of_sunk_ship:
-            self.remove_coordinate_from_possible_shots_for_player_ai(coordinate_of_sunk_ship)
-            neighboring_coordinates_of_part_of_sunk_ship = self.get_neighboring_coordinates_in_eight_directions(
-                coordinate_of_sunk_ship)
+            self.remove_coordinate_from_possible_shots_for_player_ai(
+                coordinate_of_sunk_ship
+            )
+            neighboring_coordinates_of_part_of_sunk_ship = (
+                self.get_neighboring_coordinates_in_eight_directions(
+                    coordinate_of_sunk_ship
+                )
+            )
             for neighboring_coordinate in neighboring_coordinates_of_part_of_sunk_ship:
-                self.remove_coordinate_from_possible_shots_for_player_ai(neighboring_coordinate)
+                self.remove_coordinate_from_possible_shots_for_player_ai(
+                    neighboring_coordinate
+                )
 
     def update_possible_shots_for_player_ai_after_miss_hit(self, coordinate):
         self.remove_coordinate_from_possible_shots_for_player_ai(coordinate)
@@ -351,7 +452,9 @@ class BoardAI(Board):
         if coordinate in self.possible_shots_for_player_ai["normal"]:
             self.possible_shots_for_player_ai["normal"].remove(coordinate)
 
-    def upgrade_priority_of_coordinate_shot_for_possible_shots_for_player_ai(self, coordinate):
+    def upgrade_priority_of_coordinate_shot_for_possible_shots_for_player_ai(
+        self, coordinate
+    ):
         if coordinate in self.possible_shots_for_player_ai["normal"]:
             self.possible_shots_for_player_ai["priority"].append(coordinate)
             self.possible_shots_for_player_ai["normal"].remove(coordinate)

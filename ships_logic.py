@@ -15,7 +15,7 @@ class Ship:
 
     def get_coordinates_of_ship(self):
         coordinates = []
-        if self.orientation == 'horizontal':
+        if self.orientation == "horizontal":
             for column in range(self.column, self.column + self.size):
                 coordinate = {"row": self.row, "column": column}
                 coordinates.append(coordinate)
@@ -52,7 +52,7 @@ class Ships:
             "Four-masted ship",
             ["Three-masted ship" for _ in range(2)],
             ["Two-masted ship" for _ in range(3)],
-            ["One-masted ship" for _ in range(4)]
+            ["One-masted ship" for _ in range(4)],
         ]
         self.ships_to_deploy_list = []
         self.move_ships_from_ships_type_quantity_list_to_ships_deploy_list()
@@ -78,26 +78,36 @@ class Ships:
             self.active_ships.remove(ship)
 
     def get_ships_coordinates_on_board(self):
-        final_board_coordinates = {"Four-masted ship": [],
-                                   "Three-masted ship": [],
-                                   "Two-masted ship": [],
-                                   "One-masted ship": []}
+        final_board_coordinates = {
+            "Four-masted ship": [],
+            "Three-masted ship": [],
+            "Two-masted ship": [],
+            "One-masted ship": [],
+        }
         for ship in [*self.active_ships, *self.destroyed_ships]:
             if ship.size == 1:
                 row = ship.coordinates[0]["row"]
                 column = str(ship.coordinates[0]["column"])
-                formatted_coordinate = ''.join([row, column])
+                formatted_coordinate = "".join([row, column])
                 final_board_coordinates["One-masted ship"].append(formatted_coordinate)
             else:
                 row_begin = ship.coordinates[0]["row"]
                 column_begin = str(ship.coordinates[0]["column"])
                 row_end = ship.coordinates[-1]["row"]
                 column_end = str(ship.coordinates[-1]["column"])
-                formatted_coordinate = f"{row_begin}{column_begin}-{row_end}{column_end}"
+                formatted_coordinate = (
+                    f"{row_begin}{column_begin}-{row_end}{column_end}"
+                )
                 if ship.size == 4:
-                    final_board_coordinates["Four-masted ship"].append(formatted_coordinate)
+                    final_board_coordinates["Four-masted ship"].append(
+                        formatted_coordinate
+                    )
                 if ship.size == 3:
-                    final_board_coordinates["Three-masted ship"].append(formatted_coordinate)
+                    final_board_coordinates["Three-masted ship"].append(
+                        formatted_coordinate
+                    )
                 if ship.size == 2:
-                    final_board_coordinates["Two-masted ship"].append(formatted_coordinate)
+                    final_board_coordinates["Two-masted ship"].append(
+                        formatted_coordinate
+                    )
         return final_board_coordinates

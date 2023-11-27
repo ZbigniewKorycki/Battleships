@@ -24,25 +24,54 @@ class TestBoard(unittest.TestCase):
     def test_check_if_coordinate_within_board_border(self):
         # rows A-J, columns 1-10
 
-        coordinate_correct_first_row_first_column = self.board.check_if_coordinate_within_board_border(
-            {"row": "A", "column": 1})
-        coordinate_correct_first_row_last_column = self.board.check_if_coordinate_within_board_border(
-            {"row": "A", "column": 10})
-        coordinate_correct_last_row_first_column = self.board.check_if_coordinate_within_board_border(
-            {"row": "J", "column": 1})
-        coordinate_correct_last_row_last_column = self.board.check_if_coordinate_within_board_border(
-            {"row": "J", "column": 10})
-        coordinate_incorrect_column_of_of_range = self.board.check_if_coordinate_within_board_border(
-            {"row": "A", "column": 11})
-        coordinate_incorrect_row_of_of_range = self.board.check_if_coordinate_within_board_border(
-            {"row": "K", "column": 1})
-        coordinate_incorrect_double_row = self.board.check_if_coordinate_within_board_border({"row": "AA", "column": 1})
-        coordinate_incorrect_row_lowercase = self.board.check_if_coordinate_within_board_border(
-            {"row": "a", "column": 2})
-        coordinate_incorrect_row_as_numeric = self.board.check_if_coordinate_within_board_border(
-            {"row": 5, "column": 5})
-        coordinate_incorrect_column_as_letter = self.board.check_if_coordinate_within_board_border(
-            {"row": "A", "column": "A"})
+        coordinate_correct_first_row_first_column = (
+            self.board.check_if_coordinate_within_board_border(
+                {"row": "A", "column": 1}
+            )
+        )
+        coordinate_correct_first_row_last_column = (
+            self.board.check_if_coordinate_within_board_border(
+                {"row": "A", "column": 10}
+            )
+        )
+        coordinate_correct_last_row_first_column = (
+            self.board.check_if_coordinate_within_board_border(
+                {"row": "J", "column": 1}
+            )
+        )
+        coordinate_correct_last_row_last_column = (
+            self.board.check_if_coordinate_within_board_border(
+                {"row": "J", "column": 10}
+            )
+        )
+        coordinate_incorrect_column_of_of_range = (
+            self.board.check_if_coordinate_within_board_border(
+                {"row": "A", "column": 11}
+            )
+        )
+        coordinate_incorrect_row_of_of_range = (
+            self.board.check_if_coordinate_within_board_border(
+                {"row": "K", "column": 1}
+            )
+        )
+        coordinate_incorrect_double_row = (
+            self.board.check_if_coordinate_within_board_border(
+                {"row": "AA", "column": 1}
+            )
+        )
+        coordinate_incorrect_row_lowercase = (
+            self.board.check_if_coordinate_within_board_border(
+                {"row": "a", "column": 2}
+            )
+        )
+        coordinate_incorrect_row_as_numeric = (
+            self.board.check_if_coordinate_within_board_border({"row": 5, "column": 5})
+        )
+        coordinate_incorrect_column_as_letter = (
+            self.board.check_if_coordinate_within_board_border(
+                {"row": "A", "column": "A"}
+            )
+        )
 
         self.assertTrue(coordinate_correct_first_row_first_column)
         self.assertTrue(coordinate_correct_first_row_last_column)
@@ -89,9 +118,17 @@ class TestBoard(unittest.TestCase):
         self.board.add_block_to_board(incorrect_coordinate_wrong_row)
         self.board.add_block_to_board(incorrect_coordinate_wrong_column)
 
-        self.assertEqual(";", self.board.get_symbol_from_player_board(correct_coordinate))
-        self.assertIs(None, self.board.get_symbol_from_player_board(incorrect_coordinate_wrong_row))
-        self.assertIs(None, self.board.get_symbol_from_player_board(incorrect_coordinate_wrong_column))
+        self.assertEqual(
+            ";", self.board.get_symbol_from_player_board(correct_coordinate)
+        )
+        self.assertIs(
+            None,
+            self.board.get_symbol_from_player_board(incorrect_coordinate_wrong_row),
+        )
+        self.assertIs(
+            None,
+            self.board.get_symbol_from_player_board(incorrect_coordinate_wrong_column),
+        )
 
     def test_remove_blocks_from_board(self):
         coordinate_1 = {"row": "B", "column": 5}
@@ -119,85 +156,184 @@ class TestBoard(unittest.TestCase):
     def test_get_neighboring_coordinates_in_four_directions(self):
         # Correct coordinate should have 4 neighboring coordinates
         correct_coordinate = {"row": "C", "column": 5}
-        self.assertIn({"row": "B", "column": 5},
-                      self.board.get_neighboring_coordinates_in_four_directions(correct_coordinate))
-        self.assertIn({"row": "D", "column": 5},
-                      self.board.get_neighboring_coordinates_in_four_directions(correct_coordinate))
-        self.assertIn({"row": "C", "column": 4},
-                      self.board.get_neighboring_coordinates_in_four_directions(correct_coordinate))
-        self.assertIn({"row": "C", "column": 6},
-                      self.board.get_neighboring_coordinates_in_four_directions(correct_coordinate))
-        self.assertEqual(4, len(self.board.get_neighboring_coordinates_in_four_directions(correct_coordinate)))
+        self.assertIn(
+            {"row": "B", "column": 5},
+            self.board.get_neighboring_coordinates_in_four_directions(
+                correct_coordinate
+            ),
+        )
+        self.assertIn(
+            {"row": "D", "column": 5},
+            self.board.get_neighboring_coordinates_in_four_directions(
+                correct_coordinate
+            ),
+        )
+        self.assertIn(
+            {"row": "C", "column": 4},
+            self.board.get_neighboring_coordinates_in_four_directions(
+                correct_coordinate
+            ),
+        )
+        self.assertIn(
+            {"row": "C", "column": 6},
+            self.board.get_neighboring_coordinates_in_four_directions(
+                correct_coordinate
+            ),
+        )
+        self.assertEqual(
+            4,
+            len(
+                self.board.get_neighboring_coordinates_in_four_directions(
+                    correct_coordinate
+                )
+            ),
+        )
 
         # Incorrect coordinates
         incorrect_coordinate_with_column_out_of_range = {"row": "J", "column": 11}
-        self.assertRaises(TypeError, self.board.get_neighboring_coordinates_in_four_directions,
-                          incorrect_coordinate_with_column_out_of_range)
+        self.assertRaises(
+            TypeError,
+            self.board.get_neighboring_coordinates_in_four_directions,
+            incorrect_coordinate_with_column_out_of_range,
+        )
 
         incorrect_coordinate_with_row_out_of_range = {"row": "K", "column": 3}
-        self.assertRaises(TypeError, self.board.get_neighboring_coordinates_in_four_directions,
-                          incorrect_coordinate_with_row_out_of_range)
+        self.assertRaises(
+            TypeError,
+            self.board.get_neighboring_coordinates_in_four_directions,
+            incorrect_coordinate_with_row_out_of_range,
+        )
 
     def test_get_neighboring_coordinates_in_eight_directions(self):
         # Coordinate of right down corner - should have only 3 neighboring coordinates
         correct_coordinate_right_down_corner = {"row": "J", "column": 10}
-        self.assertIn({"row": "I", "column": 10},
-                      self.board.get_neighboring_coordinates_in_eight_directions(correct_coordinate_right_down_corner))
-        self.assertIn({"row": "J", "column": 9},
-                      self.board.get_neighboring_coordinates_in_eight_directions(correct_coordinate_right_down_corner))
-        self.assertIn({"row": "I", "column": 9},
-                      self.board.get_neighboring_coordinates_in_eight_directions(correct_coordinate_right_down_corner))
-        self.assertEqual(3, len(self.board.get_neighboring_coordinates_in_eight_directions(
-            correct_coordinate_right_down_corner)))
+        self.assertIn(
+            {"row": "I", "column": 10},
+            self.board.get_neighboring_coordinates_in_eight_directions(
+                correct_coordinate_right_down_corner
+            ),
+        )
+        self.assertIn(
+            {"row": "J", "column": 9},
+            self.board.get_neighboring_coordinates_in_eight_directions(
+                correct_coordinate_right_down_corner
+            ),
+        )
+        self.assertIn(
+            {"row": "I", "column": 9},
+            self.board.get_neighboring_coordinates_in_eight_directions(
+                correct_coordinate_right_down_corner
+            ),
+        )
+        self.assertEqual(
+            3,
+            len(
+                self.board.get_neighboring_coordinates_in_eight_directions(
+                    correct_coordinate_right_down_corner
+                )
+            ),
+        )
 
         # Coordinate which should have 8 neighboring coordinates
         correct_coordinate_middle = {"row": "E", "column": 5}
-        self.assertIn({"row": "E", "column": 4},
-                      self.board.get_neighboring_coordinates_in_eight_directions(correct_coordinate_middle))
-        self.assertIn({"row": "E", "column": 6},
-                      self.board.get_neighboring_coordinates_in_eight_directions(correct_coordinate_middle))
-        self.assertIn({"row": "D", "column": 4},
-                      self.board.get_neighboring_coordinates_in_eight_directions(correct_coordinate_middle))
-        self.assertIn({"row": "D", "column": 5},
-                      self.board.get_neighboring_coordinates_in_eight_directions(correct_coordinate_middle))
-        self.assertIn({"row": "D", "column": 6},
-                      self.board.get_neighboring_coordinates_in_eight_directions(correct_coordinate_middle))
-        self.assertIn({"row": "F", "column": 4},
-                      self.board.get_neighboring_coordinates_in_eight_directions(correct_coordinate_middle))
-        self.assertIn({"row": "F", "column": 5},
-                      self.board.get_neighboring_coordinates_in_eight_directions(correct_coordinate_middle))
-        self.assertIn({"row": "F", "column": 6},
-                      self.board.get_neighboring_coordinates_in_eight_directions(correct_coordinate_middle))
-        self.assertEqual(8, len(self.board.get_neighboring_coordinates_in_eight_directions(
-            correct_coordinate_middle)))
+        self.assertIn(
+            {"row": "E", "column": 4},
+            self.board.get_neighboring_coordinates_in_eight_directions(
+                correct_coordinate_middle
+            ),
+        )
+        self.assertIn(
+            {"row": "E", "column": 6},
+            self.board.get_neighboring_coordinates_in_eight_directions(
+                correct_coordinate_middle
+            ),
+        )
+        self.assertIn(
+            {"row": "D", "column": 4},
+            self.board.get_neighboring_coordinates_in_eight_directions(
+                correct_coordinate_middle
+            ),
+        )
+        self.assertIn(
+            {"row": "D", "column": 5},
+            self.board.get_neighboring_coordinates_in_eight_directions(
+                correct_coordinate_middle
+            ),
+        )
+        self.assertIn(
+            {"row": "D", "column": 6},
+            self.board.get_neighboring_coordinates_in_eight_directions(
+                correct_coordinate_middle
+            ),
+        )
+        self.assertIn(
+            {"row": "F", "column": 4},
+            self.board.get_neighboring_coordinates_in_eight_directions(
+                correct_coordinate_middle
+            ),
+        )
+        self.assertIn(
+            {"row": "F", "column": 5},
+            self.board.get_neighboring_coordinates_in_eight_directions(
+                correct_coordinate_middle
+            ),
+        )
+        self.assertIn(
+            {"row": "F", "column": 6},
+            self.board.get_neighboring_coordinates_in_eight_directions(
+                correct_coordinate_middle
+            ),
+        )
+        self.assertEqual(
+            8,
+            len(
+                self.board.get_neighboring_coordinates_in_eight_directions(
+                    correct_coordinate_middle
+                )
+            ),
+        )
 
         # Incorrect coordinates
         incorrect_coordinate_with_column_out_of_range = {"row": "J", "column": 11}
-        self.assertRaises(TypeError, self.board.get_neighboring_coordinates_in_eight_directions,
-                          incorrect_coordinate_with_column_out_of_range)
+        self.assertRaises(
+            TypeError,
+            self.board.get_neighboring_coordinates_in_eight_directions,
+            incorrect_coordinate_with_column_out_of_range,
+        )
 
         incorrect_coordinate_with_row_out_of_range = {"row": "K", "column": 3}
-        self.assertRaises(TypeError, self.board.get_neighboring_coordinates_in_eight_directions,
-                          incorrect_coordinate_with_row_out_of_range)
+        self.assertRaises(
+            TypeError,
+            self.board.get_neighboring_coordinates_in_eight_directions,
+            incorrect_coordinate_with_row_out_of_range,
+        )
 
     def test_get_coordinate_from_coordinate_with_row_index(self):
         correct_coordinate_with_row_index = {"row_index": 1, "column": 10}
-        coordinate = self.board.get_coordinate_from_coordinate_with_row_index(correct_coordinate_with_row_index)
+        coordinate = self.board.get_coordinate_from_coordinate_with_row_index(
+            correct_coordinate_with_row_index
+        )
         self.assertEqual({"row": "A", "column": 10}, coordinate)
 
-        incorrect_coordinate_with_row_index_out_of_range = {"row_index": 11, "column": 10}
+        incorrect_coordinate_with_row_index_out_of_range = {
+            "row_index": 11,
+            "column": 10,
+        }
         coordinate1 = self.board.get_coordinate_from_coordinate_with_row_index(
-            incorrect_coordinate_with_row_index_out_of_range)
+            incorrect_coordinate_with_row_index_out_of_range
+        )
         self.assertIs(None, coordinate1)
 
         incorrect_coordinate_with_row_index_as_letter = {"row_index": "A", "column": 1}
         coordinate2 = self.board.get_coordinate_from_coordinate_with_row_index(
-            incorrect_coordinate_with_row_index_as_letter)
+            incorrect_coordinate_with_row_index_as_letter
+        )
         self.assertIs(None, coordinate2)
 
         incorrect_coordinate_with_column_as_letter = {"row_index": 4, "column": "B"}
         coordinate3 = self.board.get_coordinate_from_coordinate_with_row_index(
-            incorrect_coordinate_with_column_as_letter)
+            incorrect_coordinate_with_column_as_letter
+        )
         self.assertIs(None, coordinate3)
 
     def test_add_ship(self):
@@ -211,12 +347,23 @@ class TestBoard(unittest.TestCase):
         self.assertTrue(self.board.add_ship(ship_size_3))
         self.assertTrue(self.board.add_ship(ship_size_4))
 
-        ship_with_incorrect_coordinates_without_board = Ship(row="A", column=11, size=1, orientation="horizontal")
-        self.assertRaises(CustomException, self.board.add_ship, ship_with_incorrect_coordinates_without_board)
+        ship_with_incorrect_coordinates_without_board = Ship(
+            row="A", column=11, size=1, orientation="horizontal"
+        )
+        self.assertRaises(
+            CustomException,
+            self.board.add_ship,
+            ship_with_incorrect_coordinates_without_board,
+        )
 
-        ship_with_incorrect_coordinates_too_close_another_ship = Ship(row="B", column=1, size=3,
-                                                                      orientation="horizontal")
-        self.assertRaises(CustomException, self.board.add_ship, ship_with_incorrect_coordinates_too_close_another_ship)
+        ship_with_incorrect_coordinates_too_close_another_ship = Ship(
+            row="B", column=1, size=3, orientation="horizontal"
+        )
+        self.assertRaises(
+            CustomException,
+            self.board.add_ship,
+            ship_with_incorrect_coordinates_too_close_another_ship,
+        )
 
 
 class TestDataUtils(unittest.TestCase):
@@ -248,7 +395,9 @@ class TestDatabaseUtils(unittest.TestCase):
         self.connection.close()
 
     def test_create_game_table(self):
-        query = "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'games';"
+        query = (
+            "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'games';"
+        )
         result = self.database_utils.execute_sql_query(query, fetch_option="fetchone")
         self.assertIsNotNone(result)
 
@@ -266,7 +415,9 @@ class TestDatabaseUtils(unittest.TestCase):
         self.assertEqual(5, len(games))
 
     def test_delete_games_with_non_finite_status(self):
-        self.database_utils.delete_boards_for_game_with_non_finite_status(board_table="games")
+        self.database_utils.delete_boards_for_game_with_non_finite_status(
+            board_table="games"
+        )
         query = "SELECT * FROM games WHERE winner is NULL"
         result = self.database_utils.execute_sql_query(query)
         self.assertIsNone(result)
@@ -275,20 +426,35 @@ class TestDatabaseUtils(unittest.TestCase):
         self.database_utils.add_game_to_db()
         self.database_utils.set_winner(1, "TEST_WINNER")
         result_query = "SELECT winner FROM games WHERE game_id = ?"
-        result = self.database_utils.execute_sql_query(result_query, "1", fetch_option="fetchone")
+        result = self.database_utils.execute_sql_query(
+            result_query, "1", fetch_option="fetchone"
+        )
         self.assertIsNotNone(result)
         self.assertEqual("TEST_WINNER", result[0])
         self.database_utils.execute_sql_query(self.delete_games_query)
 
     def test_add_board_to_db(self):
-        board_status = {"A":{"1": "~", "2": "~", "3": "~", "4": "~", "5": "~", "6": "~", "7": "~", "8": "~", "9": "~", "10": "~"}}
+        board_status = {
+            "A": {
+                "1": "~",
+                "2": "~",
+                "3": "~",
+                "4": "~",
+                "5": "~",
+                "6": "~",
+                "7": "~",
+                "8": "~",
+                "9": "~",
+                "10": "~",
+            }
+        }
         self.database_utils.add_game_to_db()
         self.database_utils.add_board_to_db(1, board_status, "test_boards")
         board_query = "SELECT board_status FROM test_boards WHERE game_id = ?"
-        result = self.database_utils.execute_sql_query(board_query, "1", fetch_option="fetchone")
+        result = self.database_utils.execute_sql_query(
+            board_query, "1", fetch_option="fetchone"
+        )
         self.assertIsNotNone(result)
         self.assertEqual(board_status, json.loads(result[0]))
         self.database_utils.execute_sql_query(self.delete_boards_query)
         self.database_utils.execute_sql_query(self.delete_games_query)
-
-
