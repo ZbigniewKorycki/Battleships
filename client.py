@@ -131,6 +131,7 @@ class Client:
             client_socket, "SAVE_WINNER_TO_DB", winner
         )
         print(winner_message["body"])
+        self.stop(client_socket, "STOP")
 
     @staticmethod
     def check_server_response_instance(server_response):
@@ -246,14 +247,6 @@ class Client:
                         self.automation_game(client_socket)
                     elif client_input == "SHOW":
                         self.show_archived_game_service(client_socket)
-                    elif client_input == "AGAIN":
-                        self.player = Player()
-                        self.ai_player = AIPlayer()
-                        self.comm_utils = CommunicationUtilsClient(self.player)
-                        self.communication_feature_template(
-                            client_socket, "SAVE_GAME_TO_DB"
-                        )
-                        self.automation_game(client_socket)
 
     def stop(self, client_socket, client_input):
         client_request = self.create_request_to_server(client_input)
