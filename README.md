@@ -1,5 +1,9 @@
 # Battleship
 
+## Prezentacja na Youtubue:
+
+https://www.youtube.com/watch?v=qH0PATDdeNI
+
 ## Zasady gry
 
 **Plansza**
